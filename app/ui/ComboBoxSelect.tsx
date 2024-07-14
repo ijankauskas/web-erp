@@ -1,5 +1,5 @@
 'use client'
-import { useState, Fragment } from 'react';
+import { useState, Fragment, useEffect } from 'react';
 import { Combobox } from '@headlessui/react';
 import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid';
 
@@ -7,25 +7,41 @@ function classNames(...classes: any[]) {
   return classes.filter(Boolean).join(' ');
 }
 
-export default function ComboBoxSelect({ titulo, data }: any) {
-  const [selectedPerson, setSelectedPerson] = useState<{ id: any; name: string } | null>(data[0]);
+export default function ComboBoxSelect({ titulo, data, seleccionado, setearCodigo }: any) {
+  const [selectedPerson, setSelectedPerson] = useState<{ id: any; name: string } | null>(null);
   const [query, setQuery] = useState('');
+
+  useEffect(() => {
+    const selected = data.find((person: any) => person.id == (seleccionado));
+    if (selected) {
+      setSelectedPerson(selected);
+    } else {
+      setSelectedPerson(null)
+    }
+  }, [seleccionado, data]);
+
+  const seleccionarOpcion = (person: { id: any; name: string } | null) => {
+    setSelectedPerson(person);
+    console.log(person?.id);
+    
+    setearCodigo (person?.id)
+  };
 
   const filteredPeople =
     query === ''
       ? data
-      : data.filter((person:any) =>
+      : data.filter((person: any) =>
         person.name
           .toLowerCase()
           .includes(query.toLowerCase())
       );
 
   return (
-    <Combobox as="div" value={selectedPerson} onChange={setSelectedPerson}>
+    <Combobox as="div" value={selectedPerson} onChange={seleccionarOpcion}>
       <Combobox.Label className="block text-sm font-medium text-gray-700">{titulo}</Combobox.Label>
       <div className="relative mt-1">
         <Combobox.Input
-          className="w-full rounded-md border border-gray-300 bg-white py-2 pl-3 pr-10 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 sm:text-sm"
+          className="w-full text-black rounded-md border border-gray-300 bg-white py-2 pl-3 pr-10 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 sm:text-sm"
           onChange={(event) => setQuery(event.target.value)}
           displayValue={(person: any) => (person ? person.name : '')}
         />
@@ -35,7 +51,7 @@ export default function ComboBoxSelect({ titulo, data }: any) {
 
         {filteredPeople.length > 0 && (
           <Combobox.Options className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
-            {filteredPeople.map((person:any) => (
+            {filteredPeople.map((person: any) => (
               <Combobox.Option
                 key={person.id}
                 value={person}

@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import NavLinks from '@/app/ui/dashboard/nav-links';
+import NavLinks from '@/app/ui/erp/nav-links';
 import { PowerIcon } from '@heroicons/react/24/outline';
 import { Fragment, useState } from 'react';
 import { Dialog, Transition } from '@headlessui/react';

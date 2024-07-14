@@ -1,9 +1,9 @@
 'use client'
 
 import { useState } from 'react';
-import SideNavMobile from '../ui/dashboard/sidenav-mobile';
-import SideNav from '../ui/dashboard/sidenav';
-import NavBar from '../ui/dashboard/navBar';
+import SideNavMobile from '../ui/erp/sidenav-mobile';
+import SideNav from '../ui/erp/sidenav';
+import NavBar from '../ui/erp/navBar';
 
 import {
     HomeIcon,
@@ -56,7 +56,7 @@ const navigation = [
             },
             {
                 name:'Compras',
-                href: '/erp/compras',
+                href: '/erp/compra',
                 current: false,
                 icon: ShoppingCartIcon,
             }
