@@ -20,23 +20,29 @@ const navigation = [
         href: '/erp',
         current: true,
         icon: HomeIcon,
-        optiones:[]
+        optiones: []
     },
     {
         name: 'Nuevos',
         href: '',
         current: false,
         icon: ChevronDownIcon,
-        optiones:[
+        optiones: [
             {
-                name:'Articulos',
+                name: 'Articulos',
                 href: '/erp/alta_articulo',
                 current: false,
                 icon: PlusCircleIcon,
             },
             {
-                name:'Clientes',
+                name: 'Clientes',
                 href: '/alta_articulo',
+                current: false,
+                icon: UserPlusIcon,
+            },
+            {
+                name: 'Proveedores',
+                href: '/erp/alta_proveedor',
                 current: false,
                 icon: UserPlusIcon,
             }
@@ -47,15 +53,15 @@ const navigation = [
         href: '',
         current: false,
         icon: ChevronDownIcon,
-        optiones:[
+        optiones: [
             {
-                name:'Ventas',
+                name: 'Ventas',
                 href: '/erp/venta',
                 current: false,
                 icon: ShoppingBagIcon,
             },
             {
-                name:'Compras',
+                name: 'Compras',
                 href: '/erp/compra',
                 current: false,
                 icon: ShoppingCartIcon,
@@ -67,15 +73,15 @@ const navigation = [
         href: '/erp/consultas',
         current: true,
         icon: HomeIcon,
-        optiones:[
+        optiones: [
             {
-                name:'Ventas',
+                name: 'Ventas',
                 href: '/erp/venta',
                 current: false,
                 icon: ShoppingBagIcon,
             },
             {
-                name:'Compras',
+                name: 'Compras',
                 href: '/erp/compras',
                 current: false,
                 icon: ShoppingCartIcon,
@@ -103,8 +109,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 <SideNav navigation={navigation} />
             </div>
             <div className="flex flex-col w-0 flex-1 overflow-hidden">
-                <NavBar toggleSideBar={toggleSideBar} />
                 <main className="flex-1 w-full relative z-0 overflow-y-auto focus:outline-none">
+                    <NavBar toggleSideBar={toggleSideBar} />
                     {children}
                 </main>
             </div>

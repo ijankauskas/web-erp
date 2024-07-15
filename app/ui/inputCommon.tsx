@@ -1,26 +1,37 @@
-export default function InputCommon({ titulo, tipo, placeholder, texto, seleccionar }: any) {
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCircleExclamation } from '@fortawesome/free-solid-svg-icons';
 
-    const handleBlur = (event: React.FocusEvent<HTMLInputElement>) => {
-        seleccionar(event.target.value);
-    };
+export default function InputCommon({ titulo, tipo, id, placeholder, texto, onChange, funcionOnblur, error, useForm }: any) {
+
 
     return (
         <>
             <label htmlFor="price" className="block text-sm font-medium text-gray-700">
                 {titulo}
             </label>
-            <div className="relative mt-1 rounded-md shadow-sm">
+            <div className="relative mt-1 rounded-md shadow-sm relative">
                 <input
-                    id="price"
+                    id={id}
                     name="price"
                     type={tipo}
                     placeholder={placeholder}
-                    onChange={seleccionar}
-                    onBlur={handleBlur}
+                    onChange={onChange}
+                    onBlur={funcionOnblur}
                     value={texto}
-                    className="w-full text-black rounded-md border border-gray-300 bg-white py-2 pl-3 pr-3 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 sm:text-sm"
+                    {...useForm}
+                    className={`relative block w-full rounded-md border-0 px-2.5 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6
+                        ${error ? 'focus:ring-red-600 ring-red-300' : 'focus:ring-indigo-500'}`}
                 />
+                {
+                    error &&
+                    <div className="absolute pr-3 flex items-center right-0 top-0 bottom-0">
+                        <FontAwesomeIcon className="w-5 h-5 text-red-600" icon={faCircleExclamation} />
+                    </div>
+                }
             </div>
+            {
+                error && <p className="text-sm text-red-600">{error}</p>
+            }
         </>
     );
 }

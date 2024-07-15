@@ -7,24 +7,24 @@ function classNames(...classes: any[]) {
   return classes.filter(Boolean).join(' ');
 }
 
-export default function ComboBoxSelect({ titulo, data, seleccionado, setearCodigo }: any) {
+export default function ComboBoxSelect({ titulo, data, seleccionado, setearCodigo, mostrarError }: any) {
   const [selectedPerson, setSelectedPerson] = useState<{ id: any; name: string } | null>(null);
   const [query, setQuery] = useState('');
 
   useEffect(() => {
-    const selected = data.find((person: any) => person.id == (seleccionado));
+    const selected = data?.find((person: any) => person.id == (seleccionado));
     if (selected) {
       setSelectedPerson(selected);
     } else {
-      setSelectedPerson(null)
+      setSelectedPerson(null);
+      setearCodigo('');
+      mostrarError();
     }
   }, [seleccionado, data]);
 
   const seleccionarOpcion = (person: { id: any; name: string } | null) => {
     setSelectedPerson(person);
-    console.log(person?.id);
-    
-    setearCodigo (person?.id)
+    setearCodigo(person?.id)
   };
 
   const filteredPeople =
@@ -49,7 +49,7 @@ export default function ComboBoxSelect({ titulo, data, seleccionado, setearCodig
           <ChevronUpDownIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
         </Combobox.Button>
 
-        {filteredPeople.length > 0 && (
+        {filteredPeople?.length > 0 && (
           <Combobox.Options className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
             {filteredPeople.map((person: any) => (
               <Combobox.Option
