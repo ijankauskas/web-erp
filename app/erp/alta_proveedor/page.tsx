@@ -9,25 +9,47 @@ import { articuloSchema } from '../../validaciones/articulo';
 import { PhotoIcon } from '@heroicons/react/24/outline';
 import InputCommon from '@/app/ui/inputCommon';
 import { proveedorSchema } from '@/app/validaciones/proveedor';
-import ComboBoxSelect from '@/app/ui/ComboBoxSelect';
+import Tabs from '@/app/ui/erp/alta_proveedor/tabs';
+import Principal from '@/app/ui/erp/alta_proveedor/principal';
+import DatosContacto from '@/app/ui/erp/alta_proveedor/datosContacto';
 
 type Inputs = {
     codigo: string,
     razon: string,
+    nombre_fantasia: string,
+    mail: string,
+    agru_1: string,
+    agru_2: string,
+    agru_3: string,
 }
+
+const people = [
+    { id: '1', name: 'asdr' },
+    { id: '2', name: 'Arlene Mccoy' },
+    { id: '3', name: 'Devon Webb' },
+    { id: '4', name: 'Tom Cook' },
+    { id: '5', name: 'Tanya Fox' },
+    { id: '6', name: 'Hellen Schmidt' },
+];
+
+const tabs = [
+    { name: 'My Account', href: '0', current: true },
+    { name: 'Company', href: '1', current: false },
+    { name: 'Team Members', href: '2', current: false },
+    { name: 'Billing', href: '3', current: false },
+];
+
 
 export default function alta_proveedor() {
     const [cargando, setCargando] = useState(false)
-    const { register, handleSubmit, formState: { errors } } = useForm<Inputs>({
-        defaultValues: {
-            codigo: '',
-            razon: '',
-        },
-        resolver: zodResolver(proveedorSchema)
-    })
+    const [tab, setTab] = useState(0)
+
+
+    const seleccionarTab = (tab: any) => {
+        setTab(tab)
+    }
 
     const enviarForm = async (data: any) => {
-
 
         setCargando(true);
         const response = await fetch('http://localhost:8080/articulos', {
@@ -49,100 +71,21 @@ export default function alta_proveedor() {
     };
 
     return (
-        <div className='flex justify-center'>
-            <i className="fa-solid fa-circle-exclamation"></i>
-            <form className='p-8 pt-2 w-full' onSubmit={handleSubmit(data => enviarForm(data))}>
-                <div className="space-y-12">
-                    <div className="border-b border-gray-900/10">
-                        <h2 className="text-base font-semibold leading-7 text-gray-900">Crea Modifica proveedores.</h2>
-                        <p className="mt-1 text-sm leading-6 text-gray-600">
-                            Esta seccion es solo para perfiles administradores.
-                        </p>
-                    </div>
+        <div className="max-w-7xl mx-auto py-0 px-4 sm:px-6 lg:px-8">
+            <Tabs tabs={tabs} seleccionarTab={seleccionarTab} tab={tab} />
+            <div className='relative'>
+                {tab === 0 ?
+                    <>
+                        <Principal />
+                        <DatosContacto />
+                    </>:
+                    tab === 1 ? <DatosContacto /> :
+                        tab === 2 ? 'Llegaste tercero.' :
+                            tab === 3 ? 'Llegaste último.' :
+                                'Posición no definida.'}
 
-                    <div className="border-b border-gray-900/10 pb-6">
-                        <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-6">
-                            <div className="sm:col-span-2">
-                                <InputCommon
-                                    titulo={"Codigo del proveedor"}
-                                    tipo={"number"}
-                                    error={errors.codigo?.message}
-                                    id="codigo"
-                                    useForm={register("codigo")}
-                                />
-                            </div>
-                            <div className="sm:col-span-5 col-span-6">
-                                <InputCommon
-                                    titulo={"Razon social"}
-                                    tipo={"text"}
-                                    error={errors.razon?.message}
-                                    id="razon"
-                                    useForm={register("razon")}
-                                />
-                            </div>
-                            <div className="sm:col-span-5 col-span-6">
-                                <InputCommon
-                                    titulo={"Nombre de fantasia"}
-                                    tipo={"text"}
-                                    error={errors.razon?.message}
-                                    id="razon"
-                                    useForm={register("razon")}
-                                />
-                            </div>
-                            <div className="sm:col-span-3 col-span-6">
-                                <InputCommon
-                                    titulo={"Domicilio"}
-                                    tipo={"text"}
-                                    error={errors.razon?.message}
-                                    id="razon"
-                                    useForm={register("razon")}
-                                />
-                            </div>
-                            <div className="sm:col-span-3 col-span-6">
-                                <InputCommon
-                                    titulo={"Localidad"}
-                                    tipo={"text"}
-                                    error={errors.razon?.message}
-                                    id="razon"
-                                    useForm={register("razon")}
-                                />
-                            </div>
-                            <div className="sm:col-span-3 col-span-6">
-                                <ComboBoxSelect
-                                    titulo={"Provincia"}
-                                    tipo={"text"}
-                                    error={errors.razon?.message}
-                                    id="razon"
-                                    useForm={register("razon")}
-                                />
-                            </div>
-                            <div className="sm:col-span-3 col-span-6">
-                                <ComboBoxSelect
-                                    titulo={"Pais"}
-                                    tipo={"text"}
-                                    error={errors.razon?.message}
-                                    id="razon"
-                                    useForm={register("razon")}
-                                />
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            </div>
 
-                <div className="mt-6 flex items-center justify-end gap-x-6">
-                    <button type="button" className="text-sm font-semibold leading-6 text-gray-900">
-                        Cancel
-                    </button>
-                    <button
-                        type="submit"
-                        className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                    >
-                        {cargando ?
-                            'Cargando...' : 'Grabar'
-                        }
-                    </button>
-                </div>
-            </form>
         </div>
     )
 }

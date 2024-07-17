@@ -9,10 +9,9 @@ export default function InputCommon({ titulo, tipo, id, placeholder, texto, onCh
             <label htmlFor="price" className="block text-sm font-medium text-gray-700">
                 {titulo}
             </label>
-            <div className="relative mt-1 rounded-md shadow-sm relative">
+            <div className="relative mt-1 rounded-md shadow-sm">
                 <input
                     id={id}
-                    name="price"
                     type={tipo}
                     placeholder={placeholder}
                     onChange={onChange}
