@@ -44,12 +44,25 @@ export default function alta_proveedor() {
     const [cargando, setCargando] = useState(false)
     const [tab, setTab] = useState(0)
 
+    const { register, handleSubmit, formState: { errors }, setValue, clearErrors } = useForm<Inputs>({
+        defaultValues: {
+            codigo: '',
+            razon: '',
+            nombre_fantasia: '',
+            mail: '',
+            agru_1: '',
+            agru_2: '',
+            agru_3: '',
+        },
+        resolver: zodResolver(proveedorSchema)
+    })
 
     const seleccionarTab = (tab: any) => {
         setTab(tab)
     }
 
     const enviarForm = async (data: any) => {
+        console.log('aca');
 
         setCargando(true);
         const response = await fetch('http://localhost:8080/articulos', {
@@ -71,18 +84,27 @@ export default function alta_proveedor() {
     };
 
     return (
-        <div className="max-w-7xl mx-auto py-0 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto py-0 px-4 sm:px-6 lg:px-8 bg-white">
             <Tabs tabs={tabs} seleccionarTab={seleccionarTab} tab={tab} />
-            <div className='relative'>
-                {tab === 0 ?
-                    <>
-                        <Principal />
-                        <DatosContacto />
-                    </>:
-                    tab === 1 ? <DatosContacto /> :
-                        tab === 2 ? 'Llegaste tercero.' :
-                            tab === 3 ? 'Llegaste último.' :
-                                'Posición no definida.'}
+            <div className='relative '>
+                <form action="#" method="POST" onSubmit={handleSubmit(data => enviarForm(data))}>
+                    {tab === 0 ?
+                        <>
+                            <Principal register={register} setValue={setValue} errors={errors} clearErrors={clearErrors} />
+                            <DatosContacto register={register} setValue={setValue} errors={errors} clearErrors={clearErrors}/>
+
+                        </> :
+                        tab === 1 ? <DatosContacto register={register} setValue={setValue} errors={errors} clearErrors={clearErrors}/> :
+                            'Posición no definida.'}
+                    <div className="px-4 py-3 bg-gray-50 text-right sm:px-6">
+                        <button
+                            type="submit"
+                            className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                        >
+                            Save
+                        </button>
+                    </div>
+                </form>
 
             </div>
 

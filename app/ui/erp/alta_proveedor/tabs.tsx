@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Tab } from '@headlessui/react';
+import ComboBoxSelect from '../../ComboBoxSelect';
 
 function classNames(...classes: any[]) {
     return classes.filter(Boolean).join(' ');
@@ -14,17 +15,18 @@ interface tab {
 const Tabs = ({ tabs, seleccionarTab, tab }: any) => {
 
     return (
-        <div className="px-4 sm:px-6 lg:px-8">
+        <div className="">
             <div className="sm:hidden">
                 <select
                     id="tabs"
                     name="tabs"
-                    className="block w-full rounded-md border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
+                    className="relative z-0 mt-4 block w-full rounded-md border-0 px-2.5 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6 focus:ring-indigo-500"
+                    value={tab}
                     onChange={(e) => seleccionarTab(e.target.selectedIndex)}
                 >
-                    {tabs.map((tab, index) => (
-                        <option key={tab.name} selected={index === tab}>
-                            {tab.name}
+                    {tabs.map((tabItem:any, index:any) => (
+                        <option key={index} value={index} className="w-full">
+                            {tabItem.name}
                         </option>
                     ))}
                 </select>
@@ -32,7 +34,7 @@ const Tabs = ({ tabs, seleccionarTab, tab }: any) => {
             <div className="hidden sm:block">
                 <div className="relative border-b border-gray-200 w-3/6">
                     <nav className="w -mb-px flex space-x-8" aria-label="Tabs">
-                        {tabs.map((tab, index) => (
+                        {tabs.map((tab: any, index: any) => (
                             <button
                                 key={tab.name}
                                 onClick={() => seleccionarTab(index)}

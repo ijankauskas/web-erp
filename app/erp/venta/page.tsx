@@ -12,6 +12,8 @@ const people = [
     { id: 6, name: 'Hellen Schmidt' },
 ];
 
+//todo origin de venta para ventas
+
 export default function alta_articulo() {
     const [cargando, setCargando] = useState(false)
 

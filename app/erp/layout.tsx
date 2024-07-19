@@ -23,7 +23,7 @@ const navigation = [
         optiones: []
     },
     {
-        name: 'Nuevos',
+        name: 'Altas',
         href: '',
         current: false,
         icon: ChevronDownIcon,
@@ -69,7 +69,7 @@ const navigation = [
         ]
     },
     {
-        name: 'Constulas',
+        name: 'Consultas',
         href: '/erp/consultas',
         current: true,
         icon: HomeIcon,
