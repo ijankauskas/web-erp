@@ -2,22 +2,45 @@
 
 import ComboBoxSelect from '@/app/ui/ComboBoxSelect';
 import Alerta from '@/app/ui/erp/alerta';
+import Cabecera from '@/app/ui/erp/compra/cabecera';
+import Drawer from '@/app/ui/erp/compra/drawer';
 import Tabla from '@/app/ui/erp/compra/tabla';
 import InputCommon from '@/app/ui/inputCommon';
+import { compraSchema } from '@/app/validaciones/compra';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
 
-const people = [
-    { id: 1, name: 'asdr' },
-    { id: 2, name: 'Arlene Mccoy' },
-    { id: 3, name: 'Devon Webb' },
-    { id: 4, name: 'Tom Cook' },
-    { id: 5, name: 'Tanya Fox' },
-    { id: 6, name: 'Hellen Schmidt' },
-];
+
+
+type Inputs = {
+    numero: string,
+    fecha: string,
+    fechaVenci: string,
+    fechaPago: string,
+    codProveedor: string,
+    razonProveedor: string,
+}
 
 export default function alta_articulo() {
     const [cargando, setCargando] = useState(false);
     const [isInitialMount, setIsInitialMount] = useState(true);
+    const [abrirCabecera, setAbrirCabecera] = useState(true);
+
+    const [isLgHidden, setIsLgHidden] = useState(window.innerWidth < 1024);
+
+    const handleResize = () => {
+        setIsLgHidden(window.innerWidth < 1024);
+    };
+
+    useEffect(() => {
+        window.addEventListener('resize', handleResize);
+        // Limpia el event listener cuando el componente se desmonta
+        return () => {
+            window.removeEventListener('resize', handleResize);
+        };
+    }, []);
+
 
     const [error, setError] = useState({
         mostrar: false,
@@ -26,31 +49,17 @@ export default function alta_articulo() {
         icono: '',
     });
 
-    const [numero, setNumero] = useState();
-    const [fecha, setFecha] = useState();
-    const [fechaVenci, setFechaVenci] = useState();
-    const [fechaPago, setFechaPago] = useState();
-    const [codProveedor, setCodProveedor] = useState();
-    const [codProveedorSeleccionado, setCodProveedorSeleccionado] = useState();
-
-    const consultarProveedores = (proveedor: any) => {
-        setCodProveedorSeleccionado(proveedor.target.value);
-    }
-
-    const seleccionarProveedorInput = (proveedor: any) => {
-        setCodProveedor(proveedor.target.value);
-    }
-
-    const seleccionarProveedorSelec = (proveedor: any) => {
-        setCodProveedor(proveedor);
-    }
-
-    useEffect(() => {
-        if (isInitialMount) {
-            setIsInitialMount(false);
-            return;
-        }
-    });
+    const { register, handleSubmit, formState: { errors }, setValue, clearErrors, getValues } = useForm<Inputs>({
+        defaultValues: {
+            numero: '',
+            fecha: '',
+            fechaVenci: '',
+            fechaPago: '',
+            codProveedor: '',
+            razonProveedor: '',
+        },
+        resolver: zodResolver(compraSchema)
+    })
 
     const mostrarErrorAlerta = () => {
         if (!isInitialMount)
@@ -62,6 +71,13 @@ export default function alta_articulo() {
             });
     }
 
+    useEffect(() => {
+        if (isInitialMount) {
+            setIsInitialMount(false);
+            return;
+        }
+    });
+
     const cerrarAlerta = () => {
         setError({
             mostrar: false,
@@ -71,83 +87,30 @@ export default function alta_articulo() {
         });
     }
 
-    const ponerFecha = (fecha: any) => {
-        setFecha(fecha.target.value);
-    }
-    const ponerFechaVenci = (fecha: any) => {
-        setFechaVenci(fecha.target.value);
-    }
-    const ponerFechaPago = (fecha: any) => {
-        setFechaPago(fecha.target.value);
+    const toggleCabecera = () => {
+        setAbrirCabecera(!abrirCabecera)
     }
 
     return (
         <>
-            <div className="px-8 pt-2 grid grid-cols-1 gap-x-8 gap-y-2 sm:grid-cols-8">
-                <div className="sm:col-span-4 md:col-span-2 flex items-center">
-                    <div className='w-full mr-2'>
-                        <InputCommon
-                            titulo={"Numero"}
-                            tipo={'number'}
-                            placeholder={"Numero de la factura"}
-                            texto={numero}
-                            onChange={setNumero} />
-                    </div>
-                </div>
-                <div className="sm:col-span-4 md:col-span-2 flex items-center">
-                    <div className='w-full mr-2'>
-                        <InputCommon
-                            titulo={"Fecha"}
-                            tipo={'date'}
-                            placeholder={""}
-                            texto={fecha}
-                            onChange={ponerFecha} />
-                    </div>
-                </div>
-                <div className="sm:col-span-4 md:col-span-2 flex items-center">
-                    <div className='w-full mr-2'>
-                        <InputCommon
-                            titulo={"Fecha de vencimiento"}
-                            tipo={'date'}
-                            placeholder={""}
-                            texto={fechaVenci}
-                            onChange={ponerFechaVenci} />
-                    </div>
-                </div>
-                <div className="sm:col-span-4 md:col-span-2 flex items-center">
-                    <div className='w-full mr-2'>
-                        <InputCommon
-                            titulo={"Fecha de Pago"}
-                            tipo={'date'}
-                            placeholder={""}
-                            texto={fechaPago}
-                            onChange={ponerFechaPago} />
-                    </div>
-                </div>
-
-                <div className="sm:col-span-2 md:col-span-2 flex items-center">
-                    <div className='w-full mr-2'>
-                        <InputCommon
-                            titulo={"Codigo"}
-                            tipo={'text'}
-                            placeholder={""}
-                            texto={codProveedor}
-                            onChange={seleccionarProveedorInput}
-                            funcionOnblur={consultarProveedores} />
-                    </div>
-                </div>
-                <div className="sm:col-span-6 md:col-span-6 flex items-center">
-                    <div className='w-full mr-2'>
-                        <ComboBoxSelect
-                            titulo={"Proveedor"}
-                            data={people}
-                            seleccionado={codProveedorSeleccionado}
-                            setearCodigo={seleccionarProveedorSelec}
-                            mostrarError={mostrarErrorAlerta} />
-                    </div>
-                </div>
-            </div>
+            {!isLgHidden && (
+                <Drawer abrir={abrirCabecera}
+                    toggleAbrir={toggleCabecera}
+                    register={register}
+                    setValue={setValue}
+                    mostrarErrorAlerta={mostrarErrorAlerta}
+                    clearErrors={clearErrors}
+                    getValues={getValues} />
+            )}
             <div className="w-full flex flex-col p-8 pt-2">
+                {isLgHidden && (
+                    <Cabecera
+                        register={register}
+                        setValue={setValue}
+                        mostrarErrorAlerta={mostrarErrorAlerta}
+                        clearErrors={clearErrors}
+                        getValues={getValues} />
+                )}
                 <div className="flex justify-end my-2">
                     <button
                         type="button"
@@ -155,6 +118,15 @@ export default function alta_articulo() {
                     >
                         Agregar Articulo
                     </button>
+                    {!isLgHidden && (
+                        <button
+                            type="button"
+                            onClick={toggleCabecera}
+                            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                        >
+                            Mostrar Datos
+                        </button>
+                    )}
                 </div>
                 <div className="overflow-x-auto sm:-mx-6 lg:-mx-8">
                     <Tabla />

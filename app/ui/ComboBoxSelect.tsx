@@ -12,13 +12,19 @@ export default function ComboBoxSelect({ titulo, data, seleccionado, setearCodig
   const [query, setQuery] = useState('');
 
   useEffect(() => {
+    if(seleccionado == '' || seleccionado == null){
+      setSelectedPerson(null);
+      setearCodigo('');
+      return
+    }
+    
     const selected = data?.find((person: any) => person.id == (seleccionado));
     if (selected) {
       setSelectedPerson(selected);
     } else {
       setSelectedPerson(null);
       setearCodigo('');
-      if (mostrarError) {
+      if (mostrarError ) {
         mostrarError();
       }
     }
@@ -44,7 +50,8 @@ export default function ComboBoxSelect({ titulo, data, seleccionado, setearCodig
         <Combobox.Label className="block text-sm font-medium text-gray-700">{titulo}</Combobox.Label>
         <div className="relative mt-1">
           <Combobox.Input
-            className="w-full text-black rounded-md border border-gray-300 bg-white py-2 pl-3 pr-10 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 sm:text-sm"
+            className={`w-full text-black rounded-md border bg-white py-2 pl-3 pr-10 shadow-sm focus:outline-none focus:ring-1 sm:text-sm
+            ${error ? 'focus:ring-red-600 border-red-300' : 'border-gray-300 focus:border-indigo-500 focus:ring-indigo-500'}`}
             onChange={(event) => setQuery(event.target.value)}
             displayValue={(person: any) => (person ? person.name : '')}
           />

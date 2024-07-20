@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { articuloSchema } from '../../validaciones/articulo';
 
 
 import { PhotoIcon } from '@heroicons/react/24/outline';
@@ -62,7 +61,6 @@ export default function alta_proveedor() {
     }
 
     const enviarForm = async (data: any) => {
-        console.log('aca');
 
         setCargando(true);
         const response = await fetch('http://localhost:8080/articulos', {
