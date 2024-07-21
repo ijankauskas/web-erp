@@ -37,7 +37,5 @@ export const articuloSchema = z.object({
         .transform(val => parseFloat(val)),
     oferta: z.string().optional(),
     destacado: z.string().optional(),
-    activo: z.object({
-        file: z.instanceof(File)
-    }),
+    activo: z.any().optional(),
 })

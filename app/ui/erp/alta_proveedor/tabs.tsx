@@ -51,9 +51,9 @@ const Tabs = ({ tabs, seleccionarTab, tab }: any) => {
                         ))}
                     </nav>
                     <div
-                        className="absolute bottom-0 left-0 h-0.5 bg-indigo-500 transition-all duration-300"
+                        className="absolute -mb-px inset-x-0 bottom-0 h-0.5 bg-indigo-500 transition-transform duration-300"
                         style={{
-                            width: `${100 / tabs.length}%`,
+                            width: `calc(${100 / tabs.length}%)`,
                             transform: `translateX(${tab * 100}%)`,
                         }}
                     />

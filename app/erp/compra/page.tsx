@@ -1,6 +1,7 @@
 "use client"
 
 import ComboBoxSelect from '@/app/ui/ComboBoxSelect';
+import ButtonCommon from '@/app/ui/erp/ButtonCommon';
 import Alerta from '@/app/ui/erp/alerta';
 import Cabecera from '@/app/ui/erp/compra/cabecera';
 import Drawer from '@/app/ui/erp/compra/drawer';
@@ -25,22 +26,19 @@ type Inputs = {
 export default function alta_articulo() {
     const [cargando, setCargando] = useState(false);
     const [isInitialMount, setIsInitialMount] = useState(true);
-    const [abrirCabecera, setAbrirCabecera] = useState(true);
+    const [abrirCabecera, setAbrirCabecera] = useState(false);
 
-    const [isLgHidden, setIsLgHidden] = useState(window.innerWidth < 1024);
-
-    const handleResize = () => {
-        setIsLgHidden(window.innerWidth < 1024);
-    };
-
+    const [isLgHidden, setIsLgHidden] = useState(false);
     useEffect(() => {
+        const handleResize = () => {
+            setIsLgHidden(window.innerWidth < 1024);
+        };
+        handleResize();
         window.addEventListener('resize', handleResize);
-        // Limpia el event listener cuando el componente se desmonta
         return () => {
             window.removeEventListener('resize', handleResize);
         };
     }, []);
-
 
     const [error, setError] = useState({
         mostrar: false,
@@ -119,13 +117,9 @@ export default function alta_articulo() {
                         Agregar Articulo
                     </button>
                     {!isLgHidden && (
-                        <button
-                            type="button"
-                            onClick={toggleCabecera}
-                            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                        >
-                            Mostrar Datos
-                        </button>
+                        <div className='ml-4'>
+                            <ButtonCommon texto={"Mostrar Datos"} onClick={toggleCabecera} />
+                        </div>
                     )}
                 </div>
                 <div className="overflow-x-auto sm:-mx-6 lg:-mx-8">
@@ -134,7 +128,12 @@ export default function alta_articulo() {
             </div>
 
             {/*alerta */}
-            <Alerta abrir={error.mostrar} cerrar={cerrarAlerta} titulo={error.titulo} texto={error.mensaje} />
+            <Alerta
+                abrir={error.mostrar}
+                cerrar={cerrarAlerta}
+                titulo={error.titulo}
+                texto={error.mensaje}
+            />
         </>
     );
 
