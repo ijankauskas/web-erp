@@ -36,7 +36,7 @@ const TabsArticulo = ({ tabs, seleccionarTab, tab }: any) => {
             </div>
             <div className="hidden sm:block">
                 <div className="relative border-b border-gray-200">
-                    <nav className="-mb-px flex w-6/12" aria-label="Tabs">
+                    <nav className="-mb-px flex w-3/12" aria-label="Tabs">
                         {tabs.map((tabs: any) => (
                             <button
                                 key={tabs.id}
@@ -44,7 +44,7 @@ const TabsArticulo = ({ tabs, seleccionarTab, tab }: any) => {
                                 className={`${tab === tabs.id
                                     ? 'text-indigo-600'
                                     : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                                    } group relative min-w-0 flex-1 items-center justify-center py-1.5 px-6 border-b-2 font-medium text-sm flex`}
+                                    } group relative min-w-0 flex-1 items-center justify-center  py-3 px-6 border-b-2 font-medium text-sm flex`}
                                 aria-current={tab === tabs.id ? 'page' : undefined}
                             >
                                 {tabs.name}
@@ -53,7 +53,7 @@ const TabsArticulo = ({ tabs, seleccionarTab, tab }: any) => {
                         <div
                             className="absolute -mb-px inset-x-0 bottom-0 h-0.5 bg-indigo-500 transition-transform duration-300"
                             style={{
-                                width: `calc(${50 / tabs.length}%)`,
+                                width: `calc(${25 / tabs.length}%)`,
                                 transform: `translateX(${tab * 100}%)`,
                             }}
                         />

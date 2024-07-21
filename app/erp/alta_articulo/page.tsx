@@ -30,12 +30,11 @@ import {
 import FichaArticulo from '@/app/ui/erp/alta_articulo/FichaArticulo';
 import PreciosArticulo from '@/app/ui/erp/alta_articulo/PreciosArticulo';
 import CheckArticulo from '@/app/ui/erp/alta_articulo/CheckArticulo';
+import Componentes from '@/app/ui/erp/alta_articulo/Componentes';
 
 const tabs = [
-  { name: 'My Account', id: '0', current: true },
+  { name: 'Ficha', id: '0', current: true },
   { name: 'Componentes', id: '1', current: false },
-  { name: 'Team Members', id: '2', current: false },
-  { name: 'Billing', id: '3', current: false },
 ];
 
 
@@ -120,7 +119,15 @@ export default function alta_articulo() {
                 clearErrors={clearErrors}
               />
             </> :
-            tab == 1 ? 'componentes' :
+            tab == 1 ?
+              <>
+                <Componentes
+                  register={register}
+                  setValue={setValue}
+                  errors={errors}
+                  clearErrors={clearErrors}
+                />
+              </> :
               'Posición no definida.'}
           <div className="px-4 py-3 bg-gray-50 text-right sm:px-6">
             <button
