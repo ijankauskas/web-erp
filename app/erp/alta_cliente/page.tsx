@@ -3,14 +3,15 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-
-
+import { articuloSchema } from '../../validaciones/articulo';
 import { PhotoIcon } from '@heroicons/react/24/outline';
 import InputCommon from '@/app/ui/inputCommon';
-import { proveedorSchema } from '@/app/validaciones/proveedor';
-import Tabs from '@/app/ui/erp/alta_proveedor/tabs';
-import Principal from '@/app/ui/erp/alta_proveedor/principal';
-import DatosContacto from '@/app/ui/erp/alta_proveedor/datosContacto';
+import { clienteSchema } from '@/app/validaciones/cliente';
+import Tabs from '@/app/ui/erp/alta_cliente/tabs';
+import Principal from '@/app/ui/erp/alta_cliente/principal';
+import DatosContacto from '@/app/ui/erp/alta_cliente/datosContacto';
+import Tabla from '@/app/ui/erp/alta_cliente/Tabla';
+
 
 type Inputs = {
     codigo: string,
@@ -39,7 +40,7 @@ const tabs = [
 ];
 
 
-export default function alta_proveedor() {
+export default function alta_cliente() {
     const [cargando, setCargando] = useState(false)
     const [tab, setTab] = useState(0)
 
@@ -53,7 +54,7 @@ export default function alta_proveedor() {
             agru_2: '',
             agru_3: '',
         },
-        resolver: zodResolver(proveedorSchema)
+        resolver: zodResolver(clienteSchema)
     })
 
     const seleccionarTab = (tab: any) => {
@@ -61,6 +62,7 @@ export default function alta_proveedor() {
     }
 
     const enviarForm = async (data: any) => {
+        console.log('aca');
 
         setCargando(true);
         const response = await fetch('http://localhost:8080/articulos', {
@@ -92,7 +94,7 @@ export default function alta_proveedor() {
                             <DatosContacto register={register} setValue={setValue} errors={errors} clearErrors={clearErrors}/>
 
                         </> :
-                        tab === 1 ? <DatosContacto register={register} setValue={setValue} errors={errors} clearErrors={clearErrors}/> :
+                        tab === 1 ? <Tabla /> :
                             'Posición no definida.'}
                     <div className="px-4 py-3 bg-white text-right sm:px-6">
                         <button
