@@ -36,7 +36,7 @@ const navigation = [
             },
             {
                 name: 'Clientes',
-                href: '/alta_articulo',
+                href: '/erp/alta_cliente',
                 current: false,
                 icon: UserPlusIcon,
             },

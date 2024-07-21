@@ -25,7 +25,7 @@ export default function alta_articulo() {
                     type="button"
                     className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                 >
-                    Add Item
+                    Agregar Item
                 </button>
             </div>
             <div className="overflow-x-auto sm:-mx-6 lg:-mx-8">
@@ -41,7 +41,7 @@ export default function alta_articulo() {
                                         Descripcion
                                     </th>
                                     <th scope="col" className="w-[50px] px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Quantity
+                                        Cantidad
                                     </th>
                                     <th scope="col" className="relative px-6 py-3">
                                         <span className="sr-only">Edit</span>
@@ -71,7 +71,7 @@ export default function alta_articulo() {
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                         <a href="#" className="text-indigo-600 hover:text-indigo-900">
-                                            Edit
+                                            Editar
                                         </a>
                                     </td>
                                 </tr>

@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import ComboBoxSelect from '@/app/ui/ComboBoxSelect';
-import { proveedorSchema } from '@/app/validaciones/proveedor';
+import { clienteSchema } from '@/app/validaciones/cliente';
 import InputCommon from '../../inputCommon';
 
 
@@ -62,7 +62,7 @@ const Principal = ({ register, setValue, clearErrors, errors }: any) => {
                         <div className="grid grid-cols-6 gap-6 gap-y-4">
                             <div className="col-span-6 sm:col-span-2">
                                 <InputCommon
-                                    titulo={"Numero de proveedor"}
+                                    titulo={"Numero de cliente"}
                                     tipo={"text"}
                                     error={errors.codigo?.message}
                                     id="codigo"
