@@ -35,7 +35,5 @@ export const articuloSchema = z.object({
             message: "El precio de oferta debe ser un número.",
         })
         .transform(val => parseFloat(val)),
-    oferta: z.string().optional(),
-    destacado: z.string().optional(),
     activo: z.any().optional(),
 })

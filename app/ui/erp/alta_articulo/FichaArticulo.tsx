@@ -8,7 +8,7 @@ function classNames(...classes: any[]) {
     return classes.filter(Boolean).join(' ');
 }
 
-const FichaArticulo = ({ register, setValue, clearErrors, errors }: any) => {
+const FichaArticulo = ({ register, setValue, clearErrors, errors, consultarArticulo }: any) => {
 
     return (
         <div className="md:grid md:grid-cols-3 md:gap-6 pt-4 border-b">
@@ -30,7 +30,7 @@ const FichaArticulo = ({ register, setValue, clearErrors, errors }: any) => {
                                     tipo={"text"}
                                     error={errors.codigo?.message}
                                     id="codigo"
-                                    useForm={register("codigo")}
+                                    useForm={register("codigo", { onBlur: consultarArticulo })}
                                 />
                             </div>
                             <div className="col-span-6">

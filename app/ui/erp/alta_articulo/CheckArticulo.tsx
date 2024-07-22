@@ -4,9 +4,9 @@ import InputCommon from '../../inputCommon'
 import ToggleSwitch from '../../ToggleSwitch';
 
 
-const CheckArticulo = ({ register, setValue, clearErrors, errors }: any) => {
+const CheckArticulo = ({ register, setValue, clearErrors, errors, getValues }: any) => {
 
-    const [isChecked, setIsChecked] = useState(true);
+    const [isChecked, setIsChecked] = useState(getValues('activo'));
 
     const handleToggle = (ev: any) => {
         setIsChecked(!isChecked);
