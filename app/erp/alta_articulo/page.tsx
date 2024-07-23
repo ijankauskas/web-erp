@@ -1,5 +1,5 @@
 "use client"
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { articuloSchema } from '../../validaciones/articulo';
@@ -24,6 +24,8 @@ import Componentes from '@/app/ui/erp/alta_articulo/Componentes';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { DbConsultarArticulo } from '@/app/lib/data';
 import Alerta from '@/app/ui/erp/alerta';
+import ButtonCommon from '@/app/ui/erp/ButtonCommon';
+import LoadingBar from 'react-top-loading-bar';
 
 const tabs = [
   { name: 'Ficha', id: '0', current: true },
@@ -32,7 +34,8 @@ const tabs = [
 
 
 export default function alta_articulo() {
-  const [cargando, setCargando] = useState(false)
+  const [cargando, setCargando] = useState(false);
+  const ref = useRef(null);
   const [error, setError] = useState({
     mostrar: false,
     mensaje: '',
@@ -91,26 +94,33 @@ export default function alta_articulo() {
       alert("Se creo el articulo")
       setCargando(false);
     } else {
-      const errorMessage = await response.json(); 
-      alert(errorMessage.message); 
+      const errorMessage = await response.json();
+      alert(errorMessage.message);
       setCargando(false);
     }
   };
 
   const consultarArticulo = async () => {
+    const params = new URLSearchParams(searchParams);
+    let codigo: string | null = getValues('codigo');
+    if (codigo) {
+      params.set('codigo', codigo);
+      replace(`${pathname}?${params.toString()}`);
+      clearErrors()
+    } else {
+      params.delete('codigo');
+      replace(`${pathname}?${params.toString()}`);
+      clearErrors();
+      limpiar();
+
+      return
+    }
+
     if (cargando) {
       return
     }
     setCargando(true);
-
-    const params = new URLSearchParams(searchParams);
-    let codigo:string | null = getValues('codigo');
-    if (codigo) {
-      params.set('codigo', codigo);
-    } else {
-      params.delete('codigo');
-    }
-    replace(`${pathname}?${params.toString()}`);
+    ref.current.continuousStart();
 
     const respuesta = await DbConsultarArticulo(codigo);
     const data = await respuesta.json();
@@ -128,19 +138,11 @@ export default function alta_articulo() {
       data.activo == 'S' ? setValue('activo', true) : setValue('activo', false)
 
       setCargando(false);
+      ref.current.complete();
     } else {
-      setValue('codigo', '');
-      setValue('descripcion', '');
-      setValue('descripcion_adicional', '');
-      setValue('costo', '');
-      setValue('stock', '');
-      setValue('precio_vta', '');
-      setValue('precio_oferta', '');
-      setValue('oferta', '');
-      setValue('activo', true);
-
+      limpiar()
       setCargando(false);
-
+      ref.current.complete();
       setError({
         mostrar: true,
         mensaje: data.message,
@@ -148,11 +150,24 @@ export default function alta_articulo() {
         icono: 'error-icon',
       });
     }
+    
+  }
+
+  const limpiar = () => {
+    setValue('codigo', '');
+    setValue('descripcion', '');
+    setValue('descripcion_adicional', '');
+    setValue('costo', '');
+    setValue('stock', '');
+    setValue('precio_vta', '');
+    setValue('precio_oferta', '');
+    setValue('oferta', '');
+    setValue('activo', true);
   }
 
   useEffect(() => {
     const params = new URLSearchParams(searchParams);
-    let codigo:string | null = params.get('codigo');
+    let codigo: string | null = params.get('codigo');
     if (codigo != '' && codigo != null) {
       setValue('codigo', codigo);
       consultarArticulo();
@@ -161,6 +176,9 @@ export default function alta_articulo() {
 
   return (
     <div className="max-w-7xl mx-auto py-0 px-4 sm:px-6 lg:px-8 bg-white">
+      <div>
+        <LoadingBar color='rgb(99 102 241)' ref={ref} />
+      </div>
       <TabsArticulo tabs={tabs} seleccionarTab={seleccionarTab} tab={tab} />
       <div className='relative '>
         <form action="#" method="POST" onSubmit={handleSubmit(data => enviarForm(data))}>
@@ -198,12 +216,10 @@ export default function alta_articulo() {
               </> :
               'Posición no definida.'}
           <div className="px-4 py-3 bg-gray-50 text-right sm:px-6">
-            <button
-              type="submit"
-              className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-            >
-              Guardar
-            </button>
+            <ButtonCommon
+              texto={"Guardar"}
+              type={"submit"}
+            />
           </div>
         </form>
         <Alerta
