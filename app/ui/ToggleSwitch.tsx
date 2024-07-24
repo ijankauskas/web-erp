@@ -10,6 +10,8 @@ function classNames(...classes: any) {
 
 const ToggleSwitch = ({ label, description, defaultChecked = false, handleToggle, isChecked, error }: any) => {
 
+
+
     return (
         <div className="grid grid-cols-6 space-x-4 flex items-center">
             <div className="col-span-5">

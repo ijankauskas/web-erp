@@ -22,20 +22,41 @@ import PreciosArticulo from '@/app/ui/erp/alta_articulo/PreciosArticulo';
 import CheckArticulo from '@/app/ui/erp/alta_articulo/CheckArticulo';
 import Componentes from '@/app/ui/erp/alta_articulo/Componentes';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { DbConsultarArticulo } from '@/app/lib/data';
+import { DbConsultarArticulo, DbGrabartarArticulo } from '@/app/lib/data';
 import Alerta from '@/app/ui/erp/alerta';
 import ButtonCommon from '@/app/ui/erp/ButtonCommon';
-import LoadingBar from 'react-top-loading-bar';
+import LoadingBar, { LoadingBarRef } from 'react-top-loading-bar';
+import DismissibleAlert from '@/app/ui/DismissAlerta';
 
 const tabs = [
   { name: 'Ficha', id: '0', current: true },
   { name: 'Componentes', id: '1', current: false },
 ];
 
-
 export default function alta_articulo() {
   const [cargando, setCargando] = useState(false);
-  const ref = useRef(null);
+  const ref = useRef<LoadingBarRef | null>(null);
+
+  useEffect(() => {
+    if (ref.current) {
+      ref.current.complete();
+    }
+  }, []);
+
+  const [alerta, setAlerta] = useState({
+    message: "",
+    type: "",
+    alertVisible: false
+  });
+
+  const closeAlertaDismiss = () => {
+    setAlerta({
+      message: '',
+      type: "",
+      alertVisible: false
+    });
+  };
+
   const [error, setError] = useState({
     mostrar: false,
     mensaje: '',
@@ -49,7 +70,7 @@ export default function alta_articulo() {
 
   const [tab, setTab] = useState(0)
 
-  const { register, handleSubmit, formState: { errors }, setValue, clearErrors, getValues } = useForm<Inputs>({
+  const { register, handleSubmit, formState: { errors }, setValue, clearErrors, getValues, watch } = useForm<Inputs>({
     defaultValues: {
       codigo: '',
       descripcion: '',
@@ -62,6 +83,8 @@ export default function alta_articulo() {
     },
     resolver: zodResolver(articuloSchema)
   })
+  const [articulosCompo, setArticulosCompo] = useState<{ codigo: string, descripcion: string, unidad: string, cantidad: number }[]>([]);
+
 
   const cerrarAlerta = () => {
     setError({
@@ -73,30 +96,47 @@ export default function alta_articulo() {
   }
 
   const seleccionarTab = (tab: any) => {
+    let codigo: string | null = getValues('codigo');
+    if (!codigo) {
+      setError({
+        mostrar: true,
+        mensaje: 'Primero selecciona un articulo.',
+        titulo: 'Oops...',
+        icono: 'error-icon',
+      });
+      return
+    }
     setTab(tab)
   }
 
   const enviarForm = async (data: any) => {
+
     if (cargando) {
       return
     }
+    data.activo = data.activo || data.activo == 'S' ? 'S' : 'N';
     setCargando(true);
-    data.activo = data.activo ? 'S' : 'N';
-    const response = await fetch('http://localhost:8080/articulos', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
-    });
+    ref.current?.continuousStart();
+
+    const response = await DbGrabartarArticulo(data)
 
     if (response.ok) {
-      alert("Se creo el articulo")
+      ref.current?.complete();
       setCargando(false);
+      setAlerta({
+        message: 'Se guardo correctamente el articulo',
+        type: "success",
+        alertVisible: true
+      });
     } else {
       const errorMessage = await response.json();
-      alert(errorMessage.message);
+      ref.current?.complete();
       setCargando(false);
+      setAlerta({
+        message: errorMessage.message,
+        type: "error",
+        alertVisible: true
+      });
     }
   };
 
@@ -120,7 +160,7 @@ export default function alta_articulo() {
       return
     }
     setCargando(true);
-    ref.current.continuousStart();
+    ref.current?.continuousStart();
 
     const respuesta = await DbConsultarArticulo(codigo);
     const data = await respuesta.json();
@@ -135,14 +175,15 @@ export default function alta_articulo() {
       setValue('precio_vta', data.precio_vta);
       setValue('precio_oferta', data.precio_oferta);
       setValue('oferta', data.oferta);
-      data.activo == 'S' ? setValue('activo', true) : setValue('activo', false)
+
+      data.activo == 'S' ? setValue('activo', true) : setValue('activo', false);
 
       setCargando(false);
-      ref.current.complete();
+      ref.current?.complete();
     } else {
       limpiar()
       setCargando(false);
-      ref.current.complete();
+      ref.current?.complete();
       setError({
         mostrar: true,
         mensaje: data.message,
@@ -150,11 +191,11 @@ export default function alta_articulo() {
         icono: 'error-icon',
       });
     }
-    
+
   }
 
   const limpiar = () => {
-    setValue('codigo', '');
+
     setValue('descripcion', '');
     setValue('descripcion_adicional', '');
     setValue('costo', '');
@@ -173,6 +214,7 @@ export default function alta_articulo() {
       consultarArticulo();
     }
   }, []);
+
 
   return (
     <div className="max-w-7xl mx-auto py-0 px-4 sm:px-6 lg:px-8 bg-white">
@@ -203,6 +245,7 @@ export default function alta_articulo() {
                 errors={errors}
                 clearErrors={clearErrors}
                 getValues={getValues}
+                watch={watch}
               />
             </> :
             tab == 1 ?
@@ -212,6 +255,8 @@ export default function alta_articulo() {
                   setValue={setValue}
                   errors={errors}
                   clearErrors={clearErrors}
+                  articulosCompo={articulosCompo}
+                  setArticulosCompo={setArticulosCompo}
                 />
               </> :
               'Posición no definida.'}
@@ -228,6 +273,14 @@ export default function alta_articulo() {
           titulo={error.titulo}
           texto={error.mensaje}
         />
+
+        {alerta.alertVisible && (
+          <DismissibleAlert
+            message={alerta.message}
+            type={alerta.type}
+            onClose={closeAlertaDismiss}
+          />
+        )}
       </div>
     </div>
   )
