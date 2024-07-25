@@ -9,7 +9,7 @@ const CheckArticulo = ({ register, setValue, clearErrors, errors, getValues, wat
 
     useEffect(() => {
         setActivo(activoValue);
-      }, [activoValue]);
+    }, [activoValue]);
 
     const setActivoHandleToggle = (ev: any) => {
         setActivo(ev);

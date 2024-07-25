@@ -2,12 +2,10 @@ import { z } from 'zod'
 
 
 const componenteSchema = z.object({
-    codigo_compo: z.string().min(3, {
-        message: "El código del componente debe tener al menos 3 caracteres."
-    }),
-    cantidad: z.number().min(1, {
-        message: "La cantidad debe ser al menos 1."
-    }),
+    codigo: z.string().optional(),
+    descripcion: z.string().optional(),
+    unidad: z.any().optional(),
+    cantidad: z.any().optional()
 });
 
 export const articuloSchema = z.object({

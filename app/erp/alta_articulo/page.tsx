@@ -15,6 +15,12 @@ type Inputs = {
   precio_oferta: string,
   oferta: string,
   activo: any,
+  componentes: {
+    codigo: string;
+    descripcion: string;
+    unidad: any;
+    cantidad: any;
+  }[]
 }
 
 import FichaArticulo from '@/app/ui/erp/alta_articulo/FichaArticulo';
@@ -80,10 +86,15 @@ export default function alta_articulo() {
       precio_vta: '',
       precio_oferta: '',
       activo: true,
+      componentes: [{
+        codigo: '',
+        descripcion: '',
+        unidad: '',
+        cantidad: ''
+      }],
     },
     resolver: zodResolver(articuloSchema)
   })
-  const [articulosCompo, setArticulosCompo] = useState<{ codigo: string, descripcion: string, unidad: string, cantidad: number }[]>([]);
 
 
   const cerrarAlerta = () => {
@@ -110,11 +121,20 @@ export default function alta_articulo() {
   }
 
   const enviarForm = async (data: any) => {
+    // let test = [
+    //   { codigo: '123', descripcion: 'Descripcion cambio', unidad: undefined, cantidad: 3 },
+    //   { codigo: 'test', descripcion: 'testss', unidad: undefined, cantidad: 4 }]
+    // setValue('componentes', test)
 
+    console.log(getValues());
+
+    return
     if (cargando) {
       return
     }
+
     data.activo = data.activo || data.activo == 'S' ? 'S' : 'N';
+
     setCargando(true);
     ref.current?.continuousStart();
 
@@ -255,8 +275,6 @@ export default function alta_articulo() {
                   setValue={setValue}
                   errors={errors}
                   clearErrors={clearErrors}
-                  articulosCompo={articulosCompo}
-                  setArticulosCompo={setArticulosCompo}
                 />
               </> :
               'Posición no definida.'}
