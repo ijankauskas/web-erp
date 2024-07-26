@@ -85,6 +85,12 @@ const navigation = [
                 href: '/erp/compras',
                 current: false,
                 icon: ShoppingCartIcon,
+            },
+            {
+                name: 'Stock',
+                href: '/erp/stock',
+                current: false,
+                icon: ShoppingCartIcon,
             }]
     },
 ];

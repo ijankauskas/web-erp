@@ -150,7 +150,7 @@ export default function alta_articulo() {
         icono: 'error-icon',
       });
     }
-    
+
   }
 
   const limpiar = () => {
