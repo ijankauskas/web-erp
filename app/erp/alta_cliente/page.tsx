@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { articuloSchema } from '../../validaciones/articulo';
@@ -23,6 +23,9 @@ type Inputs = {
     agru_3: string,
 }
 
+import CheckCliente from '@/app/ui/erp/alta_cliente/CheckCliente';
+import LoadingBar from 'react-top-loading-bar';
+
 const people = [
     { id: '1', name: 'asdr' },
     { id: '2', name: 'Arlene Mccoy' },
@@ -42,9 +45,10 @@ const tabs = [
 
 export default function alta_cliente() {
     const [cargando, setCargando] = useState(false)
+    const ref = useRef(null);
     const [tab, setTab] = useState(0)
 
-    const { register, handleSubmit, formState: { errors }, setValue, clearErrors } = useForm<Inputs>({
+    const { register, handleSubmit, formState: { errors }, setValue, clearErrors,getValues } = useForm<Inputs>({
         defaultValues: {
             codigo: '',
             razon: '',
@@ -85,14 +89,31 @@ export default function alta_cliente() {
 
     return (
         <div className="max-w-7xl mx-auto py-0 px-4 sm:px-6 lg:px-8 bg-white">
+            <div>
+        <LoadingBar color='rgb(99 102 241)' ref={ref} />
+             </div>
             <Tabs tabs={tabs} seleccionarTab={seleccionarTab} tab={tab} />
             <div className='relative '>
                 <form action="#" method="POST" onSubmit={handleSubmit(data => enviarForm(data))}>
                     {tab === 0 ?
                         <>
-                            <Principal register={register} setValue={setValue} errors={errors} clearErrors={clearErrors} />
-                            <DatosContacto register={register} setValue={setValue} errors={errors} clearErrors={clearErrors}/>
-
+                            <Principal
+                              register={register}
+                              setValue={setValue}
+                              errors={errors} 
+                              clearErrors={clearErrors} />
+                            <DatosContacto
+                              register={register}
+                              setValue={setValue}
+                              errors={errors}
+                              clearErrors={clearErrors}/>
+                            <CheckCliente
+                             register={register}
+                             setValue={setValue}
+                             errors={errors}
+                             clearErrors={clearErrors}
+                             getValues={getValues}
+                                        />
                         </> :
                         tab === 1 ? <Tabla /> :
                             'Posición no definida.'}
