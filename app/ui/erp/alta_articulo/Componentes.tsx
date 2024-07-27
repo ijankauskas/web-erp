@@ -5,14 +5,7 @@ import InputCommon from '../../inputCommon'
 import ToggleSwitch from '../../ToggleSwitch';
 import TablaComponentes from './TablaComponentes';
 
-const Componentes = ({ register, setValue, clearErrors, errors }: any) => {
-    const [articulosCompo, setArticulosCompo] = useState<{ codigo: string, descripcion: string, unidad: string, cantidad: string }[]>([]);
-    
-    useEffect(() => {
-        console.log(articulosCompo);
-        
-        setValue('componentes', articulosCompo);
-    }, [articulosCompo]);
+const Componentes = ({ register, setValue, clearErrors, errors, articulosCompo, setArticulosCompo }: any) => {
 
     return (
         <div className="spt-4 border-b">

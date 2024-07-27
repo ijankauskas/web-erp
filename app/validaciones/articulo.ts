@@ -5,7 +5,9 @@ const componenteSchema = z.object({
     codigo: z.string().optional(),
     descripcion: z.string().optional(),
     unidad: z.any().optional(),
-    cantidad: z.any().optional()
+    cantidad: z.any().refine(val => val >= 0, {
+        message: "La cantidad del articulo componente debe ser mayor a Cero.",
+    })
 });
 
 export const articuloSchema = z.object({

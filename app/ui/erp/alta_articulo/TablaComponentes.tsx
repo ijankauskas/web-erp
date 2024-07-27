@@ -44,7 +44,7 @@ const TablaComponentes = ({ register, setValue, clearErrors, errors, articulosCo
     }
     const eliminar = (articulo: any) => {
         const nuevosArticulos = articulosCompo.filter((componente: any) => componente.codigo != articulo.codigo);
-        setArticulosCompo(nuevosArticulos); 
+        setArticulosCompo(nuevosArticulos);
         cerrarAlerta();
     }
     const cerrarAlerta = () => {
@@ -96,7 +96,7 @@ const TablaComponentes = ({ register, setValue, clearErrors, errors, articulosCo
             }];
 
             setArticulosCompo((prev: any) => [...prev, ...articulos]);
-            
+
         } else {
             setAlerta({
                 message: data.message,
@@ -132,12 +132,13 @@ const TablaComponentes = ({ register, setValue, clearErrors, errors, articulosCo
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
                         {articulosCompo?.map((articulo: any, index: number) => (
-                            <tr key={index}>
+                            <tr key={index} className={`${articulo.error ? 'bg-red-300' : ''}`}>
                                 <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                                     <InputCommon
                                         tipo={'text'}
                                         id={articulo.codigo}
                                         texto={articulo.codigo}
+                                        useForm={register(articulo.codigo + '-' + index)}
                                         onChange={manejarCambioNuevoArticulo}
                                     />
                                 </td>
@@ -151,7 +152,9 @@ const TablaComponentes = ({ register, setValue, clearErrors, errors, articulosCo
                                     <InputCommon
                                         tipo={'number'}
                                         texto={articulo.cantidad}
-                                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => modificarCambioNuevoArticulo(e, articulo)}
+                                        id={articulo.cantidad + '-' + index}
+                                        useForm={register(articulo.cantidad + '-' + index, { onChange: (e: React.ChangeEvent<HTMLInputElement>) => modificarCambioNuevoArticulo(e, articulo) })}
+                                    // onChange={(e: React.ChangeEvent<HTMLInputElement>) => modificarCambioNuevoArticulo(e, articulo)}
                                     />
                                 </td>
                                 <td className="w-12 px-6 py-4 whitespace-nowrap text-right text-sm font-medium">

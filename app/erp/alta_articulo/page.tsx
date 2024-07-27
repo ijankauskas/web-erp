@@ -96,6 +96,14 @@ export default function alta_articulo() {
     resolver: zodResolver(articuloSchema)
   })
 
+  const [articulosCompo, setArticulosCompo] = useState<{
+    error: boolean; codigo: string, descripcion: string, unidad: string, cantidad: string
+  }[]>([]);
+
+  useEffect(() => {
+    setValue('componentes', articulosCompo);
+  }, [articulosCompo]);
+
 
   const cerrarAlerta = () => {
     setError({
@@ -121,14 +129,6 @@ export default function alta_articulo() {
   }
 
   const enviarForm = async (data: any) => {
-    // let test = [
-    //   { codigo: '123', descripcion: 'Descripcion cambio', unidad: undefined, cantidad: 3 },
-    //   { codigo: 'test', descripcion: 'testss', unidad: undefined, cantidad: 4 }]
-    // setValue('componentes', test)
-
-    console.log(getValues());
-
-    return
     if (cargando) {
       return
     }
@@ -159,6 +159,37 @@ export default function alta_articulo() {
       });
     }
   };
+
+  useEffect(() => {
+
+    if (!errors || !errors.componentes || !Array.isArray(errors.componentes)) {
+      return; // No hay errores que mostrar
+    }
+    const errorIndices = new Set(errors.componentes.map((e, index) => index));
+
+    setArticulosCompo((prevObjetos) =>
+      prevObjetos.map((obj, index) => ({
+        ...obj,
+        error: errorIndices.has(index),
+      }))
+    );
+
+    let mensaje: string = '';
+
+    if (errors.componentes.length > 0) {
+      errors.componentes.map((error, index) => {
+        mensaje += error.cantidad.message + '\n'
+      });
+    }
+    setError({
+      mostrar: true,
+      mensaje: mensaje,
+      titulo: 'Oops...',
+      icono: 'error-icon',
+    });
+
+    clearErrors('componentes');
+  }, [errors]);
 
   const consultarArticulo = async () => {
     const params = new URLSearchParams(searchParams);
@@ -275,6 +306,8 @@ export default function alta_articulo() {
                   setValue={setValue}
                   errors={errors}
                   clearErrors={clearErrors}
+                  articulosCompo={articulosCompo}
+                  setArticulosCompo={setArticulosCompo}
                 />
               </> :
               'Posición no definida.'}
