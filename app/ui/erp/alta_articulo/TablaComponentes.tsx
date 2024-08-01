@@ -4,8 +4,8 @@ import Alerta from '../alerta';
 import { DbConsultarArticulo } from '@/app/lib/data';
 import DismissibleAlert from '../../DismissAlerta';
 
-const TablaComponentes = ({ register, setValue, clearErrors, errors, articulosCompo, setArticulosCompo }: any) => {
-    const [nuevoArticuloCompo, setNuevoArticuloCompo] = useState({ codigo: '', descripcion: '', unidad: '', cantidad: 0 });
+const TablaComponentes = ({ register, setValue, clearErrors, errors, articulosCompo, setArticulosCompo,getValues }: any) => {
+    const [nuevoArticuloCompo, setNuevoArticuloCompo] = useState({ cod_articulo:'',cod_articulo_compo: '', descripcion: '', unidad: '', cantidad: 0 });
 
     const [error, setError] = useState({
         mostrar: false,
@@ -34,7 +34,7 @@ const TablaComponentes = ({ register, setValue, clearErrors, errors, articulosCo
     const borrarArticulo = (articulo: any) => {
         setError({
             mostrar: true,
-            mensaje: 'Se eliminara como articulo componente el articulo: ' + articulo.codigo,
+            mensaje: 'Se eliminara como articulo componente el articulo: ' + articulo.cod_articulo_compo,
             titulo: 'Estas seguro?',
             icono: 'error-icon',
             botonExtra: true,
@@ -43,7 +43,7 @@ const TablaComponentes = ({ register, setValue, clearErrors, errors, articulosCo
         });
     }
     const eliminar = (articulo: any) => {
-        const nuevosArticulos = articulosCompo.filter((componente: any) => componente.codigo != articulo.codigo);
+        const nuevosArticulos = articulosCompo.filter((componente: any) => componente.cod_articulo_compo != articulo.cod_articulo_compo);
         setArticulosCompo(nuevosArticulos);
         cerrarAlerta();
     }
@@ -67,29 +67,23 @@ const TablaComponentes = ({ register, setValue, clearErrors, errors, articulosCo
         const { value } = e.target;
         setArticulosCompo((prev: any) =>
             prev.map((item: any) =>
-                item.codigo === articulo.codigo ? { ...item, cantidad: value } : item
+                item.cod_articulo_compo === articulo.cod_articulo_compo ? { ...item, cantidad: parseFloat(value) } : item
             )
         );
     }
 
-    const manejarAgregarArticulo = () => {
-        if (nuevoArticuloCompo.codigo) {
-            setArticulosCompo((prev: any) => [...prev, nuevoArticuloCompo]);
-            setNuevoArticuloCompo({ codigo: '', descripcion: '', unidad: '', cantidad: 0 });
-        }
-    }
-
     const consultarArticulo = async () => {
-        if (nuevoArticuloCompo.codigo == '') return
+        if (nuevoArticuloCompo.cod_articulo_compo == '') return
 
-        const respuesta = await DbConsultarArticulo(nuevoArticuloCompo.codigo);
+        const respuesta = await DbConsultarArticulo(nuevoArticuloCompo.cod_articulo_compo);
         let cantidad = nuevoArticuloCompo.cantidad
         const data = await respuesta.json();
 
         if (respuesta.ok) {
             // const articulos = Array.isArray(data) ? data : [data];
             const articulos = [{
-                codigo: data.codigo,
+                cod_articulo: getValues('codigo'),
+                cod_articulo_compo: data.codigo,
                 descripcion: data.descripcion,
                 unidad: data.unidad,
                 cantidad: cantidad || 0  // Asegurarse de que cantidad esté presente y tenga un valor predeterminado
@@ -104,7 +98,7 @@ const TablaComponentes = ({ register, setValue, clearErrors, errors, articulosCo
                 alertVisible: true
             });
         }
-        setNuevoArticuloCompo({ codigo: '', descripcion: '', unidad: '', cantidad: cantidad });
+        setNuevoArticuloCompo({cod_articulo:'', cod_articulo_compo: '', descripcion: '', unidad: '', cantidad: cantidad });
     }
 
     return (
@@ -136,9 +130,9 @@ const TablaComponentes = ({ register, setValue, clearErrors, errors, articulosCo
                                 <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                                     <InputCommon
                                         tipo={'text'}
-                                        id={articulo.codigo}
-                                        texto={articulo.codigo}
-                                        useForm={register(articulo.codigo + '-' + index)}
+                                        id={articulo.cod_articulo_compo}
+                                        texto={articulo.cod_articulo_compo}
+                                        useForm={register(articulo.cod_articulo_compo + '-' + index)}
                                         onChange={manejarCambioNuevoArticulo}
                                     />
                                 </td>
@@ -172,8 +166,8 @@ const TablaComponentes = ({ register, setValue, clearErrors, errors, articulosCo
                             <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                                 <InputCommon
                                     tipo={'text'}
-                                    id="codigo"
-                                    texto={nuevoArticuloCompo.codigo}
+                                    id="cod_articulo_compo"
+                                    texto={nuevoArticuloCompo.cod_articulo_compo}
                                     onChange={manejarCambioNuevoArticulo}
                                     funcionOnblur={consultarArticulo}
                                 />

@@ -16,10 +16,11 @@ type Inputs = {
   oferta: string,
   activo: any,
   componentes: {
-    codigo: string;
+    cod_articulo: string;
+    cod_articulo_compo: string;
     descripcion: string;
     unidad: any;
-    cantidad: any;
+    cantidad: number;
   }[]
 }
 
@@ -87,17 +88,18 @@ export default function alta_articulo() {
       precio_oferta: '',
       activo: true,
       componentes: [{
-        codigo: '',
+        cod_articulo: '',
+        cod_articulo_compo: '',
         descripcion: '',
         unidad: '',
-        cantidad: ''
+        cantidad: 0
       }],
     },
     resolver: zodResolver(articuloSchema)
   })
 
   const [articulosCompo, setArticulosCompo] = useState<{
-    error: boolean; codigo: string, descripcion: string, unidad: string, cantidad: string
+    error: boolean; cod_articulo: string, cod_articulo_compo: string, descripcion: string, unidad: string, cantidad: number
   }[]>([]);
 
   useEffect(() => {
@@ -161,7 +163,6 @@ export default function alta_articulo() {
   };
 
   useEffect(() => {
-
     if (!errors || !errors.componentes || !Array.isArray(errors.componentes)) {
       return; // No hay errores que mostrar
     }
@@ -268,7 +269,7 @@ export default function alta_articulo() {
 
 
   return (
-    <div className="max-w-7xl mx-auto py-0 px-4 sm:px-6 lg:px-8 bg-white">
+    <div className=" mx-auto py-0 px-4 sm:px-6 lg:px-8 bg-white">
       <div>
         <LoadingBar color='rgb(99 102 241)' ref={ref} />
       </div>
@@ -308,6 +309,7 @@ export default function alta_articulo() {
                   clearErrors={clearErrors}
                   articulosCompo={articulosCompo}
                   setArticulosCompo={setArticulosCompo}
+                  getValues={getValues}
                 />
               </> :
               'Posición no definida.'}

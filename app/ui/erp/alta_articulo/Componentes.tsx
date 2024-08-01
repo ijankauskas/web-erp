@@ -5,7 +5,7 @@ import InputCommon from '../../inputCommon'
 import ToggleSwitch from '../../ToggleSwitch';
 import TablaComponentes from './TablaComponentes';
 
-const Componentes = ({ register, setValue, clearErrors, errors, articulosCompo, setArticulosCompo }: any) => {
+const Componentes = ({ register, setValue, clearErrors, errors, articulosCompo, setArticulosCompo,getValues }: any) => {
 
     return (
         <div className="spt-4 border-b">
@@ -15,6 +15,7 @@ const Componentes = ({ register, setValue, clearErrors, errors, articulosCompo, 
                     setValue={setValue}
                     articulosCompo={articulosCompo}
                     setArticulosCompo={setArticulosCompo}
+                    getValues={getValues}
                 />
             </div>
         </div>

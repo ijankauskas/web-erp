@@ -2,12 +2,12 @@ import { z } from 'zod'
 
 
 const componenteSchema = z.object({
-    codigo: z.string().optional(),
-    descripcion: z.string().optional(),
-    unidad: z.any().optional(),
-    cantidad: z.any().refine(val => val >= 0, {
-        message: "La cantidad del articulo componente debe ser mayor a Cero.",
-    })
+    cod_articulo: z.string().optional(),
+    cod_articulo_compo: z.string().optional(),
+    cantidad: z.number()
+        .refine(val => !isNaN(Number(val)), {
+            message: "El precio de oferta debe ser un número.",
+        })
 });
 
 export const articuloSchema = z.object({
