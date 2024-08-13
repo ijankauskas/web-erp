@@ -69,7 +69,7 @@ export default function alta_cliente() {
         console.log('aca');
 
         setCargando(true);
-        const response = await fetch('http://localhost:8080/articulos', {
+        const response = await fetch('http://localhost:8080/clientes', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

@@ -17,7 +17,7 @@ export async function DbConsultarArticulo(cod_articulo:string | null) {
 
 export async function DbConsultarCliente(cliente:string | null) {
     try {
-        const response = await fetch('http://localhost:8080/articulos?codigo='+cliente, {
+        const response = await fetch('http://localhost:8080/clientes?codigo='+cliente, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
