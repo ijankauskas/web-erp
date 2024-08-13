@@ -1,18 +1,20 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
-import InputCommon from '../../inputCommon'
 import ToggleSwitch from '../../ToggleSwitch';
 
 
-const CheckArticulo = ({ register, setValue, clearErrors, errors, getValues }: any) => {
+const CheckArticulo = ({ register, setValue, clearErrors, errors, getValues, watch }: any) => {
+    const [activo, setActivo] = useState(getValues('activo'));
+    const activoValue = watch('activo');
 
-    const [isChecked, setIsChecked] = useState(getValues('activo'));
+    useEffect(() => {
+        setActivo(activoValue);
+    }, [activoValue]);
 
-    const handleToggle = (ev: any) => {
-        setIsChecked(!isChecked);
-        setValue('activo', isChecked);
+    const setActivoHandleToggle = (ev: any) => {
+        setActivo(ev);
+        setValue('activo', ev);
     };
-
 
     return (
         <div className="md:grid md:grid-cols-3 md:gap-6 pt-4 border-b">
@@ -30,8 +32,8 @@ const CheckArticulo = ({ register, setValue, clearErrors, errors, getValues }: a
                         <ToggleSwitch
                             label={"Activo"}
                             description={"Si desactivas el articulo no podras verlo."}
-                            handleToggle={handleToggle}
-                            isChecked={isChecked}
+                            handleToggle={setActivoHandleToggle}
+                            isChecked={activo}
                             error={errors.activo?.message}
                             id={"activo"}
                         />

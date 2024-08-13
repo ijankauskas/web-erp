@@ -1,5 +1,15 @@
 import { z } from 'zod'
 
+
+const componenteSchema = z.object({
+    cod_articulo: z.string().optional(),
+    cod_articulo_compo: z.string().optional(),
+    cantidad: z.number()
+        .refine(val => !isNaN(Number(val)), {
+            message: "El precio de oferta debe ser un número.",
+        })
+});
+
 export const articuloSchema = z.object({
     codigo: z.string().min(3, {
         message: "El codigo debe tener al menos 3 caracteres."
@@ -36,4 +46,5 @@ export const articuloSchema = z.object({
         })
         .transform(val => parseFloat(val)),
     activo: z.any().optional(),
+    componentes: z.array(componenteSchema).optional(),
 })

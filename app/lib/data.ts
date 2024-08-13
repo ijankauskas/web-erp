@@ -1,6 +1,6 @@
-export async function DbConsultarArticulo(cod_articulo:string | null) {
+export async function DbConsultarArticulo(cod_articulo: string | null) {
     try {
-        const response = await fetch('http://localhost:8080/articulos?codigo='+cod_articulo, {
+        const response = await fetch('http://localhost:8080/articulos?codigo=' + cod_articulo, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -14,14 +14,14 @@ export async function DbConsultarArticulo(cod_articulo:string | null) {
     }
 }
 
-
-export async function DbConsultarCliente(cliente:string | null) {
+export async function DbGrabartarArticulo(data: string | null) {
     try {
-        const response = await fetch('http://localhost:8080/clientes?codigo='+cliente, {
-            method: 'GET',
+        const response = await fetch('http://localhost:8080/articulos', {
+            method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-            }
+            },
+            body: JSON.stringify(data),
         });
 
         return response;
@@ -30,4 +30,3 @@ export async function DbConsultarCliente(cliente:string | null) {
         throw new Error('Failed to fetch card data.');
     }
 }
-

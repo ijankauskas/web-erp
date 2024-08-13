@@ -48,7 +48,7 @@ const FichaArticulo = ({ register, setValue, clearErrors, errors, consultarArtic
                                     titulo={"Descripcion Adicional"}
                                     tipo={"text"}
                                     rows={3}
-                                    error={errors.codigo?.descripcion_adicional}
+                                    error={errors.errors?.errors}
                                     id="descripcion_adicional"
                                     useForm={register("descripcion_adicional")}
                                 />

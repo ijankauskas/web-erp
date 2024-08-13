@@ -26,7 +26,6 @@ export default function Cabecera({ register, setValue, clearErrors, errors, most
     const consultarProveedores = (proveedor:any) => {
         setNuevo( proveedor.target.value);
         setValue('codProveedor', proveedor.target.value);
-
     }
 
     return (
