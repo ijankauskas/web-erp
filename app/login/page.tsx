@@ -1,0 +1,137 @@
+import React from 'react';
+
+const SplitScreen = () => {
+  return (
+    <div className="flex h-screen">
+      {/* Left side */}
+      <div className="flex w-full lg:w-1/2 flex-col justify-center px-8 py-12 bg-white sm:px-12 lg:flex-none lg:px-24 lg:py-32">
+        <div className="mx-auto w-full max-w-lg lg:w-[28rem]">
+          <div>
+            <img className="h-11" src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600" alt="Logo" />
+            <h2 className="mt-16 text-2xl font-bold leading-9 tracking-tight text-gray-900">Sign in to your account</h2>
+          </div>
+          <div className="mt-10">
+            <form className="space-y-7">
+              <div>
+                <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900">
+                  Email address
+                </label>
+                <div className="mt-2">
+                  <input
+                    id="email"
+                    name="email"
+                    type="email"
+                    autoComplete="email"
+                    required
+                    className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label htmlFor="password" className="block text-sm font-medium leading-6 text-gray-900">
+                  Password
+                </label>
+                <div className="mt-2">
+                  <input
+                    id="password"
+                    name="password"
+                    type="password"
+                    autoComplete="current-password"
+                    required
+                    className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  />
+                </div>
+              </div>
+
+              <div className="flex items-center justify-between">
+                <div className="flex items-center">
+                  <input
+                    id="remember-me"
+                    name="remember-me"
+                    type="checkbox"
+                    className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600"
+                  />
+                  <label htmlFor="remember-me" className="ml-3 block text-sm leading-6 text-gray-900">
+                    Remember me
+                  </label>
+                </div>
+
+                <div className="text-sm leading-6">
+                  <a href="#" className="font-semibold text-indigo-600 hover:text-indigo-500">
+                    Forgot password?
+                  </a>
+                </div>
+              </div>
+
+              <div>
+                <button
+                  type="submit"
+                  className="flex w-full justify-center rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                >
+                  Sign in
+                </button>
+              </div>
+            </form>
+            <div className="mt-8">
+              <div className="relative">
+                <div className="absolute inset-0 flex items-center">
+                  <div className="w-full border-t border-gray-300"></div>
+                </div>
+                <div className="relative flex justify-center text-sm">
+                  <span className="bg-white px-2 text-gray-500">Or continue with</span>
+                </div>
+              </div>
+              <div className="mt-6">
+                <button
+                  type="button"
+                  className="flex w-full items-center justify-center rounded-md border border-gray-300 bg-white px-3.5 py-2.5 text-sm font-semibold leading-6 text-gray-900 shadow-sm hover:bg-gray-50"
+                >
+                  <svg
+                    className="h-5 w-5 mr-2"
+                    aria-hidden="true"
+                    focusable="false"
+                    data-prefix="fab"
+                    data-icon="google"
+                    role="img"
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 488 512"
+                  >
+                    <path
+                      fill="#4285F4"
+                      d="M488 261.8c0-15.5-1.3-30.4-3.8-45H250v85h134.2c-5.8 29.4-22.9 54.3-47.9 71v59h77.3c45.2-41.6 71.4-103 71.4-175z"
+                    />
+                    <path
+                      fill="#34A853"
+                      d="M250 500c64.8 0 119.1-21.5 158.8-58.1l-77.3-59c-21.7 14.6-49.5 23.3-81.5 23.3-62.8 0-116.1-42.3-135.3-99.1H29v62.6C68.8 451.8 154.3 500 250 500z"
+                    />
+                    <path
+                      fill="#FBBC05"
+                      d="M114.7 302.1c-7.7-23.1-12.1-47.7-12.1-72.1s4.4-49 12.1-72.1V95.3H29C10.6 132.4 0 171.9 0 211.8s10.6 79.5 29 116.6l85.7-66.3z"
+                    />
+                    <path
+                      fill="#EA4335"
+                      d="M250 100c35.3 0 66.9 12.2 91.8 36.2l68.9-68.9C358.8 25.6 305.8 0 250 0 154.3 0 68.8 48.2 29 123.4l85.7 66.3C133.9 142.3 187.2 100 250 100z"
+                    />
+                  </svg>
+                  Sign in with Google
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Right side */}
+      <div className="hidden w-1/2 lg:flex items-center justify-center bg-indigo-700">
+        <img
+          src="https://images.unsplash.com/photo-1496917756835-20cb06e75b4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1908&q=80"
+          alt="Background"
+          className="h-full w-full object-cover"
+        />
+      </div>
+    </div>
+  );
+};
+
+export default SplitScreen;

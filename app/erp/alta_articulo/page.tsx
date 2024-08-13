@@ -229,7 +229,7 @@ export default function alta_articulo() {
       setValue('oferta', data.oferta);
 
       data.activo == 'S' ? setValue('activo', true) : setValue('activo', false);
-
+      setArticulosCompo(data.componentes)
       setCargando(false);
       ref.current?.complete();
     } else {
@@ -256,6 +256,7 @@ export default function alta_articulo() {
     setValue('precio_oferta', '');
     setValue('oferta', '');
     setValue('activo', true);
+    setArticulosCompo([]);
   }
 
   useEffect(() => {
