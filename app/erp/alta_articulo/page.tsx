@@ -4,6 +4,16 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { articuloSchema } from '../../validaciones/articulo';
 import TabsArticulo from '@/app/ui/erp/alta_articulo/TabsArticulo';
+import FichaArticulo from '@/app/ui/erp/alta_articulo/FichaArticulo';
+import PreciosArticulo from '@/app/ui/erp/alta_articulo/PreciosArticulo';
+import CheckArticulo from '@/app/ui/erp/alta_articulo/CheckArticulo';
+import Componentes from '@/app/ui/erp/alta_articulo/Componentes';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { DbConsultarArticulo, DbGrabartarArticulo } from '@/app/lib/data';
+import Alerta from '@/app/ui/erp/alerta';
+import ButtonCommon from '@/app/ui/erp/ButtonCommon';
+import LoadingBar, { LoadingBarRef } from 'react-top-loading-bar';
+import DismissibleAlert from '@/app/ui/DismissAlerta';
 
 type Inputs = {
   codigo: string | null,
@@ -24,16 +34,6 @@ type Inputs = {
   }[]
 }
 
-import FichaArticulo from '@/app/ui/erp/alta_articulo/FichaArticulo';
-import PreciosArticulo from '@/app/ui/erp/alta_articulo/PreciosArticulo';
-import CheckArticulo from '@/app/ui/erp/alta_articulo/CheckArticulo';
-import Componentes from '@/app/ui/erp/alta_articulo/Componentes';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { DbConsultarArticulo, DbGrabartarArticulo } from '@/app/lib/data';
-import Alerta from '@/app/ui/erp/alerta';
-import ButtonCommon from '@/app/ui/erp/ButtonCommon';
-import LoadingBar, { LoadingBarRef } from 'react-top-loading-bar';
-import DismissibleAlert from '@/app/ui/DismissAlerta';
 
 const tabs = [
   { name: 'Ficha', id: '0', current: true },

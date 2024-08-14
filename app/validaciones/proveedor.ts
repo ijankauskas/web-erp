@@ -1,12 +1,14 @@
 import { z } from 'zod'
 
 export const proveedorSchema = z.object({
-    codigo: z.string()
-        .min(1, {
-            message: "El codigo no puede estar vacio."
-        })
+    codigo: z.any()
+        .optional()
         .refine(val => !isNaN(Number(val)), {
             message: "El codigo de proveedor debe ser numerico.",
+        }),
+    cuit: z.string()
+        .min(1, {
+            message: "El cuit no puede estar vacio."
         }),
     razon: z.string().min(1, {
         message: "La razon social no puede estar vacia."
@@ -15,13 +17,10 @@ export const proveedorSchema = z.object({
         message: "El nombre de fantasia no puede estar vacia."
     }),
     mail: z.string().optional(),
-    agru_1: z.string().min(1, {
-        message: "Debe seleccionar la agrupacion 1."
-    }),
-    agru_2: z.string().min(1, {
-        message: "Debe seleccionar la agrupacion 1."
-    }),
-    agru_3: z.string().min(1, {
-        message: "Debe seleccionar la agrupacion 1."
-    }),
+    agru_1: z.string().optional(),
+    agru_2: z.string().optional(),
+    agru_3: z.string().optional(),
+    telefono: z.string().optional(),
+    celular: z.string().optional(),
+    activo: z.any().optional(),
 })

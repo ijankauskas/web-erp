@@ -48,7 +48,7 @@ export default function alta_cliente() {
     const ref = useRef(null);
     const [tab, setTab] = useState(0)
 
-    const { register, handleSubmit, formState: { errors }, setValue, clearErrors,getValues } = useForm<Inputs>({
+    const { register, handleSubmit, formState: { errors }, setValue, clearErrors, getValues } = useForm<Inputs>({
         defaultValues: {
             codigo: '',
             razon: '',
@@ -90,30 +90,30 @@ export default function alta_cliente() {
     return (
         <div className="max-w-7xl mx-auto py-0 px-4 sm:px-6 lg:px-8 bg-white">
             <div>
-        <LoadingBar color='rgb(99 102 241)' ref={ref} />
-             </div>
+                <LoadingBar color='rgb(99 102 241)' ref={ref} />
+            </div>
             <Tabs tabs={tabs} seleccionarTab={seleccionarTab} tab={tab} />
             <div className='relative '>
                 <form action="#" method="POST" onSubmit={handleSubmit(data => enviarForm(data))}>
                     {tab === 0 ?
                         <>
                             <Principal
-                              register={register}
-                              setValue={setValue}
-                              errors={errors} 
-                              clearErrors={clearErrors} />
+                                register={register}
+                                setValue={setValue}
+                                errors={errors}
+                                clearErrors={clearErrors} />
                             <DatosContacto
-                              register={register}
-                              setValue={setValue}
-                              errors={errors}
-                              clearErrors={clearErrors}/>
+                                register={register}
+                                setValue={setValue}
+                                errors={errors}
+                                clearErrors={clearErrors} />
                             <CheckCliente
-                             register={register}
-                             setValue={setValue}
-                             errors={errors}
-                             clearErrors={clearErrors}
-                             getValues={getValues}
-                                        />
+                                register={register}
+                                setValue={setValue}
+                                errors={errors}
+                                clearErrors={clearErrors}
+                                getValues={getValues}
+                            />
                         </> :
                         tab === 1 ? <Tabla /> :
                             'Posición no definida.'}
@@ -122,7 +122,7 @@ export default function alta_cliente() {
                             type="submit"
                             className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                         >
-                            Save
+                            Guardar
                         </button>
                     </div>
                 </form>

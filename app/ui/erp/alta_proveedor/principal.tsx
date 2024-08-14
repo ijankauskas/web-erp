@@ -30,7 +30,7 @@ function classNames(...classes: any[]) {
     return classes.filter(Boolean).join(' ');
 }
 
-const Principal = ({ register, setValue, clearErrors, errors }: any) => {
+const Principal = ({ register, setValue, clearErrors, errors, consultarProve, getValues }: any) => {
 
     const seleccionarAgru1Selec = (agru_1: any) => {
         setValue('agru_1', agru_1);
@@ -63,14 +63,23 @@ const Principal = ({ register, setValue, clearErrors, errors }: any) => {
                             <div className="col-span-6 sm:col-span-2">
                                 <InputCommon
                                     titulo={"Numero de proveedor"}
-                                    tipo={"text"}
+                                    tipo={"number"}
                                     error={errors.codigo?.message}
                                     id="codigo"
-                                    useForm={register("codigo")}
+                                    useForm={register("codigo", { onBlur: consultarProve })}
+                                />
+                            </div>
+                            <div className="col-span-6 sm:col-span-2">
+                                <InputCommon
+                                    titulo={"Cuit"}
+                                    tipo={"text"}
+                                    error={errors.cuit?.message}
+                                    id="cuit"
+                                    useForm={register("cuit")}
                                 />
                             </div>
 
-                            <div className="hidden sm:flex sm:col-span-4">
+                            <div className="hidden sm:flex sm:col-span-2">
                             </div>
 
                             <div className="col-span-6 sm:col-span-3">
@@ -107,6 +116,7 @@ const Principal = ({ register, setValue, clearErrors, errors }: any) => {
                                 <ComboBoxSelect
                                     titulo={"Agrupacion 1"}
                                     data={people}
+                                    seleccionado={getValues('agru_1')}
                                     setearCodigo={seleccionarAgru1Selec}
                                     error={errors.agru_1?.message}
                                 />
@@ -116,6 +126,7 @@ const Principal = ({ register, setValue, clearErrors, errors }: any) => {
                                 <ComboBoxSelect
                                     titulo={"Agrupacion 2"}
                                     data={people}
+                                    seleccionado={getValues('agru_2')}
                                     setearCodigo={seleccionarAgru2Selec}
                                     error={errors.agru_2?.message}
                                 />
@@ -125,6 +136,7 @@ const Principal = ({ register, setValue, clearErrors, errors }: any) => {
                                 <ComboBoxSelect
                                     titulo={"Agrupacion 3"}
                                     data={people}
+                                    seleccionado={getValues('agru_3')}
                                     setearCodigo={seleccionarAgru3Selec}
                                     error={errors.agru_3?.message}
                                 />

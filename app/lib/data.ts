@@ -30,3 +30,35 @@ export async function DbGrabartarArticulo(data: string | null) {
         throw new Error('Failed to fetch card data.');
     }
 }
+
+export async function DbGrabartarProveedor(data: string | null) {
+    try {
+        const response = await fetch('http://localhost:8080/proveedores', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        });
+
+        return response;
+    } catch (error) {
+        throw new Error('Failed to fetch card data.');
+    }
+}
+
+export async function DbConsultarProveedor(codigo: number | null) {
+    try {
+        const response = await fetch('http://localhost:8080/proveedores?codigo=' + codigo, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
+
+        return response;
+    } catch (error) {
+        console.error('Database Error:', error);
+        throw new Error('Failed to fetch card data.');
+    }
+}

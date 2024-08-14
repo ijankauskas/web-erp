@@ -1,7 +1,4 @@
 import React, { useState } from 'react';
-import { Tab } from '@headlessui/react';
-import ComboBoxSelect from '../../ComboBoxSelect';
-import Tabs from '../alta_proveedor/tabs';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 function classNames(...classes: any[]) {

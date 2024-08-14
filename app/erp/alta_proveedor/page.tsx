@@ -1,25 +1,32 @@
 "use client"
 
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-
-
 import { PhotoIcon } from '@heroicons/react/24/outline';
 import InputCommon from '@/app/ui/inputCommon';
 import { proveedorSchema } from '@/app/validaciones/proveedor';
 import Tabs from '@/app/ui/erp/alta_proveedor/tabs';
 import Principal from '@/app/ui/erp/alta_proveedor/principal';
 import DatosContacto from '@/app/ui/erp/alta_proveedor/datosContacto';
+import LoadingBar, { LoadingBarRef } from 'react-top-loading-bar';
+import CheckProve from '@/app/ui/erp/alta_proveedor/CheckProve';
+import { DbConsultarProveedor, DbGrabartarProveedor } from '@/app/lib/data';
+import DismissibleAlert from '@/app/ui/DismissAlerta';
+import { usePathname, useSearchParams, useRouter } from 'next/navigation';
 
 type Inputs = {
-    codigo: string,
+    codigo: number,
+    cuit: string,
     razon: string,
     nombre_fantasia: string,
     mail: string,
     agru_1: string,
     agru_2: string,
     agru_3: string,
+    telefono: string,
+    celular: string,
+    activo: any,
 }
 
 const people = [
@@ -32,26 +39,52 @@ const people = [
 ];
 
 const tabs = [
-    { name: 'Ficha', href: '0', current: true },
-    { name: 'Comprobantes', href: '1', current: false },
-    { name: 'Team Members', href: '2', current: false },
-    { name: 'Billing', href: '3', current: false },
+    { name: 'Ficha', id: '0', current: true },
+    { name: 'Componentes', id: '1', current: false },
 ];
 
 
 export default function alta_proveedor() {
     const [cargando, setCargando] = useState(false)
     const [tab, setTab] = useState(0)
+    const ref = useRef<LoadingBarRef | null>(null);
+    useEffect(() => {
+        if (ref.current) {
+            ref.current.complete();
+        }
+    }, []);
 
-    const { register, handleSubmit, formState: { errors }, setValue, clearErrors } = useForm<Inputs>({
+    const [alerta, setAlerta] = useState({
+        message: "",
+        type: "",
+        alertVisible: false
+    });
+
+    const closeAlertaDismiss = () => {
+        setAlerta({
+            message: '',
+            type: "",
+            alertVisible: false
+        });
+    };
+
+    const searchParams = useSearchParams();
+    const pathname = usePathname();
+    const { replace } = useRouter();
+
+    const { register, handleSubmit, formState: { errors }, setValue, clearErrors, getValues, watch } = useForm<Inputs>({
         defaultValues: {
-            codigo: '',
+            codigo: 0,
+            cuit: '',
             razon: '',
             nombre_fantasia: '',
             mail: '',
             agru_1: '',
             agru_2: '',
             agru_3: '',
+            telefono: '',
+            celular: '',
+            activo: true,
         },
         resolver: zodResolver(proveedorSchema)
     })
@@ -60,52 +93,153 @@ export default function alta_proveedor() {
         setTab(tab)
     }
 
+    const consultarProve = async () => {
+        const params = new URLSearchParams(searchParams);
+        let codigo: number | null = getValues('codigo');
+        //para que no consuma al limpiar la pantalla        
+        if (codigo && codigo != 0) {
+            params.set('codigo', codigo.toString());
+            replace(`${pathname}?${params.toString()}`);
+            clearErrors()
+        } else {
+            params.delete('codigo');
+            replace(`${pathname}?${params.toString()}`);
+            clearErrors();
+            limpiar();
+            return
+        }
+
+        if (cargando) {
+            return
+        }
+        setCargando(true);
+        ref.current?.continuousStart();
+
+        const respuesta = await DbConsultarProveedor(codigo);
+        const data = await respuesta.json();
+
+        if (respuesta.ok) {
+            setValue('codigo', data.codigo);
+            setValue('cuit', data.cuit);
+            setValue('razon', data.razon);
+            setValue('nombre_fantasia', data.nombre_fantasia);
+            setValue('mail', data.mail);
+            setValue('agru_1', data.agru_1);
+            setValue('agru_2', data.agru_2);
+            setValue('agru_3', data.agru_3);
+            setValue('telefono', data.telefono);
+            setValue('celular', data.celular);
+            data.activo == 'S' ? setValue('activo', true) : setValue('activo', false);
+            setCargando(false);
+            ref.current?.complete();
+        } else {
+            limpiar()
+            setCargando(false);
+            ref.current?.complete();
+        }
+
+    }
+
     const enviarForm = async (data: any) => {
+        if (cargando) {
+            return
+        }
+        data.activo = data.activo || data.activo == 'S' ? 'S' : 'N';
 
         setCargando(true);
-        const response = await fetch('http://localhost:8080/articulos', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(data),
-        });
+        ref.current?.continuousStart();
+        //llamada al servicio
+        const respuesta = await DbGrabartarProveedor(data)
 
-        if (response.ok) {
-            alert("Se creo el usuario")
+        if (respuesta.ok) {
+            const data = await respuesta.json();
+            setValue('codigo', data.codigo);
+            ref.current?.complete();
             setCargando(false);
+            setAlerta({
+                message: 'Se guardo correctamente el proveedor',
+                type: "success",
+                alertVisible: true
+            });
         } else {
-            const errorMessage = await response.json(); // Lee el cuerpo de la respuesta como JSON
-            alert(errorMessage.message); // Muestra el mensaje de error en un alert
+            const errorMessage = await respuesta.json();
+            ref.current?.complete();
             setCargando(false);
+            setAlerta({
+                message: errorMessage.message,
+                type: "error",
+                alertVisible: true
+            });
         }
     };
 
+    const limpiar = () => {
+
+        setValue('cuit', '');
+        setValue('razon', '');
+        setValue('nombre_fantasia', '');
+        setValue('mail', '');
+        setValue('agru_1', '');
+        setValue('agru_2', '');
+        setValue('agru_3', '');
+        setValue('telefono', '');
+        setValue('celular', '');
+        setValue('activo', true);
+    }
+
     return (
         <div className="max-w-7xl mx-auto py-0 px-4 sm:px-6 lg:px-8 bg-white">
+            <div>
+                <LoadingBar color='rgb(99 102 241)' ref={ref} />
+            </div>
             <Tabs tabs={tabs} seleccionarTab={seleccionarTab} tab={tab} />
             <div className='relative '>
                 <form action="#" method="POST" onSubmit={handleSubmit(data => enviarForm(data))}>
-                    {tab === 0 ?
+                    {tab == 0 ?
                         <>
-                            <Principal register={register} setValue={setValue} errors={errors} clearErrors={clearErrors} />
-                            <DatosContacto register={register} setValue={setValue} errors={errors} clearErrors={clearErrors}/>
-
+                            <Principal
+                                register={register}
+                                setValue={setValue}
+                                errors={errors}
+                                clearErrors={clearErrors}
+                                consultarProve={consultarProve}
+                                getValues={getValues}
+                            />
+                            <DatosContacto
+                                register={register}
+                                setValue={setValue}
+                                errors={errors}
+                                clearErrors={clearErrors}
+                            />
+                            <CheckProve
+                                register={register}
+                                setValue={setValue}
+                                errors={errors}
+                                clearErrors={clearErrors}
+                                getValues={getValues}
+                                watch={watch}
+                            />
                         </> :
-                        tab === 1 ? <DatosContacto register={register} setValue={setValue} errors={errors} clearErrors={clearErrors}/> :
+                        tab == 1 ? <DatosContacto register={register} setValue={setValue} errors={errors} clearErrors={clearErrors} /> :
                             'Posición no definida.'}
                     <div className="px-4 py-3 bg-white text-right sm:px-6">
                         <button
                             type="submit"
                             className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                         >
-                            Save
+                            Guardar
                         </button>
                     </div>
                 </form>
 
             </div>
-
+            {alerta.alertVisible && (
+                <DismissibleAlert
+                    message={alerta.message}
+                    type={alerta.type}
+                    onClose={closeAlertaDismiss}
+                />
+            )}
         </div>
     )
 }
