@@ -1,6 +1,6 @@
-export async function DbConsultarArticulo(cod_articulo: string | null) {
+export async function DbConsultarArticulo(cod_articulo?: string | null, multiple?: string | null) {
     try {
-        const response = await fetch('http://localhost:8080/articulos?codigo=' + cod_articulo, {
+        const response = await fetch('http://localhost:8080/articulos?codigo=' + cod_articulo + '&multiple=' + multiple, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',

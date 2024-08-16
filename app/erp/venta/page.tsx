@@ -6,6 +6,7 @@ import Alerta from '@/app/ui/erp/alerta';
 import Cabecera from '@/app/ui/erp/compra/cabecera';
 import Drawer from '@/app/ui/erp/compra/drawer';
 import Tabla from '@/app/ui/erp/compra/tabla';
+import ArticulosConsul from '@/app/ui/erp/consultas/articulos_consul';
 import InputCommon from '@/app/ui/inputCommon';
 import { compraSchema } from '@/app/validaciones/compra';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -27,8 +28,10 @@ export default function alta_articulo() {
     const [cargando, setCargando] = useState(false);
     const [isInitialMount, setIsInitialMount] = useState(true);
     const [abrirCabecera, setAbrirCabecera] = useState(false);
+    const [abrirArticulosConsul, setAbrirArticulosConsul] = useState(false);
 
     const [isLgHidden, setIsLgHidden] = useState(false);
+
     useEffect(() => {
         const handleResize = () => {
             setIsLgHidden(window.innerWidth < 1024);
@@ -113,6 +116,7 @@ export default function alta_articulo() {
                     <button
                         type="button"
                         className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                        onClick={()=>setAbrirArticulosConsul(true)}
                     >
                         Agregar Articulo
                     </button>
@@ -133,6 +137,11 @@ export default function alta_articulo() {
                 cerrar={cerrarAlerta}
                 titulo={error.titulo}
                 texto={error.mensaje}
+            />
+
+            <ArticulosConsul
+                open={abrirArticulosConsul}
+                setOpen={setAbrirArticulosConsul}
             />
         </>
     );
