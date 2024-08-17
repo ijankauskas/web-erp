@@ -9,6 +9,7 @@ import {
     ChevronDownIcon,
     ChevronRightIcon
 } from '@heroicons/react/24/outline'
+import { SignOut } from './SingOut';
 
 function classNames(...classes: any[]) {
     return classes.filter(Boolean).join(' ');
@@ -71,6 +72,7 @@ export default function NavBotones({ navigation }: any) {
                     </Link>
                 )
             ))}
+            <SignOut />
         </>
     );
 }

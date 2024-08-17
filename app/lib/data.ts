@@ -1,6 +1,6 @@
-export async function DbConsultarArticulo(cod_articulo?: string | null, multiple?: string | null) {
+export async function DbConsultarArticulo(cod_articulo?: string | null, multiple?: string | null, descripcion?: string | null) {
     try {
-        const response = await fetch('http://localhost:8080/articulos?codigo=' + cod_articulo + '&multiple=' + multiple, {
+        const response = await fetch('http://localhost:8080/articulos?codigo=' + cod_articulo + '&multiple=' + multiple + '&descripcion=' + descripcion, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -54,6 +54,23 @@ export async function DbConsultarProveedor(codigo: number | null) {
             headers: {
                 'Content-Type': 'application/json',
             }
+        });
+
+        return response;
+    } catch (error) {
+        console.error('Database Error:', error);
+        throw new Error('Failed to fetch card data.');
+    }
+}
+
+export async function DbSingIn(data: any) {
+    try {
+        const response = await fetch('http://localhost:8080/signIn', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
         });
 
         return response;

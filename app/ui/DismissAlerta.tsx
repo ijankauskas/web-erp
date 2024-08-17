@@ -17,7 +17,7 @@ const DismissibleAlert = ({ message, type = 'success', onClose, duration = 3000 
     <div
       className={`fixed top-4 right-8 transform p-3 mb-4 text-sm rounded-lg w-full lg:w-1/2 ${typeClasses[type]}`}
       role="alert"
-      style={{ zIndex: 1000 }}
+      style={{ zIndex: 9999 }}
     >
       <div className="flex justify-between items-center">
         <span>{message}</span>

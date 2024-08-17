@@ -7,7 +7,7 @@ import { DbConsultarArticulo } from "@/app/lib/data";
 import { SetStateAction, useState } from "react";
 import Alerta from "../alerta";
 
-export default function ArticulosConsul({ arrayArticulos, open, setOpen }: any) {
+export default function ArticulosConsul({ setArticulo, open, setOpen }: any) {
     const [error, setError] = useState({
         mostrar: false,
         mensaje: '',
@@ -29,9 +29,13 @@ export default function ArticulosConsul({ arrayArticulos, open, setOpen }: any) 
     const settearSCodarticulos = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSCodarticulos(e.target.value);
     }
+    const [sDescrip, setSDescrip] = useState('');
+    const settearSDescrip = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setSDescrip(e.target.value);
+    }
 
     const consultar = async () => {
-        const respuesta = await DbConsultarArticulo(sCodarticulos, 'S');
+        const respuesta = await DbConsultarArticulo(sCodarticulos, 'S',sDescrip);
         const data = await respuesta.json();
 
         if (respuesta.ok) {
@@ -44,6 +48,10 @@ export default function ArticulosConsul({ arrayArticulos, open, setOpen }: any) 
                 icono: 'error-icon',
             });
         }
+    }
+
+    const agregarArticulo = ({articulo}:any) => {
+        setArticulo((prev: any) => [...prev, articulo]);
     }
 
     return (
@@ -61,16 +69,24 @@ export default function ArticulosConsul({ arrayArticulos, open, setOpen }: any) 
                             className="w-11/12 relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all"
                         >
                             <div className="w-10/12 py-2 inline-block min-w-full sm:px-6 lg:px-8">
-                                <div className="lgpx-10 pt-2 grid grid-cols-1 gap-x-12 gap-y-2 sm:grid-cols-12">
+                                <div className="pt-2 grid grid-cols-1 gap-x-12 gap-y-2 sm:grid-cols-12">
                                     <div className="sm:col-span-2 col-span-2 flex items-center">
-                                        <div className='w-full mr-2'>
+                                        <div className='w-full'>
                                             <InputCommon
                                                 titulo={'Codigo'}
                                                 onChange={settearSCodarticulos}
                                             />
                                         </div>
                                     </div>
-                                    <div className="sm:col-span-2 col-span-2 flex items-center">
+                                    <div className="sm:col-span-4 col-span-4 flex items-center">
+                                        <div className='w-full'>
+                                            <InputCommon
+                                                titulo={'Descripcion'}
+                                                onChange={settearSDescrip}
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="sm:col-span-2 col-span-2 flex items-end">
                                         <div className='w-full mr-2'>
                                             <ButtonCommon texto={'Buscar'} onClick={consultar} type={'button'} />
                                         </div>
@@ -90,8 +106,7 @@ export default function ArticulosConsul({ arrayArticulos, open, setOpen }: any) 
                                         </thead>
                                         <tbody className="bg-white divide-y divide-gray-200">
                                             {articulos?.map((articulo: any, index: number) => (
-                                                <tr className="border-b text-gray-900 hover:text-gray-100 hover:bg-indigo-500 hover:cursor-pointer ">
-
+                                                <tr onClick={()=>agregarArticulo({articulo})} className="border-b text-gray-900 hover:text-gray-100 hover:bg-indigo-500 hover:cursor-pointer ">
                                                     <td className="px-4 py-2 whitespace-nowrap text-sm border-r border-gray-200">
                                                         {articulo.codigo}
                                                     </td>

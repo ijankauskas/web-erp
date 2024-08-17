@@ -1,6 +1,7 @@
 "use client"
 
 import ComboBoxSelect from '@/app/ui/ComboBoxSelect';
+import DismissibleAlert from '@/app/ui/DismissAlerta';
 import ButtonCommon from '@/app/ui/erp/ButtonCommon';
 import Alerta from '@/app/ui/erp/alerta';
 import Cabecera from '@/app/ui/erp/compra/cabecera';
@@ -10,10 +11,8 @@ import ArticulosConsul from '@/app/ui/erp/consultas/articulos_consul';
 import InputCommon from '@/app/ui/inputCommon';
 import { compraSchema } from '@/app/validaciones/compra';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
-
-
 
 type Inputs = {
     numero: string,
@@ -29,27 +28,13 @@ export default function alta_articulo() {
     const [isInitialMount, setIsInitialMount] = useState(true);
     const [abrirCabecera, setAbrirCabecera] = useState(false);
     const [abrirArticulosConsul, setAbrirArticulosConsul] = useState(false);
-
     const [isLgHidden, setIsLgHidden] = useState(false);
-
-    useEffect(() => {
-        const handleResize = () => {
-            setIsLgHidden(window.innerWidth < 1024);
-        };
-        handleResize();
-        window.addEventListener('resize', handleResize);
-        return () => {
-            window.removeEventListener('resize', handleResize);
-        };
-    }, []);
-
     const [error, setError] = useState({
         mostrar: false,
         mensaje: '',
         titulo: '',
         icono: '',
     });
-
     const { register, handleSubmit, formState: { errors }, setValue, clearErrors, getValues } = useForm<Inputs>({
         defaultValues: {
             numero: '',
@@ -61,6 +46,66 @@ export default function alta_articulo() {
         },
         resolver: zodResolver(compraSchema)
     })
+    const [articulos, setArticulos] = useState<{}[]>([]);
+    const cerrarAlerta = () => {
+        setError({
+            mostrar: false,
+            mensaje: '',
+            titulo: '',
+            icono: '',
+        });
+    }
+    const [alerta, setAlerta] = useState({
+        message: "",
+        type: "",
+        alertVisible: false
+    });
+    const closeAlertaDismiss = () => {
+        setAlerta({
+            message: '',
+            type: "",
+            alertVisible: false
+        });
+    };
+
+    useEffect(() => {
+        const handleResize = () => {
+            setIsLgHidden(window.innerWidth < 1024);
+        };
+        handleResize();
+        window.addEventListener('resize', handleResize);
+        return () => {
+            window.removeEventListener('resize', handleResize);
+        };
+
+    }, []);
+
+    const prevArticulosRef = useRef(articulos);
+    useEffect(() => {
+        const prevArticulos = prevArticulosRef.current;
+
+        if (articulos.length > prevArticulos.length) {
+            // Se agregó un artículo
+            const articuloAgregado:any = articulos.find((articulo):any => !prevArticulos.some((prev:any) => prev.codigo === articulo.codigo));
+
+            setAlerta({
+                message: `Se agregó el artículo: ${articuloAgregado.descripcion}`,
+                type: "success",
+                alertVisible: true
+            });
+        } else if (articulos.length < prevArticulos.length) {
+            // Se eliminó un artículo
+            const articuloEliminado:any = prevArticulos.find(prev => !articulos.some(articulo => articulo.id === prev.id));
+            setAlerta({
+                message: `Se eliminó el artículo: ${articuloEliminado.descripcion}`,
+                type: "warning",
+                alertVisible: true
+            });
+        }
+
+        // Actualizar la referencia con el estado actual
+        prevArticulosRef.current = articulos;
+    }, [articulos]);
 
     const mostrarErrorAlerta = () => {
         if (!isInitialMount)
@@ -79,14 +124,6 @@ export default function alta_articulo() {
         }
     });
 
-    const cerrarAlerta = () => {
-        setError({
-            mostrar: false,
-            mensaje: '',
-            titulo: '',
-            icono: '',
-        });
-    }
 
     const toggleCabecera = () => {
         setAbrirCabecera(!abrirCabecera)
@@ -116,7 +153,7 @@ export default function alta_articulo() {
                     <button
                         type="button"
                         className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                        onClick={()=>setAbrirArticulosConsul(true)}
+                        onClick={() => setAbrirArticulosConsul(true)}
                     >
                         Agregar Articulo
                     </button>
@@ -127,7 +164,7 @@ export default function alta_articulo() {
                     )}
                 </div>
                 <div className="overflow-x-auto sm:-mx-6 lg:-mx-8">
-                    <Tabla />
+                    <Tabla articulos={articulos} setAlerta={setAlerta} setArticulos={setArticulos}/>
                 </div>
             </div>
 
@@ -140,9 +177,18 @@ export default function alta_articulo() {
             />
 
             <ArticulosConsul
+                setArticulo={setArticulos}
                 open={abrirArticulosConsul}
                 setOpen={setAbrirArticulosConsul}
             />
+
+            {alerta.alertVisible && (
+                <DismissibleAlert
+                    message={alerta.message}
+                    type={alerta.type}
+                    onClose={closeAlertaDismiss}
+                />
+            )}
         </>
     );
 

@@ -101,11 +101,10 @@ function classNames(...classes: any[]) {
 
 export default function Layout({ children }: { children: React.ReactNode }) {
     const [sidebarOpen, setSidebarOpen] = useState(false);
-
+    
     const toggleSideBar = () => {
         setSidebarOpen(!sidebarOpen);
     };
-
 
     return (
         <div className="h-screen flex overflow-hidden bg-gray-100">

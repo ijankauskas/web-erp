@@ -1,6 +1,46 @@
 'use client'
 
-export default function Tabla() {
+import { useState } from "react";
+import InputCommon from "../../inputCommon";
+import { DbConsultarArticulo } from "@/app/lib/data";
+
+export default function Tabla({ articulos, setAlerta, setArticulos }: any) {
+    const [nuevoArticulo, setNuevoArticulo] = useState<any>({});
+    const manejarCambioNuevoArticulo = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { id, value } = e.target;
+        setNuevoArticulo((prev: any) => ({ ...prev, [id]: value }));
+    }
+
+    const consultarArticulo = async () => {
+        console.log(nuevoArticulo);
+
+        if (nuevoArticulo.cod_articulo == '') return
+
+        const respuesta = await DbConsultarArticulo(nuevoArticulo.cod_articulo, 'N');
+        let cantidad = nuevoArticulo.cantidad
+        const data = await respuesta.json();
+
+        if (respuesta.ok) {
+            // const articulos = Array.isArray(data) ? data : [data];
+            const articulos = [{
+                // cod_articulo: getValues('codigo'),
+                cod_articulo: data.codigo,
+                descripcion: data.descripcion,
+                unidad: data.unidad,
+                cantidad: cantidad || 0  // Asegurarse de que cantidad esté presente y tenga un valor predeterminado
+            }];
+
+            setArticulos((prev: any) => [...prev, ...articulos]);
+
+        } else {
+            setAlerta({
+                message: data.message,
+                type: "error",
+                alertVisible: true
+            });
+        }
+        setNuevoArticulo({ cod_articulo: '', descripcion: '', unidad: '', cantidad: cantidad });
+    }
 
     return (
         <>
@@ -9,7 +49,7 @@ export default function Tabla() {
                     <table className="min-w-full">
                         <thead className="bg-gray-50">
                             <tr>
-                                <th scope="col" className="w-[100px] px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <th scope="col" className="w-[150px] px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     Codigo
                                 </th>
                                 <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -18,7 +58,7 @@ export default function Tabla() {
                                 <th scope="col" className="w-[50px] px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     Cantidad
                                 </th>
-                                <th scope="col" className="w-[50px] px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <th scope="col" className="w-[125px] px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     Precio
                                 </th>
                                 <th scope="col" className="relative px-6 py-3">
@@ -27,32 +67,70 @@ export default function Tabla() {
                             </tr>
                         </thead>
                         <tbody className="bg-white divide-y divide-gray-200">
+                            {articulos?.map((articulo: any, index: number) => (
+                                <tr key={index}>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                        <InputCommon
+                                            tipo={'text'}
+                                            id={articulo.cod_articulo}
+                                            texto={articulo.cod_articulo}
+                                            // useForm={register(articulo.cod_articulo_compo + '-' + index)}
+                                            onChange={manejarCambioNuevoArticulo}
+                                        />
+                                    </td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        {articulo.descripcion}
+                                    </td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        <InputCommon
+                                            tipo={'number'}
+                                            id="cantidad"
+                                        // texto={nuevoArticuloCompo.cantidad}
+                                        // onChange={(e: React.ChangeEvent<HTMLInputElement>) => manejarCambioNuevoArticulo(e)}
+                                        />
+                                    </td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        <InputCommon
+                                            tipo={'number'}
+                                            id="cantidad"
+                                        // texto={nuevoArticuloCompo.cantidad}
+                                        // onChange={(e: React.ChangeEvent<HTMLInputElement>) => manejarCambioNuevoArticulo(e)}
+                                        />
+                                    </td>
+                                    <td className="w-12 px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                        <a href="#" className="text-indigo-600 hover:text-indigo-900">
+                                            Eliminar
+                                        </a>
+                                    </td>
+                                </tr>
+                            ))}
                             <tr>
                                 <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                    <input
-                                        type="text"
-                                        min="0"
-                                        className="w-[100px] border border-gray-300 rounded-md py-1 px-2 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500"
-                                        defaultValue={' '}
+                                    <InputCommon
+                                        tipo={'text'}
+                                        id="cod_articulo"
+                                        // texto={nuevoArticuloCompo.cod_articulo_compo}
+                                        onChange={manejarCambioNuevoArticulo}
+                                        funcionOnblur={consultarArticulo}
                                     />
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    Regional Paradigm Technician
+
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    <input
-                                        type="number"
-                                        min="0"
-                                        className="w-[50px] border border-gray-300 rounded-md py-1 px-2 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 text-right"
-                                        defaultValue={''}
+                                    <InputCommon
+                                        tipo={'number'}
+                                        id="cantidad"
+                                    // texto={nuevoArticuloCompo.cantidad}
+                                    // onChange={(e: React.ChangeEvent<HTMLInputElement>) => manejarCambioNuevoArticulo(e)}
                                     />
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    <input
-                                        type="number"
-                                        min="0"
-                                        className="w-[100px] border border-gray-300 rounded-md py-1 px-2 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 text-right"
-                                        defaultValue={''}
+                                    <InputCommon
+                                        tipo={'number'}
+                                        id="cantidad"
+                                    // texto={nuevoArticuloCompo.cantidad}
+                                    // onChange={(e: React.ChangeEvent<HTMLInputElement>) => manejarCambioNuevoArticulo(e)}
                                     />
                                 </td>
                                 <td className="w-12 px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
@@ -61,7 +139,6 @@ export default function Tabla() {
                                     </a>
                                 </td>
                             </tr>
-                            {/* More rows... */}
                         </tbody>
                     </table>
                 </div>
