@@ -1,13 +1,11 @@
 import { z } from 'zod'
 
 export const clienteSchema = z.object({
-    codigo: z.string()
-        .min(1, {
-            message: "El codigo no puede estar vacio."
-        })
-        .refine(val => !isNaN(Number(val)), {
-            message: "El codigo de cliente debe ser numerico.",
-        }),
+    codigo: z.any()
+    .optional()
+    .refine(val => !isNaN(Number(val)), {
+        message: "El codigo de cliente debe ser numerico.",
+    }),
     razon: z.string().min(1, {
         message: "La razon social no puede estar vacia."
     }),

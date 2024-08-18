@@ -30,7 +30,7 @@ function classNames(...classes: any[]) {
     return classes.filter(Boolean).join(' ');
 }
 
-const Principal = ({ register, setValue, clearErrors, errors }: any) => {
+const Principal = ({ register, setValue, clearErrors, errors, consultarCliente }: any) => {
 
     const seleccionarAgru1Selec = (agru_1: any) => {
         setValue('agru_1', agru_1);
@@ -66,7 +66,7 @@ const Principal = ({ register, setValue, clearErrors, errors }: any) => {
                                     tipo={"text"}
                                     error={errors.codigo?.message}
                                     id="codigo"
-                                    useForm={register("codigo")}
+                                    useForm={register("codigo", { onBlur: consultarCliente })}
                                 />
                             </div>
 

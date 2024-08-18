@@ -14,17 +14,22 @@ import Tabla from '@/app/ui/erp/alta_cliente/Tabla';
 
 
 type Inputs = {
-    codigo: string,
+    codigo: number,
+    cuit: string,
     razon: string,
     nombre_fantasia: string,
     mail: string,
     agru_1: string,
     agru_2: string,
     agru_3: string,
+    activo: any
 }
 
 import CheckCliente from '@/app/ui/erp/alta_cliente/CheckCliente';
-import LoadingBar from 'react-top-loading-bar';
+import LoadingBar, { LoadingBarRef } from 'react-top-loading-bar';
+import { usePathname, useSearchParams,useRouter } from 'next/navigation';
+import { DbConsultarCliente, DbGrabartarCliente } from '@/app/lib/data';
+import DismissibleAlert from '@/app/ui/DismissAlerta';
 
 const people = [
     { id: '1', name: 'asdr' },
@@ -45,18 +50,36 @@ const tabs = [
 
 export default function alta_cliente() {
     const [cargando, setCargando] = useState(false)
-    const ref = useRef(null);
+    const ref = useRef<LoadingBarRef | null>(null);
     const [tab, setTab] = useState(0)
 
+    const searchParams = useSearchParams();
+    const pathname = usePathname();
+    const { replace } = useRouter();
+
+    const [alerta, setAlerta] = useState({
+        message: "",
+        type: "",
+        alertVisible: false
+    });
+    
+    const closeAlertaDismiss = () => {
+        setAlerta({
+            message: '',
+            type: "",
+            alertVisible: false
+        });
+    };
     const { register, handleSubmit, formState: { errors }, setValue, clearErrors, getValues } = useForm<Inputs>({
         defaultValues: {
-            codigo: '',
+            codigo: 0,
             razon: '',
             nombre_fantasia: '',
             mail: '',
             agru_1: '',
             agru_2: '',
             agru_3: '',
+            activo: true,
         },
         resolver: zodResolver(clienteSchema)
     })
@@ -65,27 +88,96 @@ export default function alta_cliente() {
         setTab(tab)
     }
 
+    const consultarCliente = async () => {
+        const params = new URLSearchParams(searchParams);
+        let codigo: number | null = getValues('codigo');
+        //para que no consuma al limpiar la pantalla        
+        if (codigo && codigo != 0) {
+            params.set('codigo', codigo.toString());
+            replace(`${pathname}?${params.toString()}`);
+            clearErrors()
+        } else {
+            params.delete('codigo');
+            replace(`${pathname}?${params.toString()}`);
+            clearErrors();
+            limpiar();
+            return
+        }
+
+        if (cargando) {
+            return
+        }
+        setCargando(true);
+        ref.current?.continuousStart();
+
+        const respuesta = await DbConsultarCliente(codigo);
+        const data = await respuesta.json();
+
+        if (respuesta.ok) {
+            setValue('codigo', data.codigo);
+            setValue('cuit', data.cuit);
+            setValue('razon', data.razon);
+            setValue('nombre_fantasia', data.nombre_fantasia);
+            setValue('mail', data.mail);
+            setValue('agru_1', data.agru_1);
+            setValue('agru_2', data.agru_2);
+            setValue('agru_3', data.agru_3);
+            data.activo == 'S' ? setValue('activo', true) : setValue('activo', false);
+            setCargando(false);
+            ref.current?.complete();
+        } else {
+            limpiar()
+            setCargando(false);
+            ref.current?.complete();
+        }
+
+    }
+
     const enviarForm = async (data: any) => {
-        console.log('aca');
+        if (cargando) {
+            return
+        }
+        data.activo = data.activo || data.activo == 'S' ? 'S' : 'N';
 
         setCargando(true);
-        const response = await fetch('http://localhost:8080/clientes', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(data),
-        });
+        ref.current?.continuousStart();
+        //llamada al servicio
+        const respuesta = await DbGrabartarCliente(data)
 
-        if (response.ok) {
-            alert("Se creo el usuario")
+        if (respuesta.ok) {
+            const data = await respuesta.json();
+            setValue('codigo', data.codigo);
+            ref.current?.complete();
             setCargando(false);
+            setAlerta({
+                message: 'Se guardo correctamente el cliente',
+                type: "success",
+                alertVisible: true
+            });
         } else {
-            const errorMessage = await response.json(); // Lee el cuerpo de la respuesta como JSON
-            alert(errorMessage.message); // Muestra el mensaje de error en un alert
+            const errorMessage = await respuesta.json();
+            ref.current?.complete();
             setCargando(false);
+            setAlerta({
+                message: errorMessage.message,
+                type: "error",
+                alertVisible: true
+            });
         }
     };
+
+    const limpiar = () => {
+
+        setValue('codigo', 0);
+        setValue('razon', '');
+        setValue('nombre_fantasia', '');
+        setValue('mail', '');
+        setValue('agru_1', '');
+        setValue('agru_2', '');
+        setValue('agru_3', '');
+        setValue('activo', true);
+    }
+
 
     return (
         <div className="max-w-7xl mx-auto py-0 px-4 sm:px-6 lg:px-8 bg-white">
@@ -101,7 +193,8 @@ export default function alta_cliente() {
                                 register={register}
                                 setValue={setValue}
                                 errors={errors}
-                                clearErrors={clearErrors} />
+                                clearErrors={clearErrors} 
+                                consultarCliente={consultarCliente}/>
                             <DatosContacto
                                 register={register}
                                 setValue={setValue}
@@ -128,7 +221,13 @@ export default function alta_cliente() {
                 </form>
 
             </div>
-
+            {alerta.alertVisible && (
+                <DismissibleAlert
+                    message={alerta.message}
+                    type={alerta.type}
+                    onClose={closeAlertaDismiss}
+                />
+            )}
         </div>
     )
 }
