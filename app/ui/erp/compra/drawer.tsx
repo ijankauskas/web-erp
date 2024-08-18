@@ -4,9 +4,19 @@ import { Fragment, useState } from 'react'
 import { Dialog, DialogPanel, DialogTitle, Transition, TransitionChild } from '@headlessui/react'
 import { XMarkIcon } from '@heroicons/react/24/outline'
 import Cabecera from './cabecera'
+import ButtonCommon from '../ButtonCommon'
 
 
-export default function Drawer({ abrir, toggleAbrir, register, setValue, clearErrors, errors, mostrarErrorAlerta, getValues }: any) {
+export default function Drawer({
+    abrir,
+    toggleAbrir,
+    register,
+    setValue,
+    clearErrors,
+    errors,
+    mostrarErrorAlerta,
+    getValues,
+    grabar }: any) {
 
     return (
         <Transition show={abrir}>
@@ -62,13 +72,12 @@ export default function Drawer({ abrir, toggleAbrir, register, setValue, clearEr
                                                 <p>Subtotal</p>
                                                 <p>$262.00</p>
                                             </div>
-                                            <div className="mt-6">
-                                                <a
-                                                    href="#"
-                                                    className="flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-6 py-3 text-base font-medium text-white shadow-sm hover:bg-indigo-700"
-                                                >
-                                                    Grabar
-                                                </a>
+                                            <div className="mt-6 w-full">
+                                                <ButtonCommon
+                                                    texto="Grabarrr"
+                                                    type="button"
+                                                    onClick={grabar}
+                                                />
                                             </div>
                                         </div>
                                     </div>

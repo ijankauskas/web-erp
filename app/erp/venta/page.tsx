@@ -6,10 +6,11 @@ import ButtonCommon from '@/app/ui/erp/ButtonCommon';
 import Alerta from '@/app/ui/erp/alerta';
 import Cabecera from '@/app/ui/erp/compra/cabecera';
 import Drawer from '@/app/ui/erp/compra/drawer';
-import Tabla from '@/app/ui/erp/compra/tabla';
 import ArticulosConsul from '@/app/ui/erp/consultas/articulos_consul';
+import Tabla from '@/app/ui/erp/venta/tabla';
 import InputCommon from '@/app/ui/inputCommon';
 import { compraSchema } from '@/app/validaciones/compra';
+import { VentaSchema } from '@/app/validaciones/venta';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -17,10 +18,8 @@ import { useForm } from 'react-hook-form';
 type Inputs = {
     numero: string,
     fecha: string,
-    fechaVenci: string,
-    fechaPago: string,
-    codProveedor: string,
-    razonProveedor: string,
+    num_cliente: string,
+    razon_cliente: string,
 }
 
 export default function alta_articulo() {
@@ -39,14 +38,13 @@ export default function alta_articulo() {
         defaultValues: {
             numero: '',
             fecha: '',
-            fechaVenci: '',
-            fechaPago: '',
-            codProveedor: '',
-            razonProveedor: '',
+            num_cliente: '',
+            razon_cliente: '',
         },
-        resolver: zodResolver(compraSchema)
+        resolver: zodResolver(VentaSchema)
     })
     const [articulos, setArticulos] = useState<{}[]>([]);
+    const formRef = useRef(null);
     const cerrarAlerta = () => {
         setError({
             mostrar: false,
@@ -83,11 +81,10 @@ export default function alta_articulo() {
     const prevArticulosRef = useRef(articulos);
     useEffect(() => {
         const prevArticulos = prevArticulosRef.current;
-
         if (articulos.length > prevArticulos.length) {
-            // Se agregó un artículo
-            const articuloAgregado:any = articulos.find((articulo):any => !prevArticulos.some((prev:any) => prev.codigo === articulo.codigo));
-
+            const articuloAgregado: any = articulos.find((articulo: any) => !prevArticulos.some((prev: any) => prev.codigo === articulo.codigo));
+            console.log(articuloAgregado);
+            return
             setAlerta({
                 message: `Se agregó el artículo: ${articuloAgregado.descripcion}`,
                 type: "success",
@@ -95,15 +92,13 @@ export default function alta_articulo() {
             });
         } else if (articulos.length < prevArticulos.length) {
             // Se eliminó un artículo
-            const articuloEliminado:any = prevArticulos.find(prev => !articulos.some(articulo => articulo.id === prev.id));
+            const articuloEliminado: any = prevArticulos.find((prev: any) => !articulos.some((articulo: any) => articulo.id === prev.id));
             setAlerta({
                 message: `Se eliminó el artículo: ${articuloEliminado.descripcion}`,
                 type: "warning",
                 alertVisible: true
             });
         }
-
-        // Actualizar la referencia con el estado actual
         prevArticulosRef.current = articulos;
     }, [articulos]);
 
@@ -111,7 +106,7 @@ export default function alta_articulo() {
         if (!isInitialMount)
             setError({
                 mostrar: true,
-                mensaje: 'Error: No se encontró ningun proveedor con ese codigo.',
+                mensaje: 'Error: No se encontró ningun cliente con ese codigo.',
                 titulo: 'Oops...',
                 icono: 'error-icon',
             });
@@ -124,49 +119,66 @@ export default function alta_articulo() {
         }
     });
 
+    const toggleAbrirArticulosConsul = () => {
+        setAbrirArticulosConsul(!abrirArticulosConsul)
+    }
 
     const toggleCabecera = () => {
+        console.log(getValues());
         setAbrirCabecera(!abrirCabecera)
+    }
+
+    const grabar = () => {
+        handleSubmit(enviarForm)();
+    }
+
+    const enviarForm = (data?: any) => {
+        console.log(data);
     }
 
     return (
         <>
-            {!isLgHidden && (
-                <Drawer abrir={abrirCabecera}
-                    toggleAbrir={toggleCabecera}
-                    register={register}
-                    setValue={setValue}
-                    mostrarErrorAlerta={mostrarErrorAlerta}
-                    clearErrors={clearErrors}
-                    getValues={getValues} />
-            )}
-            <div className="w-full flex flex-col p-8 pt-2">
-                {isLgHidden && (
-                    <Cabecera
+            <form ref={formRef} className="space-y-7" method="POST" onSubmit={handleSubmit(data => enviarForm(data))}>
+                {!isLgHidden && (
+                    <Drawer abrir={abrirCabecera}
+                        toggleAbrir={toggleCabecera}
                         register={register}
                         setValue={setValue}
                         mostrarErrorAlerta={mostrarErrorAlerta}
                         clearErrors={clearErrors}
-                        getValues={getValues} />
+                        getValues={getValues}
+                        grabar={grabar}
+                    />
                 )}
-                <div className="flex justify-end my-2">
-                    <button
-                        type="button"
-                        className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                        onClick={() => setAbrirArticulosConsul(true)}
-                    >
-                        Agregar Articulo
-                    </button>
-                    {!isLgHidden && (
-                        <div className='ml-4'>
-                            <ButtonCommon texto={"Mostrar Datos"} onClick={toggleCabecera} />
-                        </div>
+                <div className="w-full flex flex-col p-8 pt-2">
+                    {isLgHidden && (
+                        <Cabecera
+                            register={register}
+                            setValue={setValue}
+                            mostrarErrorAlerta={mostrarErrorAlerta}
+                            clearErrors={clearErrors}
+                            getValues={getValues}
+                        />
                     )}
+                    <div className="flex justify-end my-2">
+                        <div className='w-1/6'>
+                            <ButtonCommon type="button" texto={"Agregar Articulo"} onClick={toggleAbrirArticulosConsul} />
+                        </div>
+                        {!isLgHidden && (
+                            <div className='ml-4 w-1/6'>
+                                <ButtonCommon type="button" texto={"Mostrar Datos"} onClick={toggleCabecera} />
+                            </div>
+                        )}
+                    </div>
+                    <div className="overflow-x-auto sm:-mx-6 lg:-mx-8">
+                        <Tabla
+                            articulos={articulos}
+                            setAlerta={setAlerta}
+                            setArticulos={setArticulos}
+                        />
+                    </div>
                 </div>
-                <div className="overflow-x-auto sm:-mx-6 lg:-mx-8">
-                    <Tabla articulos={articulos} setAlerta={setAlerta} setArticulos={setArticulos}/>
-                </div>
-            </div>
+            </form>
 
             {/*alerta */}
             <Alerta

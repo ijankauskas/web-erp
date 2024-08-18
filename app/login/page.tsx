@@ -1,12 +1,12 @@
 "use client"
 
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from "zod"
 import { signInSchema } from '../validaciones/signIn';
 import { useForm } from 'react-hook-form';
 import { useRouter } from "next/navigation";
 import { loginAction } from '../actions/auth-action';
+import LoadingBar, { LoadingBarRef } from 'react-top-loading-bar';
 
 type Inputs = {
   email: string,
@@ -14,23 +14,37 @@ type Inputs = {
 }
 
 const FormLogin = () => {
+  const ref = useRef<LoadingBarRef | null>(null);
   const router = useRouter();
   const { register, handleSubmit, formState: { errors }, setValue, clearErrors, getValues, watch } = useForm<Inputs>({
     resolver: zodResolver(signInSchema)
   })
 
+  useEffect(() => {
+    if (ref.current) {
+      ref.current.complete();
+    }
+  }, []);
+
+
   const enviarForm = async (data: Inputs) => {
+    ref.current?.continuousStart();
     const respuesta = await loginAction(data)
     console.log(respuesta);
     if (respuesta.error) {
+      ref.current?.complete();
       // setError(response.error);
     } else {
+      ref.current?.complete();
       router.push("/erp");
     }
   };
 
   return (
     <div className="flex h-screen">
+      <div>
+        <LoadingBar color='rgb(99 102 241)' ref={ref} />
+      </div>
       {/* Left side */}
       <div className="flex w-full lg:w-1/2 flex-col justify-center px-8 py-12 bg-white sm:px-12 lg:flex-none lg:px-24 lg:py-32">
         <div className="mx-auto w-full max-w-lg lg:w-[28rem]">

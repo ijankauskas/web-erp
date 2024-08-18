@@ -5,27 +5,24 @@ import InputCommon from "../../inputCommon";
 import { faPersonWalkingDashedLineArrowRight } from "@fortawesome/free-solid-svg-icons/faPersonWalkingDashedLineArrowRight";
 
 const people = [
-    { id: 1, name: 'asdr' },
-    { id: 2, name: 'Arlene Mccoy' },
-    { id: 3, name: 'Devon Webb' },
-    { id: 4, name: 'Tom Cook' },
-    { id: 5, name: 'Tanya Fox' },
-    { id: 6, name: 'Hellen Schmidt' },
+    { id: '1', name: 'asdr' },
+    { id: '2', name: 'Arlene Mccoy' },
+    { id: '3', name: 'Devon Webb' },
+    { id: '4', name: 'Tom Cook' },
+    { id: '5', name: 'Tanya Fox' },
+    { id: '6', name: 'Hellen Schmidt' },
 ];
 
 export default function Cabecera({ register, setValue, clearErrors, errors, mostrarErrorAlerta, getValues }: any) {
 
-    const [nuevo, setNuevo]=useState(null)
-
-    const seleccionarProveedorSelec = (proveedor: any) => {
-        setValue('codProveedor', proveedor);
-        clearErrors('codProveedor');
+    const seleccionarClienteSelec = (cliente: any) => {
+        setValue('num_cliente', cliente);
+        clearErrors('num_cliente');
     }
 
 
-    const consultarProveedores = (proveedor:any) => {
-        setNuevo( proveedor.target.value);
-        setValue('codProveedor', proveedor.target.value);
+    const consultarClientes = (cliente:any) => {
+        setValue('num_cliente', cliente.target.value);
     }
 
     return (
@@ -49,24 +46,6 @@ export default function Cabecera({ register, setValue, clearErrors, errors, most
                             useForm={register("fecha")} />
                     </div>
                 </div>
-                <div className="sm:col-span-4 col-span-4 flex items-center">
-                    <div className='w-full mr-2'>
-                        <InputCommon
-                            titulo={"Fecha de vencimiento"}
-                            tipo={'date'}
-                            placeholder={""}
-                            useForm={register("fechaVenci")} />
-                    </div>
-                </div>
-                <div className="sm:col-span-4 col-span-4 flex items-center">
-                    <div className='w-full mr-2'>
-                        <InputCommon
-                            titulo={"Fecha de Pago"}
-                            tipo={'date'}
-                            placeholder={""}
-                            useForm={register("fechaPago")} />
-                    </div>
-                </div>
 
                 <div className="col-span-2 sm:col-span-3 md:col-span-3 flex items-center">
                     <div className='w-full mr-2'>
@@ -74,17 +53,17 @@ export default function Cabecera({ register, setValue, clearErrors, errors, most
                             titulo={"Codigo"}
                             tipo={'text'}
                             placeholder={""}
-                            useForm={register("codProveedor", { onBlur: consultarProveedores })}
+                            useForm={register("num_cliente", { onBlur: consultarClientes })}
                         />
                     </div>
                 </div>
                 <div className="col-span-2 sm:col-span-5 md:col-span-5 flex items-center">
                     <div className='w-full mr-2'>
                         <ComboBoxSelect
-                            titulo={"Proveedor"}
+                            titulo={"Cliente"}
                             data={people}
-                            seleccionado={nuevo}
-                            setearCodigo={seleccionarProveedorSelec}
+                            seleccionado={getValues('num_cliente')}
+                            setearCodigo={seleccionarClienteSelec}
                             mostrarError={mostrarErrorAlerta} />
                     </div>
                 </div>

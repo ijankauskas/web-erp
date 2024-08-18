@@ -1,67 +1,195 @@
 'use client'
 
-export default function Tabla() {
+import { useRef, useState } from "react";
+import InputCommon from "../../inputCommon";
+import { DbConsultarArticulo } from "@/app/lib/data";
+
+export default function Tabla({ articulos, setAlerta, setArticulos }: any) {
+    const [columnWidths, setColumnWidths] = useState([150, 400, 100, 125, 125,100]);
+
+    const handleMouseDown = (index, event) => {
+        const startX = event.clientX;
+        const startWidth = columnWidths[index];
+
+        const onMouseMove = (e) => {
+            const newWidth = startWidth + (e.clientX - startX);
+            const newWidths = [...columnWidths];
+            newWidths[index] = Math.max(newWidth, 50); // Establece un ancho mínimo
+            setColumnWidths(newWidths);
+        };
+
+        const onMouseUp = () => {
+            document.removeEventListener('mousemove', onMouseMove);
+            document.removeEventListener('mouseup', onMouseUp);
+        };
+
+        document.addEventListener('mousemove', onMouseMove);
+        document.addEventListener('mouseup', onMouseUp);
+    };
+
+
+    const [nuevoArticulo, setNuevoArticulo] = useState<any>({});
+    const manejarCambioNuevoArticulo = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { id, value } = e.target;
+        setNuevoArticulo((prev: any) => ({ ...prev, [id]: value }));
+    }
+
+    const consultarArticulo = async () => {
+        console.log(nuevoArticulo);
+
+        if (nuevoArticulo.codigo == '' || nuevoArticulo.codigo == undefined) return
+
+        const respuesta = await DbConsultarArticulo(nuevoArticulo.codigo, 'N');
+        const data = await respuesta.json();
+
+        if (respuesta.ok) {
+            // const articulos = Array.isArray(data) ? data : [data];
+            const articulos = [{
+                codigo: data.codigo,
+                descripcion: data.descripcion,
+                unidad: data.unidad,
+                cantidad: data.cantidad || 0,
+                precio: data.precio_vta || 0
+            }];
+
+            setArticulos((prev: any) => [...prev, ...articulos]);
+
+        } else {
+            setAlerta({
+                message: data.message,
+                type: "error",
+                alertVisible: true
+            });
+        }
+        setNuevoArticulo({ codigo: '', descripcion: '', unidad: '', cantidad: 0 });
+    }
 
     return (
         <>
             <div className="py-2 inline-block min-w-full sm:px-6 lg:px-8">
-                <div className="overflow-hidden shadow-md sm:rounded-lg">
-                    <table className="min-w-full">
+                <div className="w-full overflow-x-auto shadow-md sm:rounded-lg"> {/* Contenedor con ancho al 100% y overflow */}
+                    <table className="min-w-full w-full table-fixed">
                         <thead className="bg-gray-50">
-                            <tr>
-                                <th scope="col" className="w-[100px] px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <tr className="border-b">
+                                <th style={{ width: columnWidths[0] }} scope="col" className="relative px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider  border-r border-gray-200">
                                     Codigo
+                                    <div
+                                        className="absolute right-0 top-0 w-1 h-full cursor-col-resize hover:bg-gray-300"
+                                        onMouseDown={(e) => handleMouseDown(0, e)}
+                                    />
                                 </th>
-                                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <th style={{ width: columnWidths[1] }} scope="col" className="relative px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-r border-gray-200">
                                     Descripcion
+                                    <div
+                                        className="absolute right-0 top-0 w-1 h-full cursor-col-resize hover:bg-gray-300"
+                                        onMouseDown={(e) => handleMouseDown(1, e)}
+                                    />
                                 </th>
-                                <th scope="col" className="w-[50px] px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <th style={{ width: columnWidths[2] }} scope="col" className="resizable-th w-[50px] px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-r border-gray-200">
                                     Cantidad
+                                    <div
+                                        className="absolute right-0 top-0 w-1 h-full cursor-col-resize hover:bg-gray-300"
+                                        onMouseDown={(e) => handleMouseDown(2, e)}
+                                    />
                                 </th>
-                                <th scope="col" className="w-[50px] px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <th style={{ width: columnWidths[3] }} scope="col" className="resizable-th w-[125px] px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-r border-gray-200">
                                     Precio
+                                    <div
+                                        className="absolute right-0 top-0 w-1 h-full cursor-col-resize hover:bg-gray-300"
+                                        onMouseDown={(e) => handleMouseDown(3, e)}
+                                    />
                                 </th>
-                                <th scope="col" className="relative px-6 py-3">
+                                <th style={{ width: columnWidths[4] }} scope="col" className="resizable-th w-[125px] px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-r border-gray-200">
+                                    Total
+                                    <div
+                                        className="absolute right-0 top-0 w-1 h-full cursor-col-resize hover:bg-gray-300"
+                                        onMouseDown={(e) => handleMouseDown(4, e)}
+                                    />
+                                </th>
+                                <th style={{ width: columnWidths[5] }} scope="col" className="relative px-6 py-3">
                                     <span className="sr-only">Edit</span>
                                 </th>
                             </tr>
                         </thead>
                         <tbody className="bg-white divide-y divide-gray-200">
+                            {articulos?.map((articulo: any, index: number) => (
+                                <tr key={index}>
+                                    <td className="px-2 py-2 whitespace-nowrap text-sm font-medium text-gray-900 border-r border-gray-200">
+                                        <InputCommon
+                                            tipo={'text'}
+                                            id={articulo.codigo}
+                                            texto={articulo.codigo}
+                                            // useForm={register(articulo.cod_articulo_compo + '-' + index)}
+                                            onChange={manejarCambioNuevoArticulo}
+                                        />
+                                    </td>
+                                    <td className="px-2 py-2 whitespace-nowrap text-sm text-gray-500 border-r border-gray-200">
+                                        {articulo.descripcion}
+                                    </td>
+                                    <td className="px-2 py-2 whitespace-nowrap text-sm text-gray-500 border-r border-gray-200">
+                                        <InputCommon
+                                            tipo={'number'}
+                                            id="cantidad"
+                                        // texto={nuevoArticuloCompo.cantidad}
+                                        // onChange={(e: React.ChangeEvent<HTMLInputElement>) => manejarCambioNuevoArticulo(e)}
+                                        />
+                                    </td>
+                                    <td className="px-2 py-2 whitespace-nowrap text-sm text-gray-500 border-r border-gray-200">
+                                        <InputCommon
+                                            tipo={'number'}
+                                            id="cantidad"
+                                        // texto={nuevoArticuloCompo.cantidad}
+                                        // onChange={(e: React.ChangeEvent<HTMLInputElement>) => manejarCambioNuevoArticulo(e)}
+                                        />
+                                    </td>
+                                    <td className="px-3 py-2 whitespace-nowrap text-sm text-gray-500 border-r border-gray-200">
+                                        {articulo.cantidad * articulo.precio}
+                                    </td>
+                                    <td className="w-12 px-6 py-2 whitespace-nowrap text-right text-sm font-medium border-r border-gray-200">
+                                        <a href="#" className="text-indigo-600 hover:text-indigo-900">
+                                            Eliminar
+                                        </a>
+                                    </td>
+                                </tr>
+                            ))}
                             <tr>
-                                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                    <input
-                                        type="text"
-                                        min="0"
-                                        className="w-[100px] border border-gray-300 rounded-md py-1 px-2 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500"
-                                        defaultValue={' '}
+                                <td className="px-2 py-2 whitespace-nowrap text-sm font-medium text-gray-900 border-r border-gray-200">
+                                    <InputCommon
+                                        tipo={'text'}
+                                        id="codigo"
+                                        texto={nuevoArticulo.codigo}
+                                        onChange={manejarCambioNuevoArticulo}
+                                        funcionOnblur={consultarArticulo}
                                     />
                                 </td>
-                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    Regional Paradigm Technician
+                                <td className="px-2 py-2 whitespace-nowrap text-sm text-gray-500 border-r border-gray-200">
+
                                 </td>
-                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    <input
-                                        type="number"
-                                        min="0"
-                                        className="w-[50px] border border-gray-300 rounded-md py-1 px-2 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 text-right"
-                                        defaultValue={''}
+                                <td className="px-2 py-2 whitespace-nowrap text-sm text-gray-500 border-r border-gray-200">
+                                    <InputCommon
+                                        tipo={'number'}
+                                        id="cantidad"
+                                    // texto={nuevoArticuloCompo.cantidad}
+                                    // onChange={(e: React.ChangeEvent<HTMLInputElement>) => manejarCambioNuevoArticulo(e)}
                                     />
                                 </td>
-                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    <input
-                                        type="number"
-                                        min="0"
-                                        className="w-[100px] border border-gray-300 rounded-md py-1 px-2 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 text-right"
-                                        defaultValue={''}
+                                <td className="px-2 py-2 whitespace-nowrap text-sm text-gray-500 border-r border-gray-200">
+                                    <InputCommon
+                                        tipo={'number'}
+                                        id="cantidad"
+                                    // texto={nuevoArticuloCompo.cantidad}
+                                    // onChange={(e: React.ChangeEvent<HTMLInputElement>) => manejarCambioNuevoArticulo(e)}
                                     />
                                 </td>
-                                <td className="w-12 px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                <td className="px-2 py-2 whitespace-nowrap text-sm text-gray-500 border-r border-gray-200">
+
+                                </td>
+                                <td className="w-12 px-6 py-4 whitespace-nowrap text-right text-sm font-medium border-r border-gray-200">
                                     <a href="#" className="text-indigo-600 hover:text-indigo-900">
                                         Eliminar
                                     </a>
                                 </td>
                             </tr>
-                            {/* More rows... */}
                         </tbody>
                     </table>
                 </div>
