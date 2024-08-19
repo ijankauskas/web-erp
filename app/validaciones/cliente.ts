@@ -25,4 +25,5 @@ export const clienteSchema = z.object({
     telefono: z.string().optional(),
     celular: z.string().optional(),
     observaciones: z.string().optional(),
+    activo: z.any().optional(),
 })

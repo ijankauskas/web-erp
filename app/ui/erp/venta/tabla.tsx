@@ -3,14 +3,23 @@
 import { useRef, useState } from "react";
 import InputCommon from "../../inputCommon";
 import { DbConsultarArticulo } from "@/app/lib/data";
+import Alerta from "../alerta";
 
-export default function Tabla({ articulos, setAlerta, setArticulos }: any) {
-    const [columnWidths, setColumnWidths] = useState([150, 400, 100, 125, 125,100]);
+export default function Tabla({ register, articulos, setAlerta, setArticulos }: any) {
+    const [columnWidths, setColumnWidths] = useState([150, 400, 100, 125, 125, 100]);
+    const [error, setError] = useState({
+        mostrar: false,
+        mensaje: '',
+        titulo: '',
+        icono: '',
+        botonExtra: true,
+        textoExtra: '',
+        funcionExtra: () => { }
+    });
 
     const handleMouseDown = (index, event) => {
         const startX = event.clientX;
         const startWidth = columnWidths[index];
-
         const onMouseMove = (e) => {
             const newWidth = startWidth + (e.clientX - startX);
             const newWidths = [...columnWidths];
@@ -27,7 +36,6 @@ export default function Tabla({ articulos, setAlerta, setArticulos }: any) {
         document.addEventListener('mouseup', onMouseUp);
     };
 
-
     const [nuevoArticulo, setNuevoArticulo] = useState<any>({});
     const manejarCambioNuevoArticulo = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { id, value } = e.target;
@@ -35,8 +43,6 @@ export default function Tabla({ articulos, setAlerta, setArticulos }: any) {
     }
 
     const consultarArticulo = async () => {
-        console.log(nuevoArticulo);
-
         if (nuevoArticulo.codigo == '' || nuevoArticulo.codigo == undefined) return
 
         const respuesta = await DbConsultarArticulo(nuevoArticulo.codigo, 'N');
@@ -49,7 +55,7 @@ export default function Tabla({ articulos, setAlerta, setArticulos }: any) {
                 descripcion: data.descripcion,
                 unidad: data.unidad,
                 cantidad: data.cantidad || 0,
-                precio: data.precio_vta || 0
+                precio_vta: data.precio_vta || 0
             }];
 
             setArticulos((prev: any) => [...prev, ...articulos]);
@@ -64,6 +70,48 @@ export default function Tabla({ articulos, setAlerta, setArticulos }: any) {
         setNuevoArticulo({ codigo: '', descripcion: '', unidad: '', cantidad: 0 });
     }
 
+    const modificarArticulo = (e: React.ChangeEvent<HTMLInputElement>, articulo: any, field: string) => {
+        const { value } = e.target;
+        
+        const valueWithoutSeparators = value.replace(/\./g, '').replace(',', '.');
+        const numericValue = isNaN(parseFloat(valueWithoutSeparators)) ? 0 : parseFloat(valueWithoutSeparators);
+
+        setArticulos((prev: any) =>
+            prev.map((item: any) =>
+                item.codigo === articulo.codigo ? { ...item, [field]: numericValue } : item
+            )
+        );
+    };
+
+    const borrarArticulo = (articulo: any) => {
+        setError({
+            mostrar: true,
+            mensaje: 'Se eliminara como el articulo: ' + articulo.descripcion,
+            titulo: 'Estas seguro?',
+            icono: 'error-icon',
+            botonExtra: true,
+            textoExtra: 'Eliminar',
+            funcionExtra: () => eliminar(articulo),
+        });
+    }
+    const eliminar = (articulo_eliminar: any) => {
+        const nuevosArticulos = articulos.filter((articulo: any) => articulo.codigo != articulo_eliminar.codigo);
+        setArticulos(nuevosArticulos);
+        cerrarAlerta();
+    }
+
+    const cerrarAlerta = () => {
+        setError({
+            mostrar: false,
+            mensaje: '',
+            titulo: '',
+            icono: '',
+            botonExtra: false,
+            textoExtra: '',
+            funcionExtra: () => { }
+        });
+    }
+
     return (
         <>
             <div className="py-2 inline-block min-w-full sm:px-6 lg:px-8">
@@ -71,35 +119,35 @@ export default function Tabla({ articulos, setAlerta, setArticulos }: any) {
                     <table className="min-w-full w-full table-fixed">
                         <thead className="bg-gray-50">
                             <tr className="border-b">
-                                <th style={{ width: columnWidths[0] }} scope="col" className="relative px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider  border-r border-gray-200">
+                                <th style={{ width: columnWidths[0] }} scope="col" className="relative px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-r border-gray-200 text-ellipsis overflow-hidden">
                                     Codigo
                                     <div
                                         className="absolute right-0 top-0 w-1 h-full cursor-col-resize hover:bg-gray-300"
                                         onMouseDown={(e) => handleMouseDown(0, e)}
                                     />
                                 </th>
-                                <th style={{ width: columnWidths[1] }} scope="col" className="relative px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-r border-gray-200">
+                                <th style={{ width: columnWidths[1] }} scope="col" className="relative px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-r border-gray-200 text-ellipsis overflow-hidden">
                                     Descripcion
                                     <div
                                         className="absolute right-0 top-0 w-1 h-full cursor-col-resize hover:bg-gray-300"
                                         onMouseDown={(e) => handleMouseDown(1, e)}
                                     />
                                 </th>
-                                <th style={{ width: columnWidths[2] }} scope="col" className="resizable-th w-[50px] px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-r border-gray-200">
+                                <th style={{ width: columnWidths[2] }} scope="col" className="relative w-[50px] px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-r border-gray-200 text-ellipsis overflow-hidden">
                                     Cantidad
                                     <div
                                         className="absolute right-0 top-0 w-1 h-full cursor-col-resize hover:bg-gray-300"
                                         onMouseDown={(e) => handleMouseDown(2, e)}
                                     />
                                 </th>
-                                <th style={{ width: columnWidths[3] }} scope="col" className="resizable-th w-[125px] px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-r border-gray-200">
+                                <th style={{ width: columnWidths[3] }} scope="col" className="relative w-[125px] px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-r border-gray-200 text-ellipsis overflow-hidden">
                                     Precio
                                     <div
                                         className="absolute right-0 top-0 w-1 h-full cursor-col-resize hover:bg-gray-300"
                                         onMouseDown={(e) => handleMouseDown(3, e)}
                                     />
                                 </th>
-                                <th style={{ width: columnWidths[4] }} scope="col" className="resizable-th w-[125px] px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-r border-gray-200">
+                                <th style={{ width: columnWidths[4] }} scope="col" className="relative w-[125px] px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-r border-gray-200 text-ellipsis overflow-hidden">
                                     Total
                                     <div
                                         className="absolute right-0 top-0 w-1 h-full cursor-col-resize hover:bg-gray-300"
@@ -114,7 +162,7 @@ export default function Tabla({ articulos, setAlerta, setArticulos }: any) {
                         <tbody className="bg-white divide-y divide-gray-200">
                             {articulos?.map((articulo: any, index: number) => (
                                 <tr key={index}>
-                                    <td className="px-2 py-2 whitespace-nowrap text-sm font-medium text-gray-900 border-r border-gray-200">
+                                    <td className="px-2 py-2 whitespace-nowrap text-sm font-medium text-gray-900 border-r border-gray-200 text-ellipsis overflow-hidden">
                                         <InputCommon
                                             tipo={'text'}
                                             id={articulo.codigo}
@@ -123,30 +171,34 @@ export default function Tabla({ articulos, setAlerta, setArticulos }: any) {
                                             onChange={manejarCambioNuevoArticulo}
                                         />
                                     </td>
-                                    <td className="px-2 py-2 whitespace-nowrap text-sm text-gray-500 border-r border-gray-200">
+                                    <td className="px-2 py-2 whitespace-nowrap text-sm text-gray-500 border-r border-gray-200 text-ellipsis overflow-hidden">
                                         {articulo.descripcion}
                                     </td>
-                                    <td className="px-2 py-2 whitespace-nowrap text-sm text-gray-500 border-r border-gray-200">
+                                    <td className="px-2 py-2 whitespace-nowrap text-sm text-gray-500 border-r border-gray-200 text-ellipsis overflow-hidden">
                                         <InputCommon
-                                            tipo={'number'}
-                                            id="cantidad"
-                                        // texto={nuevoArticuloCompo.cantidad}
-                                        // onChange={(e: React.ChangeEvent<HTMLInputElement>) => manejarCambioNuevoArticulo(e)}
+                                            tipo={'text'}
+                                            texto={(articulo.cantidad).toLocaleString('es-AR')}
+                                            id={articulo.cantidad + '-' + index}
+                                            useForm={register(articulo.cantidad + '-' + index, { onChange: (e: React.ChangeEvent<HTMLInputElement>) => modificarArticulo(e, articulo, 'cantidad') })}
                                         />
                                     </td>
-                                    <td className="px-2 py-2 whitespace-nowrap text-sm text-gray-500 border-r border-gray-200">
+                                    <td className="px-2 py-2 whitespace-nowrap text-sm text-gray-500 border-r border-gray-200 text-ellipsis overflow-hidden">
                                         <InputCommon
-                                            tipo={'number'}
-                                            id="cantidad"
-                                        // texto={nuevoArticuloCompo.cantidad}
-                                        // onChange={(e: React.ChangeEvent<HTMLInputElement>) => manejarCambioNuevoArticulo(e)}
+                                            tipo={'text'}
+                                            texto={(articulo.precio_vta).toLocaleString('es-AR')}
+                                            id={articulo.precio_vta + '-' + index}
+                                            useForm={register(articulo.precio_vta + '-' + index, { onChange: (e: React.ChangeEvent<HTMLInputElement>) => modificarArticulo(e, articulo, 'precio_vta') })}
                                         />
                                     </td>
-                                    <td className="px-3 py-2 whitespace-nowrap text-sm text-gray-500 border-r border-gray-200">
-                                        {articulo.cantidad * articulo.precio}
+                                    <td className="text-end px-3 py-2 whitespace-nowrap text-sm text-gray-500 border-r border-gray-200 text-ellipsis overflow-hidden">
+                                        {(articulo.cantidad * articulo.precio_vta).toLocaleString('es-AR')}
                                     </td>
                                     <td className="w-12 px-6 py-2 whitespace-nowrap text-right text-sm font-medium border-r border-gray-200">
-                                        <a href="#" className="text-indigo-600 hover:text-indigo-900">
+                                        <a href="#" className="text-indigo-600 hover:text-indigo-900"
+                                            onClick={(e) => {
+                                                e.preventDefault();
+                                                borrarArticulo(articulo);
+                                            }}>
                                             Eliminar
                                         </a>
                                     </td>
@@ -194,6 +246,17 @@ export default function Tabla({ articulos, setAlerta, setArticulos }: any) {
                     </table>
                 </div>
             </div>
+
+            {/*alerta */}
+            <Alerta
+                abrir={error.mostrar}
+                cerrar={cerrarAlerta}
+                titulo={error.titulo}
+                texto={error.mensaje}
+                botonExtra={error.botonExtra}
+                textoExtra={error.textoExtra}
+                funcionExtra={error.funcionExtra}
+            />
         </>
     );
 }

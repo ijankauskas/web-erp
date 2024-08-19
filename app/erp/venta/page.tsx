@@ -20,6 +20,12 @@ type Inputs = {
     fecha: string,
     num_cliente: string,
     razon_cliente: string,
+    articulos: {
+        codigo: string;
+        descripcion: string;
+        unidad: any;
+        cantidad: number;
+    }[]
 }
 
 export default function alta_articulo() {
@@ -40,10 +46,22 @@ export default function alta_articulo() {
             fecha: '',
             num_cliente: '',
             razon_cliente: '',
+            articulos: [{
+                codigo: '',
+                descripcion: '',
+                unidad: '',
+                cantidad: 0
+            }],
         },
         resolver: zodResolver(VentaSchema)
     })
-    const [articulos, setArticulos] = useState<{}[]>([]);
+
+    const [articulos, setArticulos] = useState<{ error: boolean; codigo: string, descripcion: string, unidad: string, cantidad: string }[]>([]);
+
+    useEffect(() => {
+        setValue('articulos', articulos);
+    }, [articulos]);
+
     const formRef = useRef(null);
     const cerrarAlerta = () => {
         setError({
@@ -82,17 +100,17 @@ export default function alta_articulo() {
     useEffect(() => {
         const prevArticulos = prevArticulosRef.current;
         if (articulos.length > prevArticulos.length) {
-            const articuloAgregado: any = articulos.find((articulo: any) => !prevArticulos.some((prev: any) => prev.codigo === articulo.codigo));
-            console.log(articuloAgregado);
-            return
+            const articuloAgregado: any = articulos.filter((articulo: any, index: number, self: any[]) =>
+                index === self.findIndex((t) => t.codigo === articulo.codigo)
+            );
             setAlerta({
-                message: `Se agregó el artículo: ${articuloAgregado.descripcion}`,
+                message: `Se agregó el artículo: ${articuloAgregado[0].descripcion}`,
                 type: "success",
                 alertVisible: true
             });
         } else if (articulos.length < prevArticulos.length) {
             // Se eliminó un artículo
-            const articuloEliminado: any = prevArticulos.find((prev: any) => !articulos.some((articulo: any) => articulo.id === prev.id));
+            const articuloEliminado: any = prevArticulos.find((prev: any) => !articulos.some((articulo: any) => articulo.codigo === prev.codigo));
             setAlerta({
                 message: `Se eliminó el artículo: ${articuloEliminado.descripcion}`,
                 type: "warning",
@@ -100,7 +118,7 @@ export default function alta_articulo() {
             });
         }
         prevArticulosRef.current = articulos;
-    }, [articulos]);
+    }, [articulos.length]);
 
     const mostrarErrorAlerta = () => {
         if (!isInitialMount)
@@ -124,7 +142,6 @@ export default function alta_articulo() {
     }
 
     const toggleCabecera = () => {
-        console.log(getValues());
         setAbrirCabecera(!abrirCabecera)
     }
 
@@ -172,6 +189,7 @@ export default function alta_articulo() {
                     </div>
                     <div className="overflow-x-auto sm:-mx-6 lg:-mx-8">
                         <Tabla
+                            register={register}
                             articulos={articulos}
                             setAlerta={setAlerta}
                             setArticulos={setArticulos}

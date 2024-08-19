@@ -51,9 +51,16 @@ export default function ArticulosConsul({ setArticulo, open, setOpen }: any) {
     }
 
     const agregarArticulo = ({articulo}:any) => {
-        console.log(articulo);
         
-        setArticulo((prev: any) => [...prev, articulo]);
+        const nuevo = {
+            codigo: articulo.codigo,
+            descripcion: articulo.descripcion,
+            unidad: articulo.unidad,
+            cantidad: articulo.cantidad || 0,
+            precio_vta: articulo.precio_vta || 0
+        };
+
+        setArticulo((prev: any) => [...prev, nuevo]);
     }
 
     return (

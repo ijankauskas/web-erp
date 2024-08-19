@@ -14,6 +14,7 @@ import CheckProve from '@/app/ui/erp/alta_proveedor/CheckProve';
 import { DbConsultarProveedor, DbGrabartarProveedor } from '@/app/lib/data';
 import DismissibleAlert from '@/app/ui/DismissAlerta';
 import { usePathname, useSearchParams, useRouter } from 'next/navigation';
+import ButtonCommon from '@/app/ui/erp/ButtonCommon';
 
 type Inputs = {
     codigo: number,
@@ -187,8 +188,17 @@ export default function alta_proveedor() {
         setValue('activo', true);
     }
 
+    useEffect(() => {
+        const params = new URLSearchParams(searchParams);
+        let codigo: string | null = params.get('codigo');
+        if (codigo != '' && codigo != null) {
+            setValue('codigo', parseFloat(codigo));
+            consultarProve();
+        }
+    }, []);
+
     return (
-        <div className="max-w-7xl mx-auto py-0 px-4 sm:px-6 lg:px-8 bg-white">
+        <div className="mx-auto py-0 px-4 sm:px-6 lg:px-8 bg-white">
             <div>
                 <LoadingBar color='rgb(99 102 241)' ref={ref} />
             </div>
@@ -222,13 +232,14 @@ export default function alta_proveedor() {
                         </> :
                         tab == 1 ? <DatosContacto register={register} setValue={setValue} errors={errors} clearErrors={clearErrors} /> :
                             'Posición no definida.'}
-                    <div className="px-4 py-3 bg-white text-right sm:px-6">
-                        <button
-                            type="submit"
-                            className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                        >
-                            Guardar
-                        </button>
+                    <div className="flex items-end justify-end px-4 py-3 bg-gray-50 text-right sm:px-6">
+                        <div className='w-40'>
+                            <ButtonCommon
+                                texto={"Guardar"}
+                                type={"submit"}
+                            />
+
+                        </div>
                     </div>
                 </form>
 

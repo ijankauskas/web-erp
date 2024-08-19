@@ -106,7 +106,6 @@ export default function alta_articulo() {
     setValue('componentes', articulosCompo);
   }, [articulosCompo]);
 
-
   const cerrarAlerta = () => {
     setError({
       mostrar: false,
@@ -270,7 +269,7 @@ export default function alta_articulo() {
 
 
   return (
-    <div className=" mx-auto py-0 px-4 sm:px-6 lg:px-8 bg-white">
+    <div className="mx-auto py-0 px-4 sm:px-6 lg:px-8 bg-white">
       <div>
         <LoadingBar color='rgb(99 102 241)' ref={ref} />
       </div>
@@ -314,11 +313,14 @@ export default function alta_articulo() {
                 />
               </> :
               'Posición no definida.'}
-          <div className="px-4 py-3 bg-gray-50 text-right sm:px-6">
-            <ButtonCommon
-              texto={"Guardar"}
-              type={"submit"}
-            />
+          <div className="flex items-end justify-end px-4 py-3 bg-gray-50 text-right sm:px-6">
+            <div className='w-40'>
+              <ButtonCommon
+                texto={"Guardar"}
+                type={"submit"}
+              />
+
+            </div>
           </div>
         </form>
         <Alerta

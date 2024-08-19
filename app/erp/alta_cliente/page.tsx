@@ -41,10 +41,10 @@ const people = [
 ];
 
 const tabs = [
-    { name: 'Ficha', href: '0', current: true },
-    { name: 'Comprobantes', href: '1', current: false },
-    { name: 'Team Members', href: '2', current: false },
-    { name: 'Billing', href: '3', current: false },
+    { name: 'Ficha', id: '0', current: true },
+    { name: 'Comprobantes', id: '1', current: false },
+    { name: 'Team Members', id: '2', current: false },
+    { name: 'Billing', id: '3', current: false },
 ];
 
 
@@ -70,7 +70,7 @@ export default function alta_cliente() {
             alertVisible: false
         });
     };
-    const { register, handleSubmit, formState: { errors }, setValue, clearErrors, getValues } = useForm<Inputs>({
+    const { register, handleSubmit, formState: { errors }, setValue, clearErrors, getValues, watch } = useForm<Inputs>({
         defaultValues: {
             codigo: 0,
             razon: '',
@@ -138,7 +138,7 @@ export default function alta_cliente() {
             return
         }
         data.activo = data.activo || data.activo == 'S' ? 'S' : 'N';
-
+        
         setCargando(true);
         ref.current?.continuousStart();
         //llamada al servicio
@@ -187,7 +187,7 @@ export default function alta_cliente() {
             <Tabs tabs={tabs} seleccionarTab={seleccionarTab} tab={tab} />
             <div className='relative '>
                 <form action="#" method="POST" onSubmit={handleSubmit(data => enviarForm(data))}>
-                    {tab === 0 ?
+                    {tab == 0 ?
                         <>
                             <Principal
                                 register={register}
@@ -206,9 +206,10 @@ export default function alta_cliente() {
                                 errors={errors}
                                 clearErrors={clearErrors}
                                 getValues={getValues}
+                                watch={watch}
                             />
                         </> :
-                        tab === 1 ? <Tabla /> :
+                        tab == 1 ? <Tabla /> :
                             'Posición no definida.'}
                     <div className="px-4 py-3 bg-white text-right sm:px-6">
                         <button
