@@ -11,20 +11,21 @@ export default function ComboBoxSelect({ titulo, data, seleccionado, setearCodig
   const [selectedPerson, setSelectedPerson] = useState<{ id: any; name: string } | null>(null);
   const [query, setQuery] = useState('');
 
-  useEffect(() => {
-    if(seleccionado == '' || seleccionado == null){
-      setSelectedPerson(null);
+  useEffect(() => {    
+    if (seleccionado == '' || seleccionado == null) {
+      setSelectedPerson({ id:'', name:'' });
       setearCodigo('');
       return
     }
-    
+
     const selected = data?.find((person: any) => person.id == (seleccionado));
     if (selected) {
       setSelectedPerson(selected);
     } else {
       setSelectedPerson(null);
       setearCodigo('');
-      if (mostrarError ) {
+      if (mostrarError) {
+        setSelectedPerson({ id:'', name:'' });
         mostrarError();
       }
     }

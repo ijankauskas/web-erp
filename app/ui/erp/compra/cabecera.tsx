@@ -14,21 +14,35 @@ const people = [
 ];
 
 export default function Cabecera({ register, setValue, clearErrors, errors, mostrarErrorAlerta, getValues }: any) {
-
+    const [num_cliente, setNum_cliente] = useState()
     const seleccionarClienteSelec = (cliente: any) => {
+        setNum_cliente(cliente);
         setValue('num_cliente', cliente);
         clearErrors('num_cliente');
     }
 
 
-    const consultarClientes = (cliente:any) => {
+    const consultarClientes = (cliente: any) => {
+        setNum_cliente(cliente.target.value)
         setValue('num_cliente', cliente.target.value);
     }
 
     return (
         <>
-            <div className="lgpx-8 pt-2 grid grid-cols-1 gap-x-8 gap-y-2 sm:grid-cols-8">
-                <div className="sm:col-span-4 col-span-4 flex items-center">
+            <div className="pt-2 grid gap-x-2 gap-y-2 grid-cols-6 sm:grid-cols-12">
+                <div className="col-span-6 sm:col-span-6 md:col-span-3 flex items-center">
+                    <div className='w-full mr-2'>
+                        <ComboBoxSelect
+                            titulo={"Tipo"}
+                            data={people}
+                            seleccionado={num_cliente}
+                            setearCodigo={seleccionarClienteSelec}
+                            mostrarError={mostrarErrorAlerta}
+                        />
+                    </div>
+                </div>
+
+                <div className="col-span-6 sm:col-span-6 md:col-span-3 flex items-center">
                     <div className='w-full mr-2'>
                         <InputCommon
                             titulo={"Numero"}
@@ -37,7 +51,7 @@ export default function Cabecera({ register, setValue, clearErrors, errors, most
                             useForm={register("numero")} />
                     </div>
                 </div>
-                <div className="sm:col-span-4 col-span-4 flex items-center">
+                <div className="col-span-6 sm:col-span-6 md:col-span-3 flex items-center">
                     <div className='w-full mr-2'>
                         <InputCommon
                             titulo={"Fecha"}
@@ -46,7 +60,17 @@ export default function Cabecera({ register, setValue, clearErrors, errors, most
                             useForm={register("fecha")} />
                     </div>
                 </div>
-
+                <div className="col-span-6 sm:col-span-6 md:col-span-3 flex items-center">
+                    <div className='w-full mr-2'>
+                        <ComboBoxSelect
+                            titulo={"Moneda"}
+                            data={people}
+                            seleccionado={num_cliente}
+                            setearCodigo={seleccionarClienteSelec}
+                            mostrarError={mostrarErrorAlerta}
+                        />
+                    </div>
+                </div>
                 <div className="col-span-2 sm:col-span-3 md:col-span-3 flex items-center">
                     <div className='w-full mr-2'>
                         <InputCommon
@@ -57,12 +81,13 @@ export default function Cabecera({ register, setValue, clearErrors, errors, most
                         />
                     </div>
                 </div>
-                <div className="col-span-2 sm:col-span-5 md:col-span-5 flex items-center">
+
+                <div className="col-span-4 sm:col-span-5 md:col-span-5 flex items-center">
                     <div className='w-full mr-2'>
                         <ComboBoxSelect
                             titulo={"Cliente"}
                             data={people}
-                            seleccionado={getValues('num_cliente')}
+                            seleccionado={num_cliente}
                             setearCodigo={seleccionarClienteSelec}
                             mostrarError={mostrarErrorAlerta} />
                     </div>

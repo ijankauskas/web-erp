@@ -6,6 +6,7 @@ import ButtonCommon from "../ButtonCommon";
 import { DbConsultarArticulo } from "@/app/lib/data";
 import { SetStateAction, useState } from "react";
 import Alerta from "../alerta";
+import { XMarkIcon } from '@heroicons/react/24/outline'
 
 export default function ArticulosConsul({ setArticulo, open, setOpen }: any) {
     const [error, setError] = useState({
@@ -35,7 +36,7 @@ export default function ArticulosConsul({ setArticulo, open, setOpen }: any) {
     }
 
     const consultar = async () => {
-        const respuesta = await DbConsultarArticulo(sCodarticulos, 'S',sDescrip);
+        const respuesta = await DbConsultarArticulo(sCodarticulos, 'S', sDescrip);
         const data = await respuesta.json();
 
         if (respuesta.ok) {
@@ -50,8 +51,8 @@ export default function ArticulosConsul({ setArticulo, open, setOpen }: any) {
         }
     }
 
-    const agregarArticulo = ({articulo}:any) => {
-        
+    const agregarArticulo = ({ articulo }: any) => {
+
         const nuevo = {
             codigo: articulo.codigo,
             descripcion: articulo.descripcion,
@@ -78,6 +79,20 @@ export default function ArticulosConsul({ setArticulo, open, setOpen }: any) {
                             className="w-11/12 relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all"
                         >
                             <div className="w-10/12 py-2 inline-block min-w-full sm:px-6 lg:px-8">
+                                <div className="border-b flex items-start justify-between">
+                                    <DialogTitle className="text-lg font-medium text-gray-900">Consulta de articulos</DialogTitle>
+                                    <div className="ml-3 flex h-7 items-center">
+                                        <button
+                                            type="button"
+                                            className="relative -m-2 p-2 text-gray-400 hover:text-gray-500"
+                                            onClick={()=>setOpen(false)}
+                                        >
+                                            <span className="absolute -inset-0.5" />
+                                            <span className="sr-only">Close panel</span>
+                                            <XMarkIcon className="h-6 w-6" aria-hidden="true" />
+                                        </button>
+                                    </div>
+                                </div>
                                 <div className="pt-2 grid grid-cols-1 gap-x-12 gap-y-2 sm:grid-cols-12">
                                     <div className="sm:col-span-2 col-span-2 flex items-center">
                                         <div className='w-full'>
@@ -115,7 +130,7 @@ export default function ArticulosConsul({ setArticulo, open, setOpen }: any) {
                                         </thead>
                                         <tbody className="bg-white divide-y divide-gray-200">
                                             {articulos?.map((articulo: any, index: number) => (
-                                                <tr onClick={()=>agregarArticulo({articulo})} className="border-b text-gray-900 hover:text-gray-100 hover:bg-indigo-500 hover:cursor-pointer ">
+                                                <tr onClick={() => agregarArticulo({ articulo })} className="border-b text-gray-900 hover:text-gray-100 hover:bg-indigo-500 hover:cursor-pointer ">
                                                     <td className="px-4 py-2 whitespace-nowrap text-sm border-r border-gray-200">
                                                         {articulo.codigo}
                                                     </td>
@@ -139,6 +154,7 @@ export default function ArticulosConsul({ setArticulo, open, setOpen }: any) {
                 titulo={error.titulo}
                 texto={error.mensaje}
             />
+            
         </>
     )
 }

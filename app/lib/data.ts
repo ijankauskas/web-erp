@@ -1,4 +1,6 @@
 export async function DbConsultarArticulo(cod_articulo?: string | null, multiple?: string | null, descripcion?: string | null) {
+    
+    
     try {
         const response = await fetch('http://localhost:8080/articulos?codigo=' + cod_articulo + '&multiple=' + multiple + '&descripcion=' + descripcion, {
             method: 'GET',
@@ -6,7 +8,6 @@ export async function DbConsultarArticulo(cod_articulo?: string | null, multiple
                 'Content-Type': 'application/json',
             }
         });
-
         return response;
     } catch (error) {
         console.error('Database Error:', error);

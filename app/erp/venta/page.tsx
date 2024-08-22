@@ -31,9 +31,7 @@ type Inputs = {
 export default function alta_articulo() {
     const [cargando, setCargando] = useState(false);
     const [isInitialMount, setIsInitialMount] = useState(true);
-    const [abrirCabecera, setAbrirCabecera] = useState(false);
     const [abrirArticulosConsul, setAbrirArticulosConsul] = useState(false);
-    const [isLgHidden, setIsLgHidden] = useState(false);
     const [error, setError] = useState({
         mostrar: false,
         mensaje: '',
@@ -84,17 +82,6 @@ export default function alta_articulo() {
         });
     };
 
-    useEffect(() => {
-        const handleResize = () => {
-            setIsLgHidden(window.innerWidth < 1024);
-        };
-        handleResize();
-        window.addEventListener('resize', handleResize);
-        return () => {
-            window.removeEventListener('resize', handleResize);
-        };
-
-    }, []);
 
     const prevArticulosRef = useRef(articulos);
     useEffect(() => {
@@ -141,51 +128,30 @@ export default function alta_articulo() {
         setAbrirArticulosConsul(!abrirArticulosConsul)
     }
 
-    const toggleCabecera = () => {
-        setAbrirCabecera(!abrirCabecera)
-    }
-
     const grabar = () => {
         handleSubmit(enviarForm)();
     }
 
     const enviarForm = (data?: any) => {
-        console.log(data);
+        
     }
 
     return (
         <>
             <form ref={formRef} className="space-y-7" method="POST" onSubmit={handleSubmit(data => enviarForm(data))}>
-                {!isLgHidden && (
-                    <Drawer abrir={abrirCabecera}
-                        toggleAbrir={toggleCabecera}
+
+                <div className="w-full flex flex-col p-8 pt-2">
+                    <Cabecera
                         register={register}
                         setValue={setValue}
                         mostrarErrorAlerta={mostrarErrorAlerta}
                         clearErrors={clearErrors}
                         getValues={getValues}
-                        grabar={grabar}
                     />
-                )}
-                <div className="w-full flex flex-col p-8 pt-2">
-                    {isLgHidden && (
-                        <Cabecera
-                            register={register}
-                            setValue={setValue}
-                            mostrarErrorAlerta={mostrarErrorAlerta}
-                            clearErrors={clearErrors}
-                            getValues={getValues}
-                        />
-                    )}
                     <div className="flex justify-end my-2">
-                        <div className='w-1/6'>
+                        <div className='w-3/6 sm:w-1/6'>
                             <ButtonCommon type="button" texto={"Agregar Articulo"} onClick={toggleAbrirArticulosConsul} />
                         </div>
-                        {!isLgHidden && (
-                            <div className='ml-4 w-1/6'>
-                                <ButtonCommon type="button" texto={"Mostrar Datos"} onClick={toggleCabecera} />
-                            </div>
-                        )}
                     </div>
                     <div className="overflow-x-auto sm:-mx-6 lg:-mx-8">
                         <Tabla

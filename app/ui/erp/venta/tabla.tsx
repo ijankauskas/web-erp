@@ -46,6 +46,8 @@ export default function Tabla({ register, articulos, setAlerta, setArticulos }: 
         if (nuevoArticulo.codigo == '' || nuevoArticulo.codigo == undefined) return
 
         const respuesta = await DbConsultarArticulo(nuevoArticulo.codigo, 'N');
+        console.log(respuesta);
+        return
         const data = await respuesta.json();
 
         if (respuesta.ok) {
