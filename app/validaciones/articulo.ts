@@ -32,11 +32,11 @@ export const articuloSchema = z.object({
             message: "El stock debe ser un número.",
         })
         .nullable().transform(val => (val == '' ? null : val)),
-    precio_vta: z.string()
+    precio_vta: z.any()
         .refine(val => !isNaN(Number(val)), {
             message: "El precio de venta debe ser un número.",
         })
-        .transform(val => parseFloat(val))
+        .transform(val => val)
         .refine(val => val > 0, {
             message: "El precio de venta debe ser mayor a cero.",
         }),

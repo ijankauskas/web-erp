@@ -46,8 +46,6 @@ export default function Tabla({ register, articulos, setAlerta, setArticulos }: 
         if (nuevoArticulo.codigo == '' || nuevoArticulo.codigo == undefined) return
 
         const respuesta = await DbConsultarArticulo(nuevoArticulo.codigo, 'N');
-        console.log(respuesta);
-        return
         const data = await respuesta.json();
 
         if (respuesta.ok) {
@@ -56,8 +54,8 @@ export default function Tabla({ register, articulos, setAlerta, setArticulos }: 
                 codigo: data.codigo,
                 descripcion: data.descripcion,
                 unidad: data.unidad,
-                cantidad: data.cantidad || 0,
-                precio_vta: data.precio_vta || 0
+                cantidad: parseFloat(data.cantidad) || 0,
+                precio_vta: parseFloat(data.precio_vta) || 0
             }];
 
             setArticulos((prev: any) => [...prev, ...articulos]);
@@ -72,32 +70,33 @@ export default function Tabla({ register, articulos, setAlerta, setArticulos }: 
         setNuevoArticulo({ codigo: '', descripcion: '', unidad: '', cantidad: 0 });
     }
 
-    const modificarArticulo = (e: React.ChangeEvent<HTMLInputElement>, articulo: any, field: string) => {
+    const modificarArticulo = (e: React.ChangeEvent<HTMLInputElement>, index: any, field: string) => {
+        e.preventDefault();
         const { value } = e.target;
-        
+
         const valueWithoutSeparators = value.replace(/\./g, '').replace(',', '.');
         const numericValue = isNaN(parseFloat(valueWithoutSeparators)) ? 0 : parseFloat(valueWithoutSeparators);
-
         setArticulos((prev: any) =>
-            prev.map((item: any) =>
-                item.codigo === articulo.codigo ? { ...item, [field]: numericValue } : item
+            prev.map((item: any, idx: number) =>
+                idx === index ? { ...item, [field]: numericValue } : item
             )
         );
     };
 
-    const borrarArticulo = (articulo: any) => {
+    const borrarArticulo = (articulo: any, index: any) => {
         setError({
             mostrar: true,
-            mensaje: 'Se eliminara como el articulo: ' + articulo.descripcion,
+            mensaje: 'Se eliminara como el articulo: ' + articulo.descripcion + 'inx:' + index,
             titulo: 'Estas seguro?',
             icono: 'error-icon',
             botonExtra: true,
             textoExtra: 'Eliminar',
-            funcionExtra: () => eliminar(articulo),
+            funcionExtra: () => eliminar(index),
         });
     }
-    const eliminar = (articulo_eliminar: any) => {
-        const nuevosArticulos = articulos.filter((articulo: any) => articulo.codigo != articulo_eliminar.codigo);
+    const eliminar = (index: any) => {
+        const nuevosArticulos = articulos.filter((_: any, idx: any) => idx !== index);
+
         setArticulos(nuevosArticulos);
         cerrarAlerta();
     }
@@ -179,19 +178,24 @@ export default function Tabla({ register, articulos, setAlerta, setArticulos }: 
                                     <td className="px-2 py-2 whitespace-nowrap text-sm text-gray-500 border-r border-gray-200 text-ellipsis overflow-hidden">
                                         <InputCommon
                                             tipo={'text'}
-                                            texto={(articulo.cantidad).toLocaleString('es-AR')}
-                                            id={articulo.cantidad + '-' + index}
-                                            useForm={register(articulo.cantidad + '-' + index, { onChange: (e: React.ChangeEvent<HTMLInputElement>) => modificarArticulo(e, articulo, 'cantidad') })}
+                                            texto={articulo.cantidad.toLocaleString('es-AR')}
+                                            id={`cantidad-${index}`}
+                                            useForm={register(`cantidad-${index}`, {
+                                                onChange: (e: React.ChangeEvent<HTMLInputElement>) => modificarArticulo(e, index, 'cantidad'),
+                                            })}
                                         />
                                     </td>
                                     <td className="px-2 py-2 whitespace-nowrap text-sm text-gray-500 border-r border-gray-200 text-ellipsis overflow-hidden">
                                         <InputCommon
                                             tipo={'text'}
-                                            texto={(articulo.precio_vta).toLocaleString('es-AR')}
-                                            id={articulo.precio_vta + '-' + index}
-                                            useForm={register(articulo.precio_vta + '-' + index, { onChange: (e: React.ChangeEvent<HTMLInputElement>) => modificarArticulo(e, articulo, 'precio_vta') })}
+                                            texto={articulo.precio_vta.toLocaleString('es-AR')}
+                                            id={`precio_vta-${index}`}
+                                            useForm={register(`precio_vta-${index}`, {
+                                                onChange: (e: React.ChangeEvent<HTMLInputElement>) => modificarArticulo(e, index, 'precio_vta'),
+                                            })}
                                         />
                                     </td>
+
                                     <td className="text-end px-3 py-2 whitespace-nowrap text-sm text-gray-500 border-r border-gray-200 text-ellipsis overflow-hidden">
                                         {(articulo.cantidad * articulo.precio_vta).toLocaleString('es-AR')}
                                     </td>
@@ -199,7 +203,7 @@ export default function Tabla({ register, articulos, setAlerta, setArticulos }: 
                                         <a href="#" className="text-indigo-600 hover:text-indigo-900"
                                             onClick={(e) => {
                                                 e.preventDefault();
-                                                borrarArticulo(articulo);
+                                                borrarArticulo(articulo, index);
                                             }}>
                                             Eliminar
                                         </a>

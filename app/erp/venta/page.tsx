@@ -16,6 +16,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
 type Inputs = {
+    tipo: string,
     numero: string,
     fecha: string,
     num_cliente: string,
@@ -40,6 +41,7 @@ export default function alta_articulo() {
     });
     const { register, handleSubmit, formState: { errors }, setValue, clearErrors, getValues } = useForm<Inputs>({
         defaultValues: {
+            tipo: '',
             numero: '',
             fecha: '',
             num_cliente: '',
@@ -97,9 +99,11 @@ export default function alta_articulo() {
             });
         } else if (articulos.length < prevArticulos.length) {
             // Se eliminó un artículo
-            const articuloEliminado: any = prevArticulos.find((prev: any) => !articulos.some((articulo: any) => articulo.codigo === prev.codigo));
+            const articuloEliminado: any = articulos.filter((articulo: any, index: number, self: any[]) =>
+                index === self.findIndex((t) => t.codigo === articulo.codigo)
+            );
             setAlerta({
-                message: `Se eliminó el artículo: ${articuloEliminado.descripcion}`,
+                message: `Se eliminó el artículo: ${articuloEliminado[0].descripcion}`,
                 type: "warning",
                 alertVisible: true
             });
@@ -128,11 +132,8 @@ export default function alta_articulo() {
         setAbrirArticulosConsul(!abrirArticulosConsul)
     }
 
-    const grabar = () => {
-        handleSubmit(enviarForm)();
-    }
-
     const enviarForm = (data?: any) => {
+        console.log(data);
         
     }
 
@@ -151,6 +152,9 @@ export default function alta_articulo() {
                     <div className="flex justify-end my-2">
                         <div className='w-3/6 sm:w-1/6'>
                             <ButtonCommon type="button" texto={"Agregar Articulo"} onClick={toggleAbrirArticulosConsul} />
+                        </div>
+                        <div className='w-3/6 sm:w-1/6'>
+                            <ButtonCommon type="submit" texto={"Grabar"} />
                         </div>
                     </div>
                     <div className="overflow-x-auto sm:-mx-6 lg:-mx-8">

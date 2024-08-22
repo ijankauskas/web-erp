@@ -1,7 +1,7 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleExclamation } from '@fortawesome/free-solid-svg-icons';
 
-export default function InputCommon({ titulo, tipo, id, placeholder, texto, onChange, funcionOnblur, error, useForm }: any) {
+export default function InputCommon({ titulo, tipo, id, placeholder, texto, onChange, funcionOnblur, error, useForm, step }: any) {
 
 
     return (
@@ -17,6 +17,7 @@ export default function InputCommon({ titulo, tipo, id, placeholder, texto, onCh
                     onChange={onChange}
                     onBlur={funcionOnblur}
                     value={texto}
+                    step={step}
                     {...useForm}
                     className={`relative z-0 block w-full rounded-md border-0 px-2.5 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6
                         ${error ? 'focus:ring-red-600 ring-red-300' : 'focus:ring-indigo-500'}`}

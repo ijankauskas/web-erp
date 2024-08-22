@@ -46,6 +46,7 @@ const PreciosArticulo = ({ register, setValue, clearErrors, errors }: any) => {
                                     titulo={"Precio de venta"}
                                     tipo={"number"}
                                     error={errors.precio_vta?.message}
+                                    step={"0.01"}
                                     id="precio_vta"
                                     useForm={register("precio_vta")}
                                 />
