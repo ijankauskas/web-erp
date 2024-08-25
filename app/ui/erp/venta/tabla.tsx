@@ -55,7 +55,8 @@ export default function Tabla({ register, articulos, setAlerta, setArticulos }: 
                 descripcion: data.descripcion,
                 unidad: data.unidad,
                 cantidad: parseFloat(data.cantidad) || 0,
-                precio_vta: parseFloat(data.precio_vta) || 0
+                precio_vta: parseFloat(data.precio_vta) || 0,
+                costo: data.costo || 0
             }];
 
             setArticulos((prev: any) => [...prev, ...articulos]);
@@ -115,8 +116,8 @@ export default function Tabla({ register, articulos, setAlerta, setArticulos }: 
 
     return (
         <>
-            <div className="py-2 inline-block min-w-full sm:px-6 lg:px-8">
-                <div className="w-full overflow-x-auto shadow-md sm:rounded-lg"> {/* Contenedor con ancho al 100% y overflow */}
+            <div className="py-1 inline-block min-w-full sm:px-6 lg:px-8">
+                <div className="w-full h-[37vh] overflow-x-auto overflow-y-auto shadow-md sm:rounded-lg max-h-[400px] bg-white"> {/* Contenedor con ancho al 100% y overflow */}
                     <table className="min-w-full w-full table-fixed">
                         <thead className="bg-gray-50">
                             <tr className="border-b">
@@ -162,7 +163,7 @@ export default function Tabla({ register, articulos, setAlerta, setArticulos }: 
                         </thead>
                         <tbody className="bg-white divide-y divide-gray-200">
                             {articulos?.map((articulo: any, index: number) => (
-                                <tr key={index}>
+                                <tr key={index} className={`${articulo.error ? 'bg-red-300' : ''}`}>
                                     <td className="px-2 py-2 whitespace-nowrap text-sm font-medium text-gray-900 border-r border-gray-200 text-ellipsis overflow-hidden">
                                         <InputCommon
                                             tipo={'text'}
@@ -183,6 +184,7 @@ export default function Tabla({ register, articulos, setAlerta, setArticulos }: 
                                             useForm={register(`cantidad-${index}`, {
                                                 onChange: (e: React.ChangeEvent<HTMLInputElement>) => modificarArticulo(e, index, 'cantidad'),
                                             })}
+                                            textAlign={'text-end'}
                                         />
                                     </td>
                                     <td className="px-2 py-2 whitespace-nowrap text-sm text-gray-500 border-r border-gray-200 text-ellipsis overflow-hidden">
@@ -193,6 +195,7 @@ export default function Tabla({ register, articulos, setAlerta, setArticulos }: 
                                             useForm={register(`precio_vta-${index}`, {
                                                 onChange: (e: React.ChangeEvent<HTMLInputElement>) => modificarArticulo(e, index, 'precio_vta'),
                                             })}
+                                            textAlign={'text-end'}
                                         />
                                     </td>
 
@@ -210,7 +213,7 @@ export default function Tabla({ register, articulos, setAlerta, setArticulos }: 
                                     </td>
                                 </tr>
                             ))}
-                            <tr>
+                            <tr className="border-b">
                                 <td className="px-2 py-2 whitespace-nowrap text-sm font-medium text-gray-900 border-r border-gray-200">
                                     <InputCommon
                                         tipo={'text'}

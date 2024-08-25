@@ -1,6 +1,5 @@
 export async function DbConsultarArticulo(cod_articulo?: string | null, multiple?: string | null, descripcion?: string | null) {
-    
-    
+       
     try {
         const response = await fetch('http://localhost:8080/articulos?codigo=' + cod_articulo + '&multiple=' + multiple + '&descripcion=' + descripcion, {
             method: 'GET',
@@ -13,6 +12,7 @@ export async function DbConsultarArticulo(cod_articulo?: string | null, multiple
         console.error('Database Error:', error);
         throw new Error('Failed to fetch card data.');
     }
+    
 }
 
 export async function DbGrabartarArticulo(data: string | null) {
@@ -101,6 +101,22 @@ export async function DbConsultarCliente(codigo: number | null) {
 export async function DbGrabartarCliente(data: string | null) {
     try {
         const response = await fetch('http://localhost:8080/clientes', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        });
+
+        return response;
+    } catch (error) {
+        throw new Error('Failed to fetch card data.');
+    }
+}
+
+export async function DbGrabartarFactura(data: string | null) {
+    try {
+        const response = await fetch('http://localhost:8080/facturas', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

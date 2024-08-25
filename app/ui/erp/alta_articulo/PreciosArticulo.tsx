@@ -7,7 +7,7 @@ function classNames(...classes: any[]) {
     return classes.filter(Boolean).join(' ');
 }
 
-const PreciosArticulo = ({ register, setValue, clearErrors, errors }: any) => {
+const PreciosArticulo = ({ register, setValue, clearErrors, errors, getValues }: any) => {
 
     return (
         <div className="md:grid md:grid-cols-3 md:gap-6 pt-4 border-b">
@@ -26,8 +26,9 @@ const PreciosArticulo = ({ register, setValue, clearErrors, errors }: any) => {
                             <div className="col-span-6 sm:col-span-3">
                                 <InputCommon
                                     titulo={"Costo"}
-                                    tipo={"number"}
+                                    tipo={'number'}
                                     error={errors.costo?.message}
+                                    step={"0.01"}
                                     id="costo"
                                     useForm={register("costo")}
                                 />
@@ -37,6 +38,7 @@ const PreciosArticulo = ({ register, setValue, clearErrors, errors }: any) => {
                                     titulo={"Stock"}
                                     tipo={"number"}
                                     error={errors.stock?.message}
+                                    step={"0.01"}
                                     id="stock"
                                     useForm={register("stock")}
                                 />
@@ -57,6 +59,7 @@ const PreciosArticulo = ({ register, setValue, clearErrors, errors }: any) => {
                                     titulo={"Precio de oferta"}
                                     tipo={"number"}
                                     error={errors.precio_oferta?.message}
+                                    step={"0.01"}
                                     id="precio_oferta"
                                     useForm={register("precio_oferta")}
                                 />

@@ -290,6 +290,7 @@ export default function alta_articulo() {
                 setValue={setValue}
                 errors={errors}
                 clearErrors={clearErrors}
+                getValues={getValues}
               />
               <CheckArticulo
                 register={register}

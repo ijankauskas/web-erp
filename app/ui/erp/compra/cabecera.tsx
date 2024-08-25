@@ -31,7 +31,7 @@ export default function Cabecera({ register, setValue, clearErrors, errors, most
         <>
             <div className="pt-2 grid gap-x-2 gap-y-2 grid-cols-6 sm:grid-cols-12">
                 <div className="col-span-6 sm:col-span-6 md:col-span-3 flex items-center">
-                    <div className='w-full mr-2'>
+                    <div className='w-full mr-2 h-20'>
                         <ComboBoxSelect
                             titulo={"Tipo"}
                             data={people}
@@ -43,25 +43,27 @@ export default function Cabecera({ register, setValue, clearErrors, errors, most
                 </div>
 
                 <div className="col-span-6 sm:col-span-6 md:col-span-3 flex items-center">
-                    <div className='w-full mr-2'>
+                    <div className='w-full mr-2 h-20'>
                         <InputCommon
                             titulo={"Numero"}
                             tipo={'number'}
+                            error={errors.numero?.message}
                             placeholder={"Numero de la factura"}
                             useForm={register("numero")} />
                     </div>
                 </div>
                 <div className="col-span-6 sm:col-span-6 md:col-span-3 flex items-center">
-                    <div className='w-full mr-2'>
+                    <div className='w-full mr-2 h-20'>
                         <InputCommon
                             titulo={"Fecha"}
                             tipo={'date'}
+                            error={errors.fecha?.message}
                             placeholder={""}
                             useForm={register("fecha")} />
                     </div>
                 </div>
                 <div className="col-span-6 sm:col-span-6 md:col-span-3 flex items-center">
-                    <div className='w-full mr-2'>
+                    <div className='w-full mr-2 h-20'>
                         <ComboBoxSelect
                             titulo={"Moneda"}
                             data={people}
@@ -72,10 +74,11 @@ export default function Cabecera({ register, setValue, clearErrors, errors, most
                     </div>
                 </div>
                 <div className="col-span-2 sm:col-span-3 md:col-span-3 flex items-center">
-                    <div className='w-full mr-2'>
+                    <div className='w-full mr-2 h-20'>
                         <InputCommon
                             titulo={"Codigo"}
-                            tipo={'text'}
+                            tipo={'number'}
+                            error={errors.num_cliente?.message}
                             placeholder={""}
                             useForm={register("num_cliente", { onBlur: consultarClientes })}
                         />
@@ -83,7 +86,7 @@ export default function Cabecera({ register, setValue, clearErrors, errors, most
                 </div>
 
                 <div className="col-span-4 sm:col-span-5 md:col-span-5 flex items-center">
-                    <div className='w-full mr-2'>
+                    <div className='w-full mr-2 h-20'>
                         <ComboBoxSelect
                             titulo={"Cliente"}
                             data={people}
