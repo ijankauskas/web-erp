@@ -63,12 +63,24 @@ const PreciosArticulo = ({ register, setValue, clearErrors, errors, getValues }:
                                     id="precio_oferta"
                                     useForm={register("precio_oferta")}
                                 />
+
+                            </div>
+                            <div className="col-span-6 sm:col-span-3">
+                                <InputCommon
+                                    titulo={"% IVA"}
+                                    tipo={"number"}
+                                    error={errors.iva?.message}
+                                    step={"0.01"}
+                                    id="iva"
+                                    useForm={register("iva")}
+                                />
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+        
     );
 };
 

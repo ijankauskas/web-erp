@@ -46,6 +46,16 @@ export const articuloSchema = z.object({
             message: "El precio de oferta debe ser un número.",
         })
         .transform(val => parseFloat(val)),
+    agru_1: z.string().min(1, {
+        message: "Debe seleccionar la agrupacion 1."
+    }),
+    agru_2: z.string().min(1, {
+        message: "Debe seleccionar la agrupacion 2."
+    }),
+    agru_3: z.string().min(1, {
+        message: "Debe seleccionar la agrupacion 3."
+    }),
     activo: z.any().optional(),
     componentes: z.array(componenteSchema).optional(),
+    iva: z.any().optional().transform(val => parseFloat(val)),
 })

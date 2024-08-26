@@ -67,6 +67,16 @@ const DatosContacto = ({register,setValue,clearErrors,errors}:any) => {
                                 />
                             </div>
 
+                            <div className="col-span-6 sm:col-span-3">
+                                <InputCommon
+                                    titulo={"Domicilio"}
+                                    tipo={"text"}
+                                    error={errors.domicilio?.message}
+                                    id="domicilio"
+                                    useForm={register("domicilio")}
+                                />
+                            </div>
+
                         </div>
                     </div>
                 </div>
