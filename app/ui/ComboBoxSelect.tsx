@@ -7,13 +7,13 @@ function classNames(...classes: any[]) {
   return classes.filter(Boolean).join(' ');
 }
 
-export default function ComboBoxSelect({ titulo, data, seleccionado, setearCodigo, mostrarError, useForm, error }: any) {
+export default function ComboBoxSelect({ titulo, data, seleccionado, setearCodigo, mostrarError, useForm, error, llenarData }: any) {
   const [selectedPerson, setSelectedPerson] = useState<{ id: any; name: string } | null>(null);
   const [query, setQuery] = useState('');
 
-  useEffect(() => {    
+  useEffect(() => {
     if (seleccionado == '' || seleccionado == null) {
-      setSelectedPerson({ id:'', name:'' });
+      setSelectedPerson({ id: '', name: '' });
       setearCodigo('');
       return
     }
@@ -25,11 +25,18 @@ export default function ComboBoxSelect({ titulo, data, seleccionado, setearCodig
       setSelectedPerson(null);
       setearCodigo('');
       if (mostrarError) {
-        setSelectedPerson({ id:'', name:'' });
+        setSelectedPerson({ id: '', name: '' });
         mostrarError();
       }
     }
   }, [seleccionado, data]);
+
+  const consultar = (event:any)=>{
+    setQuery(event.target.value)
+    if(llenarData){
+      llenarData(event.target.value)
+    }
+  }
 
   const seleccionarOpcion = (person: { id: any; name: string } | null) => {
     setSelectedPerson(person);
@@ -53,7 +60,7 @@ export default function ComboBoxSelect({ titulo, data, seleccionado, setearCodig
           <Combobox.Input
             className={`w-full text-black rounded-md border bg-white py-2 pl-3 pr-10 shadow-sm focus:outline-none focus:ring-1 sm:text-sm
             ${error ? 'focus:ring-red-600 border-red-300' : 'border-gray-300 focus:border-indigo-500 focus:ring-indigo-500'}`}
-            onChange={(event) => setQuery(event.target.value)}
+            onChange={(event) => consultar(event)}
             displayValue={(person: any) => (person ? person.name : '')}
           />
           <Combobox.Button className="absolute inset-y-0 right-0 flex items-center rounded-r-md px-2 focus:outline-none">

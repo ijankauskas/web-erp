@@ -82,9 +82,9 @@ export async function DbSingIn(data: any) {
 }
 
 
-export async function DbConsultarCliente(codigo: number | null) {
+export async function DbConsultarCliente(codigo: number | null, multiple?: string | null, razon?: string | null) {
     try {
-        const response = await fetch('http://localhost:8080/clientes?codigo=' + codigo, {
+        const response = await fetch('http://localhost:8080/clientes?codigo=' + codigo + '&multiple='+multiple+ '&razon='+razon, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',

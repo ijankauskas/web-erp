@@ -11,7 +11,8 @@ import {
     UserPlusIcon,
     PlusCircleIcon,
     ShoppingCartIcon,
-    ShoppingBagIcon
+    ShoppingBagIcon,
+    CurrencyDollarIcon
 } from '@heroicons/react/24/outline'
 
 const navigation = [
@@ -91,7 +92,14 @@ const navigation = [
                 href: '/erp/stock',
                 current: false,
                 icon: ShoppingCartIcon,
-            }]
+            },
+            {
+                name: 'Saldos',
+                href: '/erp/saldos',
+                current: false,
+                icon: CurrencyDollarIcon,
+            }
+        ]
     },
 ];
 
@@ -101,7 +109,7 @@ function classNames(...classes: any[]) {
 
 export default function Layout({ children }: { children: React.ReactNode }) {
     const [sidebarOpen, setSidebarOpen] = useState(false);
-    
+
     const toggleSideBar = () => {
         setSidebarOpen(!sidebarOpen);
     };

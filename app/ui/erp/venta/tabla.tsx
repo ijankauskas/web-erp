@@ -230,6 +230,7 @@ export default function Tabla({ register, articulos, setAlerta, setArticulos }: 
                                     <InputCommon
                                         tipo={'number'}
                                         id="cantidad"
+                                        textAlign={'text-end'}
                                     // texto={nuevoArticuloCompo.cantidad}
                                     // onChange={(e: React.ChangeEvent<HTMLInputElement>) => manejarCambioNuevoArticulo(e)}
                                     />
@@ -238,6 +239,7 @@ export default function Tabla({ register, articulos, setAlerta, setArticulos }: 
                                     <InputCommon
                                         tipo={'number'}
                                         id="cantidad"
+                                        textAlign={'text-end'}
                                     // texto={nuevoArticuloCompo.cantidad}
                                     // onChange={(e: React.ChangeEvent<HTMLInputElement>) => manejarCambioNuevoArticulo(e)}
                                     />

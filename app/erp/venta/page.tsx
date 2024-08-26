@@ -35,6 +35,8 @@ type Inputs = {
     }[]
 }
 
+const fecha_hoy = new Date().toISOString().split('T')[0];
+
 export default function alta_articulo() {
     const [cargando, setCargando] = useState(false);
     const ref = useRef<LoadingBarRef | null>(null);
@@ -47,17 +49,17 @@ export default function alta_articulo() {
 
     const [isInitialMount, setIsInitialMount] = useState(true);
     const [abrirArticulosConsul, setAbrirArticulosConsul] = useState(false);
-    const [error, setError] = useState({
+    const [mensaje, setMensaje] = useState({
         mostrar: false,
         mensaje: '',
         titulo: '',
-        icono: '',
+        tipo_aletar: '',
     });
     const { register, handleSubmit, formState: { errors }, setValue, clearErrors, getValues } = useForm<Inputs>({
         defaultValues: {
             tipo: '',
             numero: '',
-            fecha: '',
+            fecha: fecha_hoy,
             mone: '',
             num_cliente: '',
             razon_cliente: '',
@@ -82,12 +84,12 @@ export default function alta_articulo() {
 
     const formRef = useRef(null);
 
-    const cerrarAlerta = () => {
-        setError({
+    const cerrarMensaje = () => {
+        setMensaje({
             mostrar: false,
             mensaje: '',
             titulo: '',
-            icono: '',
+            tipo_aletar: '',
         });
     }
     const [alerta, setAlerta] = useState({
@@ -132,11 +134,11 @@ export default function alta_articulo() {
 
     const mostrarErrorAlerta = () => {
         if (!isInitialMount)
-            setError({
+            setMensaje({
                 mostrar: true,
                 mensaje: 'Error: No se encontró ningun cliente con ese codigo.',
                 titulo: 'Oops...',
-                icono: 'error-icon',
+                tipo_aletar: 'error',
             });
     }
 
@@ -153,12 +155,13 @@ export default function alta_articulo() {
 
     const enviarForm = async (data?: any) => {
         if (articulos.length <= 0) {
-            setError({
+            setMensaje({
                 mostrar: true,
                 mensaje: 'No se puede grabar una factura sin articulos.',
                 titulo: 'Oops...',
-                icono: 'error-icon',
+                tipo_aletar: 'error',
             });
+            return;
         }
         //limpia los errores 
         articulos.map(articulo => articulo.error = false)
@@ -175,27 +178,29 @@ export default function alta_articulo() {
             return acc + parseFloat(calculo.toFixed(2));
         }, 0)
 
-
         const response = await DbGrabartarFactura(data)
-        const errorMessage = await response.json();
-
+        const mensaje = await response.json();
+        
         if (response.ok) {
             ref.current?.complete();
             setCargando(false);
-            setAlerta({
-                message: 'Se guardo correctamente el articulo',
-                type: "success",
-                alertVisible: true
+            setMensaje({
+                mostrar: true,
+                mensaje: mensaje.message,
+                titulo: 'Operacion Exitosa!',
+                tipo_aletar: 'exitoso',
             });
+            return
         } else {
-            const errorMessage = await response.json();
             ref.current?.complete();
             setCargando(false);
-            setAlerta({
-                message: errorMessage.message,
-                type: "error",
-                alertVisible: true
+            setMensaje({
+                mostrar: true,
+                mensaje: mensaje.message,
+                titulo: 'Oops...',
+                tipo_aletar: 'error',
             });
+            return
         }
     }
 
@@ -220,11 +225,11 @@ export default function alta_articulo() {
                 mensaje += error.cantidad.message + '\n\n'
             });
         }
-        setError({
+        setMensaje({
             mostrar: true,
             mensaje: mensaje,
             titulo: 'O  ops...',
-            icono: 'error-icon',
+            tipo_aletar: 'error',
         });
 
         clearErrors();
@@ -273,10 +278,11 @@ export default function alta_articulo() {
 
             {/*alerta */}
             <Alerta
-                abrir={error.mostrar}
-                cerrar={cerrarAlerta}
-                titulo={error.titulo}
-                texto={error.mensaje}
+                abrir={mensaje.mostrar}
+                cerrar={cerrarMensaje}
+                titulo={mensaje.titulo}
+                texto={mensaje.mensaje}
+                tipo_aletar={mensaje.tipo_aletar}
             />
 
             <ArticulosConsul
