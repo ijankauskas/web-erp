@@ -17,6 +17,14 @@ type Inputs = {
     agru_3: string,
 }
 
+
+const iva = [
+    { id: '1', name: 'Consumidor Final' },
+    { id: '2', name: 'Responsable Inscripto' },
+    { id: '3', name: 'Responsable No Inscripto' },
+    { id: '4', name: 'Exento' },
+    { id: '5', name: 'Monotributista' },
+];
 const people = [
     { id: '1', name: 'asdr' },
     { id: '2', name: 'Arlene Mccoy' },
@@ -31,6 +39,11 @@ function classNames(...classes: any[]) {
 }
 
 const Principal = ({ register, setValue, clearErrors, errors, consultarProve, getValues }: any) => {
+
+    const seleccionarCate_ivaSelec = (cate_iva: any) => {
+        setValue('cate_iva', cate_iva);
+        clearErrors('cate_iva');
+    }
 
     const seleccionarAgru1Selec = (agru_1: any) => {
         setValue('agru_1', agru_1);
@@ -99,6 +112,15 @@ const Principal = ({ register, setValue, clearErrors, errors, consultarProve, ge
                                     error={errors.nombre_fantasia?.message}
                                     id="nombre_fantasia"
                                     useForm={register("nombre_fantasia")}
+                                />
+                            </div>
+
+                            <div className="col-span-6 sm:col-span-2">
+                                <ComboBoxSelect
+                                    titulo={"Categoria de IVA"}
+                                    data={iva}
+                                    setearCodigo={seleccionarCate_ivaSelec}
+                                    error={errors.cate_iva?.message}
                                 />
                             </div>
 

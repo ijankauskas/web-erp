@@ -19,6 +19,7 @@ import ButtonCommon from '@/app/ui/erp/ButtonCommon';
 type Inputs = {
     codigo: number,
     cuit: string,
+    cate_iva: string
     razon: string,
     nombre_fantasia: string,
     mail: string,
@@ -78,6 +79,7 @@ export default function alta_proveedor() {
         defaultValues: {
             codigo: 0,
             cuit: '',
+            cate_iva:'',
             razon: '',
             nombre_fantasia: '',
             mail: '',
@@ -180,6 +182,7 @@ export default function alta_proveedor() {
     const limpiar = () => {
 
         setValue('cuit', '');
+        setValue('cate_iva', '');
         setValue('razon', '');
         setValue('nombre_fantasia', '');
         setValue('mail', '');
