@@ -1,5 +1,6 @@
 "use client"
 
+import { DbGrabartarFactura } from '@/app/lib/data';
 import ComboBoxSelect from '@/app/ui/ComboBoxSelect';
 import DismissibleAlert from '@/app/ui/DismissAlerta';
 import ButtonCommon from '@/app/ui/erp/ButtonCommon';
@@ -7,6 +8,7 @@ import Alerta from '@/app/ui/erp/alerta';
 import Cabecera from '@/app/ui/erp/compra/cabecera';
 import Drawer from '@/app/ui/erp/compra/drawer';
 import ArticulosConsul from '@/app/ui/erp/consultas/articulos_consul';
+import TablaTotales from '@/app/ui/erp/venta/TablaTotales';
 import Tabla from '@/app/ui/erp/venta/tabla';
 import InputCommon from '@/app/ui/inputCommon';
 import { compraSchema } from '@/app/validaciones/compra';
@@ -14,10 +16,13 @@ import { VentaSchema } from '@/app/validaciones/venta';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import LoadingBar, { LoadingBarRef } from 'react-top-loading-bar';
 
 type Inputs = {
+    tipo: string,
     numero: string,
     fecha: string,
+    mone: string,
     num_cliente: string,
     razon_cliente: string,
     articulos: {
@@ -25,50 +30,66 @@ type Inputs = {
         descripcion: string;
         unidad: any;
         cantidad: number;
+        precio_vta: number;
+        costo: number;
     }[]
 }
 
+const fecha_hoy = new Date().toISOString().split('T')[0];
+
 export default function alta_articulo() {
     const [cargando, setCargando] = useState(false);
+    const ref = useRef<LoadingBarRef | null>(null);
+
+    useEffect(() => {
+        if (ref.current) {
+            ref.current.complete();
+        }
+    }, []);
+
     const [isInitialMount, setIsInitialMount] = useState(true);
-    const [abrirCabecera, setAbrirCabecera] = useState(false);
     const [abrirArticulosConsul, setAbrirArticulosConsul] = useState(false);
-    const [isLgHidden, setIsLgHidden] = useState(false);
-    const [error, setError] = useState({
+    const [mensaje, setMensaje] = useState({
         mostrar: false,
         mensaje: '',
         titulo: '',
-        icono: '',
+        tipo_aletar: '',
     });
     const { register, handleSubmit, formState: { errors }, setValue, clearErrors, getValues } = useForm<Inputs>({
         defaultValues: {
+            tipo: '',
             numero: '',
-            fecha: '',
+            fecha: fecha_hoy,
+            mone: '',
             num_cliente: '',
             razon_cliente: '',
             articulos: [{
                 codigo: '',
                 descripcion: '',
                 unidad: '',
-                cantidad: 0
+                cantidad: 0,
+                precio_vta: 0
             }],
         },
         resolver: zodResolver(VentaSchema)
     })
 
-    const [articulos, setArticulos] = useState<{ error: boolean; codigo: string, descripcion: string, unidad: string, cantidad: string }[]>([]);
+    const [articulos, setArticulos] = useState<{
+        error: boolean; codigo: string, descripcion: string, unidad: string, cantidad: number, precio_vta: number, costo: number
+    }[]>([]);
 
     useEffect(() => {
         setValue('articulos', articulos);
     }, [articulos]);
 
     const formRef = useRef(null);
-    const cerrarAlerta = () => {
-        setError({
+
+    const cerrarMensaje = () => {
+        setMensaje({
             mostrar: false,
             mensaje: '',
             titulo: '',
-            icono: '',
+            tipo_aletar: '',
         });
     }
     const [alerta, setAlerta] = useState({
@@ -84,17 +105,6 @@ export default function alta_articulo() {
         });
     };
 
-    useEffect(() => {
-        const handleResize = () => {
-            setIsLgHidden(window.innerWidth < 1024);
-        };
-        handleResize();
-        window.addEventListener('resize', handleResize);
-        return () => {
-            window.removeEventListener('resize', handleResize);
-        };
-
-    }, []);
 
     const prevArticulosRef = useRef(articulos);
     useEffect(() => {
@@ -110,9 +120,11 @@ export default function alta_articulo() {
             });
         } else if (articulos.length < prevArticulos.length) {
             // Se eliminó un artículo
-            const articuloEliminado: any = prevArticulos.find((prev: any) => !articulos.some((articulo: any) => articulo.codigo === prev.codigo));
+            const articuloEliminado: any = articulos.filter((articulo: any, index: number, self: any[]) =>
+                index === self.findIndex((t) => t.codigo === articulo.codigo)
+            );
             setAlerta({
-                message: `Se eliminó el artículo: ${articuloEliminado.descripcion}`,
+                message: `Se eliminó el artículo: ${articuloEliminado[0].descripcion}`,
                 type: "warning",
                 alertVisible: true
             });
@@ -122,11 +134,11 @@ export default function alta_articulo() {
 
     const mostrarErrorAlerta = () => {
         if (!isInitialMount)
-            setError({
+            setMensaje({
                 mostrar: true,
                 mensaje: 'Error: No se encontró ningun cliente con ese codigo.',
                 titulo: 'Oops...',
-                icono: 'error-icon',
+                tipo_aletar: 'error',
             });
     }
 
@@ -141,51 +153,112 @@ export default function alta_articulo() {
         setAbrirArticulosConsul(!abrirArticulosConsul)
     }
 
-    const toggleCabecera = () => {
-        setAbrirCabecera(!abrirCabecera)
+    const enviarForm = async (data?: any) => {
+        if (articulos.length <= 0) {
+            setMensaje({
+                mostrar: true,
+                mensaje: 'No se puede grabar una factura sin articulos.',
+                titulo: 'Oops...',
+                tipo_aletar: 'error',
+            });
+            return;
+        }
+        //limpia los errores 
+        articulos.map(articulo => articulo.error = false)
+
+        //calculo el total 
+        data.total = articulos?.reduce((acc: number, articulo: any) => {
+            const calculo = (articulo.precio_vta * articulo.cantidad);
+            return acc + parseFloat(calculo.toFixed(2));
+        }, 0)
+
+        //calculo el costo total 
+        data.total_costo = articulos?.reduce((acc: number, articulo: any) => {
+            const calculo = (articulo.costo * articulo.cantidad);
+            return acc + parseFloat(calculo.toFixed(2));
+        }, 0)
+
+        const response = await DbGrabartarFactura(data)
+        const mensaje = await response.json();
+        
+        if (response.ok) {
+            ref.current?.complete();
+            setCargando(false);
+            setMensaje({
+                mostrar: true,
+                mensaje: mensaje.message,
+                titulo: 'Operacion Exitosa!',
+                tipo_aletar: 'exitoso',
+            });
+            return
+        } else {
+            ref.current?.complete();
+            setCargando(false);
+            setMensaje({
+                mostrar: true,
+                mensaje: mensaje.message,
+                titulo: 'Oops...',
+                tipo_aletar: 'error',
+            });
+            return
+        }
     }
 
-    const grabar = () => {
-        handleSubmit(enviarForm)();
-    }
+    useEffect(() => {
+        if (!errors || !errors.articulos || !Array.isArray(errors.articulos)) {
+            return; // No hay errores que mostrar
+        }
+        const errorIndices = new Set(errors.articulos.map((e, index) => index));
 
-    const enviarForm = (data?: any) => {
-        console.log(data);
-    }
+        setArticulos((prevObjetos) =>
+            prevObjetos.map((obj, index) => ({
+                ...obj,
+                error: errorIndices.has(index),
+            }))
+        );
+
+        let mensaje: string = '';
+
+        if (errors.articulos.length > 0) {
+
+            errors.articulos.map((error, index) => {
+                mensaje += error.cantidad.message + '\n\n'
+            });
+        }
+        setMensaje({
+            mostrar: true,
+            mensaje: mensaje,
+            titulo: 'O  ops...',
+            tipo_aletar: 'error',
+        });
+
+        clearErrors();
+
+    }, [errors]);
+
 
     return (
         <>
+            <div>
+                <LoadingBar color='rgb(99 102 241)' ref={ref} />
+            </div>
             <form ref={formRef} className="space-y-7" method="POST" onSubmit={handleSubmit(data => enviarForm(data))}>
-                {!isLgHidden && (
-                    <Drawer abrir={abrirCabecera}
-                        toggleAbrir={toggleCabecera}
+                <div className="w-full flex flex-col px-8 pt-2">
+                    <Cabecera
                         register={register}
                         setValue={setValue}
+                        errors={errors}
                         mostrarErrorAlerta={mostrarErrorAlerta}
                         clearErrors={clearErrors}
                         getValues={getValues}
-                        grabar={grabar}
                     />
-                )}
-                <div className="w-full flex flex-col p-8 pt-2">
-                    {isLgHidden && (
-                        <Cabecera
-                            register={register}
-                            setValue={setValue}
-                            mostrarErrorAlerta={mostrarErrorAlerta}
-                            clearErrors={clearErrors}
-                            getValues={getValues}
-                        />
-                    )}
                     <div className="flex justify-end my-2">
-                        <div className='w-1/6'>
+                        <div className='w-3/6 sm:w-1/6 sm:max-w-[150px] sm:mr-4'>
                             <ButtonCommon type="button" texto={"Agregar Articulo"} onClick={toggleAbrirArticulosConsul} />
                         </div>
-                        {!isLgHidden && (
-                            <div className='ml-4 w-1/6'>
-                                <ButtonCommon type="button" texto={"Mostrar Datos"} onClick={toggleCabecera} />
-                            </div>
-                        )}
+                        <div className='w-3/6 sm:w-1/6 sm:max-w-[150px]'>
+                            <ButtonCommon type="submit" texto={"Grabar"} />
+                        </div>
                     </div>
                     <div className="overflow-x-auto sm:-mx-6 lg:-mx-8">
                         <Tabla
@@ -196,14 +269,20 @@ export default function alta_articulo() {
                         />
                     </div>
                 </div>
+                <div>
+                    <TablaTotales
+                        articulos={articulos}
+                    />
+                </div>
             </form>
 
             {/*alerta */}
             <Alerta
-                abrir={error.mostrar}
-                cerrar={cerrarAlerta}
-                titulo={error.titulo}
-                texto={error.mensaje}
+                abrir={mensaje.mostrar}
+                cerrar={cerrarMensaje}
+                titulo={mensaje.titulo}
+                texto={mensaje.mensaje}
+                tipo_aletar={mensaje.tipo_aletar}
             />
 
             <ArticulosConsul

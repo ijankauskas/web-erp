@@ -8,7 +8,29 @@ function classNames(...classes: any[]) {
     return classes.filter(Boolean).join(' ');
 }
 
+const people = [
+    { id: '1', name: 'asdr' },
+    { id: '2', name: 'Arlene Mccoy' },
+    { id: '3', name: 'Devon Webb' },
+    { id: '4', name: 'Tom Cook' },
+    { id: '5', name: 'Tanya Fox' },
+    { id: '6', name: 'Hellen Schmidt' },
+];
+
 const FichaArticulo = ({ register, setValue, clearErrors, errors, consultarArticulo }: any) => {
+
+    const seleccionarAgru1Selec = (agru_1: any) => {
+        setValue('agru_1', agru_1);
+        clearErrors('agru_1');
+    }
+    const seleccionarAgru2Selec = (agru_2: any) => {
+        setValue('agru_2', agru_2);
+        clearErrors('agru_2');
+    }
+    const seleccionarAgru3Selec = (agru_3: any) => {
+        setValue('agru_3', agru_3);
+        clearErrors('agru_3');
+    }
 
     return (
         <div className="md:grid md:grid-cols-3 md:gap-6 pt-4 border-b">
@@ -53,6 +75,35 @@ const FichaArticulo = ({ register, setValue, clearErrors, errors, consultarArtic
                                     useForm={register("descripcion_adicional")}
                                 />
                             </div>
+
+
+                            <div className="col-span-6 sm:col-span-2">
+                                <ComboBoxSelect
+                                    titulo={"Agrupacion 1"}
+                                    data={people}
+                                    setearCodigo={seleccionarAgru1Selec}
+                                    error={errors.agru_1?.message}
+                                />
+                            </div>
+
+                            <div className="col-span-6 sm:col-span-2">
+                                <ComboBoxSelect
+                                    titulo={"Agrupacion 2"}
+                                    data={people}
+                                    setearCodigo={seleccionarAgru2Selec}
+                                    error={errors.agru_2?.message}
+                                />
+                            </div>
+
+                            <div className="col-span-6 sm:col-span-2">
+                                <ComboBoxSelect
+                                    titulo={"Agrupacion 3"}
+                                    data={people}
+                                    setearCodigo={seleccionarAgru3Selec}
+                                    error={errors.agru_3?.message}
+                                />
+                            </div>
+
                         </div>
                     </div>
                 </div>

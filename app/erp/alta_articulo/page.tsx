@@ -19,20 +19,25 @@ type Inputs = {
   codigo: string | null,
   descripcion: string,
   descripcion_adicional: string,
+  agru_1: string,
+  agru_2: string,
+  agru_3: string,
   costo: string,
   stock: string,
   precio_vta: string,
   precio_oferta: string,
+  iva: string,
   oferta: string,
   activo: any,
   componentes: {
-    cod_articulo: string;
-    cod_articulo_compo: string;
-    descripcion: string;
-    unidad: any;
-    cantidad: number;
+  cod_articulo: string;
+  cod_articulo_compo: string;
+  descripcion: string;
+  unidad: any;
+  cantidad: number;
   }[]
 }
+
 
 
 const tabs = [
@@ -82,10 +87,14 @@ export default function alta_articulo() {
       codigo: '',
       descripcion: '',
       descripcion_adicional: '',
+      agru_1: '',
+      agru_2: '',
+      agru_3: '',
       costo: '',
       stock: '',
       precio_vta: '',
       precio_oferta: '',
+      iva: '21',
       activo: true,
       componentes: [{
         cod_articulo: '',
@@ -220,11 +229,15 @@ export default function alta_articulo() {
 
       setValue('codigo', data.codigo);
       setValue('descripcion', data.descripcion);
-      setValue('descripcion_adicional', data.descripcion_adicional);
+      setValue('descripcion_adicional', data.descripcion_adicional);      
+      setValue('agru_1', data.agru_1);
+      setValue('agru_2', data.agru_2);
+      setValue('agru_3', data.agru_3);
       setValue('costo', data.costo);
       setValue('stock', data.stock);
       setValue('precio_vta', data.precio_vta);
       setValue('precio_oferta', data.precio_oferta);
+      setValue('iva', data.iva);
       setValue('oferta', data.oferta);
 
       data.activo == 'S' ? setValue('activo', true) : setValue('activo', false);
@@ -249,10 +262,14 @@ export default function alta_articulo() {
 
     setValue('descripcion', '');
     setValue('descripcion_adicional', '');
+    setValue('agru_1', '');
+    setValue('agru_2', '');
+    setValue('agru_3', '');
     setValue('costo', '');
     setValue('stock', '');
     setValue('precio_vta', '');
     setValue('precio_oferta', '');
+    setValue('iva', '');
     setValue('oferta', '');
     setValue('activo', true);
     setArticulosCompo([]);
@@ -290,6 +307,7 @@ export default function alta_articulo() {
                 setValue={setValue}
                 errors={errors}
                 clearErrors={clearErrors}
+                getValues={getValues}
               />
               <CheckArticulo
                 register={register}

@@ -22,5 +22,6 @@ export const proveedorSchema = z.object({
     agru_3: z.string().optional(),
     telefono: z.string().optional(),
     celular: z.string().optional(),
+    domicilio: z.string().optional(),
     activo: z.any().optional(),
 })

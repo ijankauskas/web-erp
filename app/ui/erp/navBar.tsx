@@ -9,9 +9,9 @@ import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
 export default function navBar({ toggleSideBar }: any) {
 
     return (
-        <div className="flex items-center justify-between bg-white shadow-sm ring-1 ring-inset ring-gray-300 px-4 py-1.5 h-16 z-50">
+        <div className="flex items-center justify-between bg-white shadow-sm ring-1 ring-inset ring-gray-300 px-4 py-1 h-[6vh] z-50 ">
             <div>
-                <button
+                <button 
                     className="px-2 text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500 lg:hidden"
                     onClick={toggleSideBar}
                 >

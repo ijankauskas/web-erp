@@ -27,6 +27,7 @@ type Inputs = {
     agru_3: string,
     telefono: string,
     celular: string,
+    domicilio: string,
     activo: any,
 }
 
@@ -85,6 +86,7 @@ export default function alta_proveedor() {
             agru_3: '',
             telefono: '',
             celular: '',
+            domicilio: '',
             activo: true,
         },
         resolver: zodResolver(proveedorSchema)
@@ -130,6 +132,7 @@ export default function alta_proveedor() {
             setValue('agru_3', data.agru_3);
             setValue('telefono', data.telefono);
             setValue('celular', data.celular);
+            setValue('domicilio', data.domicilio);
             data.activo == 'S' ? setValue('activo', true) : setValue('activo', false);
             setCargando(false);
             ref.current?.complete();
@@ -185,6 +188,7 @@ export default function alta_proveedor() {
         setValue('agru_3', '');
         setValue('telefono', '');
         setValue('celular', '');
+        setValue('domicilio', '');
         setValue('activo', true);
     }
 
