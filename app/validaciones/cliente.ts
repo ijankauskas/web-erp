@@ -6,6 +6,12 @@ export const clienteSchema = z.object({
     .refine(val => !isNaN(Number(val)), {
         message: "El codigo de cliente debe ser numerico.",
     }),
+    cuit: z.string().min(1, {
+        message: "El cuit no puede estar vacio."
+    }),
+    cate_iva: z.string().min(1, {
+        message: "Debe seleccionar la categoria de IVA."
+    }),
     razon: z.string().min(1, {
         message: "La razon social no puede estar vacia."
     }),
@@ -24,6 +30,8 @@ export const clienteSchema = z.object({
     }),
     telefono: z.string().optional(),
     celular: z.string().optional(),
+    domicilio:z.string().optional(),
+    localidad:z.string().optional(),
     observaciones: z.string().optional(),
     activo: z.any().optional(),
 })

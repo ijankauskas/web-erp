@@ -11,6 +11,8 @@ import InputCommon from '../../inputCommon';
 
 type Inputs = {
     codigo: string,
+    cuit: string,
+    cate_iva: string, 
     razon: string,
     nombre_fantasia: string,
     mail: string,
@@ -66,6 +68,26 @@ const DatosContacto = ({register,setValue,clearErrors,errors}:any) => {
                                     error={errors.celular?.message}
                                     id="celular"
                                     useForm={register("celular")}
+                                />
+                            </div>
+
+                            <div className="col-span-6 sm:col-span-3">
+                                <InputCommon
+                                    titulo={"Domicilio"}
+                                    tipo={"text"}
+                                    error={errors.domicilio?.message}
+                                    id="domicilio"
+                                    useForm={register("domicilio")}
+                                />
+                            </div>
+
+                            <div className="col-span-6 sm:col-span-3">
+                                <InputCommon
+                                    titulo={"Localidad"}
+                                    tipo={"text"}
+                                    error={errors.localidad?.message}
+                                    id="localidad"
+                                    useForm={register("localidad")}
                                 />
                             </div>
 
