@@ -1,69 +1,113 @@
+'use client'
 
-import { Popover, PopoverButton, PopoverPanel } from '@headlessui/react'
-import { ChevronDownIcon, PhoneIcon, PlayCircleIcon } from '@heroicons/react/20/solid'
+import { Menu, MenuButton, Transition } from '@headlessui/react';
 import {
-  ArrowPathIcon,
-  ChartPieIcon,
-  CursorArrowRaysIcon,
-  FingerPrintIcon,
-  SquaresPlusIcon,
-} from '@heroicons/react/24/outline'
+  ChevronDownIcon,
+} from '@heroicons/react/20/solid';
 
-const solutions = [
-  { name: 'Analytics', description: 'Get a better understanding of your traffic', href: '#', icon: ChartPieIcon },
-  { name: 'Engagement', description: 'Speak directly to your customers', href: '#', icon: CursorArrowRaysIcon },
-  { name: 'Security', description: "Your customers' data will be safe and secure", href: '#', icon: FingerPrintIcon },
-  { name: 'Integrations', description: 'Connect with third-party tools', href: '#', icon: SquaresPlusIcon },
-  { name: 'Automations', description: 'Build strategic funnels that will convert', href: '#', icon: ArrowPathIcon },
-]
-const callsToAction = [
-  { name: 'Watch demo', href: '#', icon: PlayCircleIcon },
-  { name: 'Contact sales', href: '#', icon: PhoneIcon },
+import { Popover, } from '@headlessui/react'
+import { ChevronRightIcon } from '@heroicons/react/24/outline';
+
+
+const menus = [
+  {
+    nombre: "Altas",
+    subMenu: [
+      {
+        nombre: "Stock",
+        pantallas: [
+          {
+            nombre: "Articulos"
+          },
+          {
+            nombre: "Depositos"
+          },
+
+        ]
+      },
+      {
+        nombre: "Ventas",
+        pantallas: [
+          {
+            nombre: "Clientes"
+          },
+          {
+            nombre: "Lista de Precios"
+          },
+
+        ]
+      }
+    ]
+  },
+  {
+    nombre: "Operaciones",
+    subMenu: [
+      {
+        nombre: "Ventas",
+        pantallas: [
+          {
+            nombre: "Facturas",
+          },
+          {
+            nombre: "Pedidos",
+          }
+        ]
+      }
+    ]
+  }
 ]
 
-export default async function Example() {
+export default function Test() {
   return (
-    <Popover className="relative">
-      <PopoverButton className="inline-flex items-center gap-x-1 text-sm font-semibold leading-6 text-gray-900">
-        <span>Solutions</span>
-        <ChevronDownIcon aria-hidden="true" className="h-5 w-5" />
-      </PopoverButton>
+    <div className="fixed top-24 w-52 text-right flex items-end">
+      {menus.map((menu: any, index: any) => (
+        <Menu key={index} as="div" className="relative inline-block text-left">
+          <MenuButton className="inline-flex items-center gap-2 rounded-md bg-gray-800 py-1.5 px-3 text-sm/6 font-semibold text-white shadow-inner shadow-white/10 focus:outline-none hover:bg-gray-700">
+            {menu.nombre}
+            <ChevronDownIcon className="h-4 w-4 text-white/60" />
+          </MenuButton>
+          <Transition
+            as="div"
+            enter="transition ease-out duration-100"
+            enterFrom="transform opacity-0 scale-95"
+            enterTo="transform opacity-100 scale-100"
+            leave="transition ease-in duration-75"
+            leaveFrom="transform opacity-100 scale-100"
+            leaveTo="transform opacity-0 scale-95"
+          >
+            <Menu.Items className="absolute left-0 mt-0.5 w-64 origin-top-left rounded-md bg-gray-800 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+              {menu.subMenu.map((subMenu: any, subIndex: any) => (
+                <div key={subIndex} className="relative">
+                  <Popover className="relative">
+                    <Popover.Button className="w-full flex justify-between rounded-lg p-2 items-center gap-x-1 text-sm font-semibold leading-6 text-white hover:bg-gray-700">
+                      {subMenu.nombre}
+                      <ChevronRightIcon aria-hidden="true" className="h-5 w-5" />
+                    </Popover.Button>
 
-      <PopoverPanel
-        transition
-        className="absolute left-1/2 z-10 mt-5 flex w-screen max-w-max -translate-x-1/2 px-4 transition data-[closed]:translate-y-1 data-[closed]:opacity-0 data-[enter]:duration-200 data-[leave]:duration-150 data-[enter]:ease-out data-[leave]:ease-in"
-      >
-        <div className="w-screen max-w-md flex-auto overflow-hidden rounded-3xl bg-white text-sm leading-6 shadow-lg ring-1 ring-gray-900/5">
-          <div className="p-4">
-            {solutions.map((item) => (
-              <div key={item.name} className="group relative flex gap-x-6 rounded-lg p-4 hover:bg-gray-50">
-                <div className="mt-1 flex h-11 w-11 flex-none items-center justify-center rounded-lg bg-gray-50 group-hover:bg-white">
-                  <item.icon aria-hidden="true" className="h-6 w-6 text-gray-600 group-hover:text-indigo-600" />
+                    <Popover.Panel className="absolute left-full top-0 ml-0.5 w-64 origin-top-left rounded-md bg-gray-800 shadow-lg ring-1 ring-black ring-opacity-5">
+                      <div className="py-1.5">
+                        {subMenu.pantallas.map((item: any, indexPantalla: any) => (
+                          <div key={indexPantalla} className="group relative flex items-center gap-x-6 rounded-lg p-2 hover:bg-gray-700">
+                            <div className="mt-1 flex h-5 w-5 flex-none items-center justify-center rounded-lg">
+                              {/* Aquí es donde podrías incluir un ícono si estuviera definido */}
+                            </div>
+                            <div>
+                              <a className="font-semibold text-white">
+                                {item.nombre}
+                                <span className="absolute inset-0" />
+                              </a>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </Popover.Panel>
+                  </Popover>
                 </div>
-                <div>
-                  <a href={item.href} className="font-semibold text-gray-900">
-                    {item.name}
-                    <span className="absolute inset-0" />
-                  </a>
-                  <p className="mt-1 text-gray-600">{item.description}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-          <div className="grid grid-cols-2 divide-x divide-gray-900/5 bg-gray-50">
-            {callsToAction.map((item) => (
-              <a
-                key={item.name}
-                href={item.href}
-                className="flex items-center justify-center gap-x-2.5 p-3 font-semibold text-gray-900 hover:bg-gray-100"
-              >
-                <item.icon aria-hidden="true" className="h-5 w-5 flex-none text-gray-400" />
-                {item.name}
-              </a>
-            ))}
-          </div>
-        </div>
-      </PopoverPanel>
-    </Popover>
-  )
+              ))}
+            </Menu.Items>
+          </Transition>
+        </Menu>
+      ))}
+    </div>
+  );
 }

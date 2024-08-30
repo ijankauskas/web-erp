@@ -119,7 +119,7 @@ export default function Tabla({ register, articulos, setAlerta, setArticulos }: 
             <div className="py-1 inline-block min-w-full sm:px-6 lg:px-8">
                 <div className="w-full h-[37vh] overflow-x-auto overflow-y-auto shadow-md sm:rounded-lg max-h-[400px] bg-white"> {/* Contenedor con ancho al 100% y overflow */}
                     <table className="min-w-full w-full table-fixed">
-                        <thead className="bg-gray-50">
+                        <thead className="bg-gray-100">
                             <tr className="border-b">
                                 <th style={{ width: columnWidths[0] }} scope="col" className="relative px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-r border-gray-200 text-ellipsis overflow-hidden">
                                     Codigo

@@ -14,6 +14,9 @@ import Alerta from '@/app/ui/erp/alerta';
 import ButtonCommon from '@/app/ui/erp/ButtonCommon';
 import LoadingBar, { LoadingBarRef } from 'react-top-loading-bar';
 import DismissibleAlert from '@/app/ui/DismissAlerta';
+import HeaderArticulo from '@/app/ui/erp/alta_articulo/HeaderArticulo';
+import { CheckIcon } from '@heroicons/react/24/outline';
+
 
 type Inputs = {
   codigo: string | null,
@@ -30,11 +33,11 @@ type Inputs = {
   oferta: string,
   activo: any,
   componentes: {
-  cod_articulo: string;
-  cod_articulo_compo: string;
-  descripcion: string;
-  unidad: any;
-  cantidad: number;
+    cod_articulo: string;
+    cod_articulo_compo: string;
+    descripcion: string;
+    unidad: any;
+    cantidad: number;
   }[]
 }
 
@@ -226,10 +229,9 @@ export default function alta_articulo() {
     const data = await respuesta.json();
 
     if (respuesta.ok) {
-
       setValue('codigo', data.codigo);
       setValue('descripcion', data.descripcion);
-      setValue('descripcion_adicional', data.descripcion_adicional);      
+      setValue('descripcion_adicional', data.descripcion_adicional);
       setValue('agru_1', data.agru_1);
       setValue('agru_2', data.agru_2);
       setValue('agru_3', data.agru_3);
@@ -286,13 +288,14 @@ export default function alta_articulo() {
 
 
   return (
-    <div className="mx-auto py-0 px-4 sm:px-6 lg:px-8 bg-white">
+    <div className="mx-auto py-0 px-4 sm:px-6 lg:px-8 bg-white max-w-screen-2xl">
       <div>
         <LoadingBar color='rgb(99 102 241)' ref={ref} />
       </div>
-      <TabsArticulo tabs={tabs} seleccionarTab={seleccionarTab} tab={tab} />
+      <HeaderArticulo />
       <div className='relative '>
         <form action="#" method="POST" onSubmit={handleSubmit(data => enviarForm(data))}>
+          <TabsArticulo tabs={tabs} seleccionarTab={seleccionarTab} tab={tab} />
           {tab == 0 ?
             <>
               <FichaArticulo
@@ -301,6 +304,7 @@ export default function alta_articulo() {
                 errors={errors}
                 clearErrors={clearErrors}
                 consultarArticulo={consultarArticulo}
+                getValues={getValues}
               />
               <PreciosArticulo
                 register={register}
@@ -332,13 +336,13 @@ export default function alta_articulo() {
               </> :
               'Posición no definida.'}
           <div className="flex items-end justify-end px-4 py-3 bg-gray-50 text-right sm:px-6">
-            <div className='w-40'>
-              <ButtonCommon
-                texto={"Guardar"}
-                type={"submit"}
-              />
-
-            </div>
+            <button
+              type="submit"
+              className="inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+            >
+              <CheckIcon aria-hidden="true" className="-ml-0.5 mr-1.5 h-5 w-5" />
+              Guardar
+            </button>
           </div>
         </form>
         <Alerta

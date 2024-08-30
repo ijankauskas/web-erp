@@ -1,9 +1,7 @@
 'use client'
 
 import { useState } from 'react';
-import SideNavMobile from '../ui/erp/sidenav-mobile';
-import SideNav from '../ui/erp/sidenav';
-import NavBar from '../ui/erp/navBar';
+
 
 import {
     HomeIcon,
@@ -14,6 +12,7 @@ import {
     ShoppingBagIcon,
     CurrencyDollarIcon
 } from '@heroicons/react/24/outline'
+import NavBar from '../ui/erp/NavBar';
 
 const navigation = [
     {
@@ -116,14 +115,18 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
     return (
         <div className="h-screen flex overflow-hidden bg-gray-100">
-            <SideNavMobile navigation={navigation} sidebarOpen={sidebarOpen} toggleSideBar={toggleSideBar} />
-
+            
+            {/* <SideNavMobile navigation={navigation} sidebarOpen={sidebarOpen} toggleSideBar={toggleSideBar} />
+            
             <div className="hidden lg:flex lg:flex-shrink-0">
                 <SideNav navigation={navigation} />
-            </div>
+            </div> */}
             <div className="flex flex-col w-0 flex-1 overflow-hidden">
-                <main className="flex-1 w-full relative z-0 overflow-y-auto focus:outline-none">
-                    <NavBar toggleSideBar={toggleSideBar} />
+                    <NavBar 
+                        children={children}
+                    />
+                <main className="flex-1 w-full mt-16 relative z-0 overflow-y-auto focus:outline-none">
+                    {/* <NavBar toggleSideBar={toggleSideBar} /> */}
                     {children}
                 </main>
             </div>

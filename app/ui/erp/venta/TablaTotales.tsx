@@ -10,7 +10,7 @@ export default function TablaTotales({ register, articulos, setAlerta, setArticu
         <>
             <div className="px-8 grid grid-cols-12 gap-1 gap-y-0">
                 <div className="col-span-3 grid grid-cols-2 gap-2 gap-y-0">
-                    <div className="flex items-center col-span-1">
+                    <div className="text-black flex items-center col-span-1">
                         <label htmlFor="">Sub total Gravado</label>
                     </div>
                     <div className="col-span-1">
@@ -26,7 +26,7 @@ export default function TablaTotales({ register, articulos, setAlerta, setArticu
                         />
 
                     </div>
-                    <div className="flex items-center col-span-1">
+                    <div className="text-black flex items-center col-span-1">
                         <label htmlFor="">Total IVA</label>
                     </div>
                     <div className="col-span-1">
@@ -41,7 +41,7 @@ export default function TablaTotales({ register, articulos, setAlerta, setArticu
                             desactivado={true}
                         />
                     </div>
-                    <div className="flex items-center col-span-1">
+                    <div className="text-black flex items-center col-span-1">
                         <label htmlFor="">Total Facturado</label>
                     </div>
                     <div className="col-span-1">

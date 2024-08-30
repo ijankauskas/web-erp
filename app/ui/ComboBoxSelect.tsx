@@ -12,6 +12,8 @@ export default function ComboBoxSelect({ titulo, data, seleccionado, setearCodig
   const [query, setQuery] = useState('');
 
   useEffect(() => {
+    console.log(seleccionado);
+    
     if (seleccionado == '' || seleccionado == null) {
       setSelectedPerson({ id: '', name: '' });
       setearCodigo('');

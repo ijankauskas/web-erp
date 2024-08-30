@@ -17,7 +17,7 @@ const people = [
     { id: '6', name: 'Hellen Schmidt' },
 ];
 
-const FichaArticulo = ({ register, setValue, clearErrors, errors, consultarArticulo }: any) => {
+const FichaArticulo = ({ register, setValue, clearErrors, errors, consultarArticulo, getValues }: any) => {
 
     const seleccionarAgru1Selec = (agru_1: any) => {
         setValue('agru_1', agru_1);
@@ -83,6 +83,7 @@ const FichaArticulo = ({ register, setValue, clearErrors, errors, consultarArtic
                                     data={people}
                                     setearCodigo={seleccionarAgru1Selec}
                                     error={errors.agru_1?.message}
+                                    seleccionado={getValues('agru_1')}
                                 />
                             </div>
 
@@ -92,6 +93,7 @@ const FichaArticulo = ({ register, setValue, clearErrors, errors, consultarArtic
                                     data={people}
                                     setearCodigo={seleccionarAgru2Selec}
                                     error={errors.agru_2?.message}
+                                    seleccionado={getValues('agru_2')}
                                 />
                             </div>
 
@@ -101,6 +103,7 @@ const FichaArticulo = ({ register, setValue, clearErrors, errors, consultarArtic
                                     data={people}
                                     setearCodigo={seleccionarAgru3Selec}
                                     error={errors.agru_3?.message}
+                                    seleccionado={getValues('agru_3')}
                                 />
                             </div>
 

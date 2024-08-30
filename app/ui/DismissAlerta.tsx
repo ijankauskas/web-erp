@@ -15,7 +15,7 @@ const DismissibleAlert = ({ message, type = 'success', onClose, duration = 3000 
 
   return (
     <div
-      className={`z-9999 fixed top-4 right-8 transform p-3 mb-4 text-sm rounded-lg w-full lg:w-1/2 ${typeClasses[type]}`}
+      className={`z-9999 fixed top-20 right-8 transform p-3 mb-4 text-sm rounded-lg w-full lg:w-1/2 ${typeClasses[type]}`}
       role="alert"
       style={{ zIndex: 10000 }}
     >

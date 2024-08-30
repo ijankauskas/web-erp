@@ -238,7 +238,7 @@ export default function alta_articulo() {
 
 
     return (
-        <>
+        <div className='mx-auto max-w-screen-2xl'>
             <div>
                 <LoadingBar color='rgb(99 102 241)' ref={ref} />
             </div>
@@ -298,7 +298,7 @@ export default function alta_articulo() {
                     onClose={closeAlertaDismiss}
                 />
             )}
-        </>
+        </div>
     );
 
 
