@@ -129,3 +129,18 @@ export async function DbGrabartarFactura(data: string | null) {
         throw new Error('Failed to fetch card data.');
     }
 }
+
+export async function DbCompEmitidosConsul(cliente: string | null) {
+    try {
+        const response = await fetch('http://localhost:8080/comp_emitidos?cliente='+cliente, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
+
+        return response;
+    } catch (error) {
+        throw new Error('Failed to fetch card data.');
+    }
+}

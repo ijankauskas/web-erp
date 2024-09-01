@@ -294,8 +294,8 @@ export default function alta_articulo() {
       </div>
       <HeaderArticulo />
       <div className='relative '>
+        <TabsArticulo tabs={tabs} seleccionarTab={seleccionarTab} tab={tab} />
         <form action="#" method="POST" onSubmit={handleSubmit(data => enviarForm(data))}>
-          <TabsArticulo tabs={tabs} seleccionarTab={seleccionarTab} tab={tab} />
           {tab == 0 ?
             <>
               <FichaArticulo

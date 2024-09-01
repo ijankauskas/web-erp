@@ -117,7 +117,7 @@ const menus = [
                 pantallas: [
                     {
                         nombre: "Saldo de clientes",
-                        href: '/erp/saldos',
+                        href: '/erp/saldos_cliente',
                         current: false,
                         icon: CurrencyDollarIcon,
                     }

@@ -94,7 +94,7 @@ const navigation = [
             },
             {
                 name: 'Saldos',
-                href: '/erp/saldos',
+                href: '/erp/saldos_cliente',
                 current: false,
                 icon: CurrencyDollarIcon,
             }
