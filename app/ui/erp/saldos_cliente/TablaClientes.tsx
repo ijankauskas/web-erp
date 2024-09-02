@@ -1,8 +1,12 @@
 'use client'
 import React, { useState, useRef, useEffect } from 'react';
-import { DbConsultarCliente } from '@/app/lib/data';
+import { DbConsultarCliente, DbSaldosClientes } from '@/app/lib/data';
 import TablaClientesSkeleton from './TablaClientesSkeleton';
 import Image from 'next/image';
+import {
+    ChevronDownIcon,
+    ChevronUpIcon
+} from '@heroicons/react/24/outline'
 
 export async function getServerSideProps() {
     const respuesta = await DbConsultarCliente(null, 'S', '');
@@ -11,10 +15,10 @@ export async function getServerSideProps() {
 }
 
 
-const TablaClientes = ({ busqueda, seleccionarCliente }: any) => {
+const TablaClientes = ({ busqueda, seleccionarCliente, pagina, setPagina }: any) => {
     const [columnWidths, setColumnWidths] = useState([50, 125, 50]);
     const [clientes, setClientes] = useState([]);
-    const [orderbarConfig, setOrdenarConfig] = useState({ key: null, direction: 'asc' });
+    const [ordenarConfig, setOrdenarConfig] = useState({ key: 'razon', direction: 'asc' });
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -24,16 +28,16 @@ const TablaClientes = ({ busqueda, seleccionarCliente }: any) => {
     async function cargarComponente() {
         setLoading(true);
         try {
-            const respuesta = await DbConsultarCliente(null, 'S', busqueda);
+            const respuesta = await DbSaldosClientes('clientes', pagina, busqueda, ordenarConfig.key, ordenarConfig.direction);
             const data = await respuesta.json();
             if (!respuesta.ok) {
                 throw new Error('Error al cargar los clientes');
             }
 
-            const clientesMapeados = data.map((cliente: any) => ({
+            const clientesMapeados = data.clientes.map((cliente: any) => ({
                 codigo: cliente.codigo || '',
                 razon: cliente.razon || '',
-                saldo: 15000,
+                saldo: cliente.saldoTotal,
             }));
             setClientes(clientesMapeados);
         } catch (error) {
@@ -47,10 +51,20 @@ const TablaClientes = ({ busqueda, seleccionarCliente }: any) => {
         cargarComponente();
     }, [busqueda]);
 
-    const handleMouseDown = (index, event) => {
+    useEffect(() => {
+        cargarComponente();
+    }, [ordenarConfig]);
+
+    useEffect(() => {
+        console.log(pagina);
+
+        cargarComponente();
+    }, [pagina]);
+
+    const handleMouseDown = (index: any, event: any) => {
         const startX = event.clientX;
         const startWidth = columnWidths[index];
-        const onMouseMove = (e) => {
+        const onMouseMove = (e: any) => {
             const newWidth = startWidth + (e.clientX - startX);
             const newWidths = [...columnWidths];
             newWidths[index] = Math.max(newWidth, 10); // Establece un ancho mínimo
@@ -68,23 +82,11 @@ const TablaClientes = ({ busqueda, seleccionarCliente }: any) => {
 
     const orderClientes = (key: any) => {
         let direction = 'asc';
-
-        if (orderbarConfig.key === key && orderbarConfig.direction === 'asc') {
+        if (ordenarConfig.key === key && ordenarConfig.direction === 'asc') {
             direction = 'desc';
         }
-
-        const sortedClientes = [...clientes].sort((a, b) => {
-            if (a[key] < b[key]) {
-                return direction === 'asc' ? -1 : 1;
-            }
-            if (a[key] > b[key]) {
-                return direction === 'asc' ? 1 : -1;
-            }
-            return 0;
-        });
-
+        setPagina(1);
         setOrdenarConfig({ key, direction });
-        setClientes(sortedClientes);
     };
 
     return (
@@ -98,11 +100,18 @@ const TablaClientes = ({ busqueda, seleccionarCliente }: any) => {
                             className="relative px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border border-gray-200 text-ellipsis overflow-hidden hover:bg-indigo-50 hover:!border-blue-500"
                             onClick={() => orderClientes('codigo')}
                         >
-                            Codigo
-                            <div
-                                className="absolute right-0 top-0 w-1 h-full cursor-col-resize hover:bg-gray-300"
-                                onMouseDown={(e) => handleMouseDown(0, e)}
-                            />
+                            <div className='flex'>
+                                Codigo
+                                {ordenarConfig.key === 'codigo' && (
+                                    <span className="ml-2">
+                                        {ordenarConfig.direction === 'asc' ? <ChevronUpIcon className="h-4 w-4" /> : <ChevronDownIcon className="h-4 w-4" />}
+                                    </span>
+                                )}
+                                <div
+                                    className="absolute right-0 top-0 w-1 h-full cursor-col-resize hover:bg-gray-300"
+                                    onMouseDown={(e) => handleMouseDown(0, e)}
+                                />
+                            </div>
                         </th>
                         <th
                             style={{ width: columnWidths[1] }}
@@ -110,11 +119,18 @@ const TablaClientes = ({ busqueda, seleccionarCliente }: any) => {
                             className="relative px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border border-gray-200 text-ellipsis overflow-hidden hover:bg-indigo-50 hover:!border-blue-500"
                             onClick={() => orderClientes('razon')}
                         >
-                            Razon
-                            <div
-                                className="absolute right-0 top-0 w-1 h-full cursor-col-resize hover:bg-gray-300"
-                                onMouseDown={(e) => handleMouseDown(1, e)}
-                            />
+                            <div className='flex'>
+                                Razon
+                                {ordenarConfig.key === 'razon' && (
+                                    <span className="ml-2">
+                                        {ordenarConfig.direction === 'asc' ? <ChevronUpIcon className="h-4 w-4" /> : <ChevronDownIcon className="h-4 w-4" />}
+                                    </span>
+                                )}
+                                <div
+                                    className="absolute right-0 top-0 w-1 h-full cursor-col-resize hover:bg-gray-300"
+                                    onMouseDown={(e) => handleMouseDown(1, e)}
+                                />
+                            </div>
                         </th>
                         <th
                             style={{ width: columnWidths[2] }}
@@ -122,11 +138,18 @@ const TablaClientes = ({ busqueda, seleccionarCliente }: any) => {
                             className="text-end relative w-[50px] px-2 py-2 text-xs font-medium text-gray-500 uppercase tracking-wider border border-gray-200 text-ellipsis overflow-hidden hover:bg-indigo-50 hover:!border-blue-500"
                             onClick={() => orderClientes('saldo')}
                         >
-                            Saldo
-                            <div
-                                className="absolute right-0 top-0 w-1 h-full cursor-col-resize hover:bg-gray-300"
-                                onMouseDown={(e) => handleMouseDown(2, e)}
-                            />
+                            <div className='flex'>
+                                Saldo
+                                {ordenarConfig.key === 'saldo' && (
+                                    <span className="ml-2">
+                                        {ordenarConfig.direction === 'asc' ? <ChevronUpIcon className="h-4 w-4" /> : <ChevronDownIcon className="h-4 w-4" />}
+                                    </span>
+                                )}
+                                <div
+                                    className="absolute right-0 top-0 w-1 h-full cursor-col-resize hover:bg-gray-300"
+                                    onMouseDown={(e) => handleMouseDown(2, e)}
+                                />
+                            </div>
                         </th>
                     </tr>
                 </thead>

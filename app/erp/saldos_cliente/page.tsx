@@ -11,6 +11,7 @@ const ConsultaSaldos = () => {
     const [isLeftPanelVisible, setIsLeftPanelVisible] = useState(true);
     const [clienteSeleccionado, setClienteSeleccionado] = useState('');
     const [busqueda, setBusqueda] = useState('');
+    const [pagina, setPagina] = useState(1);
 
     const handleMouseDown = (event) => {
         const startX = event.clientX;
@@ -34,8 +35,12 @@ const ConsultaSaldos = () => {
         setBusqueda(e.target.value);
     }
 
-    const seleccionarCliente = (cliente: any) => {        
+    const seleccionarCliente = (cliente: any) => {
         setClienteSeleccionado(cliente)
+    }
+
+    const cambiarPagina = (cambio: any) => {
+        setPagina(pagina + cambio)
     }
 
     return (
@@ -66,11 +71,13 @@ const ConsultaSaldos = () => {
                                     <TablaClientes
                                         busqueda={busqueda}
                                         seleccionarCliente={seleccionarCliente}
+                                        pagina={pagina}
+                                        setPagina={setPagina}
                                     />
                                 </div>
                             </div>
                             <div className="bg-gray-100 w-full p-0"> {/* Contenedor para el paginado que siempre estará al final */}
-                                <Paginado />
+                                <Paginado pagina={pagina} cambiarPagina={cambiarPagina}/>
                             </div>
                         </div>
 

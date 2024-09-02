@@ -10,7 +10,7 @@ const articulos = z.object({
             message: "La cantidad debe ser mayor a cero.",
         }),
     precio_vta: z.any().optional(),
-    costo: z.any().optional(),
+    costo_uni: z.any().optional(),
 });
 
 export const VentaSchema = z.object({

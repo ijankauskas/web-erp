@@ -1,5 +1,5 @@
 export async function DbConsultarArticulo(cod_articulo?: string | null, multiple?: string | null, descripcion?: string | null) {
-       
+
     try {
         const response = await fetch('http://localhost:8080/articulos?codigo=' + cod_articulo + '&multiple=' + multiple + '&descripcion=' + descripcion, {
             method: 'GET',
@@ -12,7 +12,7 @@ export async function DbConsultarArticulo(cod_articulo?: string | null, multiple
         console.error('Database Error:', error);
         throw new Error('Failed to fetch card data.');
     }
-    
+
 }
 
 export async function DbGrabartarArticulo(data: string | null) {
@@ -82,9 +82,17 @@ export async function DbSingIn(data: any) {
 }
 
 
-export async function DbConsultarCliente(codigo: number | null, multiple?: string | null, razon?: string | null) {
+export async function DbConsultarCliente(
+    codigo: number | null,
+    multiple?: string | null,
+    razon?: string | null,
+    columnaOrden?: string | null,
+    dir?: string | null,
+    page?: string | null,
+    limit?: string | null,
+) {
     try {
-        const response = await fetch('http://localhost:8080/clientes?codigo=' + codigo + '&multiple='+multiple+ '&razon='+razon, {
+        const response = await fetch('http://localhost:8080/clientes?codigo=' + codigo + '&multiple=' + multiple + '&razon=' + razon + '&orden=' + columnaOrden + '&dir=' + dir + '&page=' + page + '&limit=' + limit, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -132,7 +140,7 @@ export async function DbGrabartarFactura(data: string | null) {
 
 export async function DbCompEmitidosConsul(cliente: string | null) {
     try {
-        const response = await fetch('http://localhost:8080/comp_emitidos?cliente='+cliente, {
+        const response = await fetch('http://localhost:8080/comp_emitidos?cliente=' + cliente, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -141,6 +149,28 @@ export async function DbCompEmitidosConsul(cliente: string | null) {
 
         return response;
     } catch (error) {
+        throw new Error('Failed to fetch card data.');
+    }
+}
+
+export async function DbSaldosClientes(
+    servicio: string | null,
+    pagina?: string | null,
+    parametro?: string | null,
+    columnaOrden?: string | null,
+    dir?: string | null,
+) {
+    try {
+        const response = await fetch('http://localhost:8080/saldos_clientes?servicio=' + servicio + '&pagina=' + pagina + '&parametro=' + parametro + '&orden=' + columnaOrden + '&dir=' + dir, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
+
+        return response;
+    } catch (error) {
+        console.error('Database Error:', error);
         throw new Error('Failed to fetch card data.');
     }
 }

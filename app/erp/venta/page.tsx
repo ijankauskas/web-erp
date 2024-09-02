@@ -1,17 +1,13 @@
 "use client"
 
 import { DbGrabartarFactura } from '@/app/lib/data';
-import ComboBoxSelect from '@/app/ui/ComboBoxSelect';
 import DismissibleAlert from '@/app/ui/DismissAlerta';
 import ButtonCommon from '@/app/ui/erp/ButtonCommon';
 import Alerta from '@/app/ui/erp/alerta';
-import Cabecera from '@/app/ui/erp/compra/cabecera';
-import Drawer from '@/app/ui/erp/compra/drawer';
+import Cabecera from '@/app/ui/erp/venta/cabecera';
 import ArticulosConsul from '@/app/ui/erp/consultas/articulos_consul';
 import TablaTotales from '@/app/ui/erp/venta/TablaTotales';
 import Tabla from '@/app/ui/erp/venta/tabla';
-import InputCommon from '@/app/ui/inputCommon';
-import { compraSchema } from '@/app/validaciones/compra';
 import { VentaSchema } from '@/app/validaciones/venta';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useEffect, useRef, useState } from 'react';
@@ -31,7 +27,7 @@ type Inputs = {
         unidad: any;
         cantidad: number;
         precio_vta: number;
-        costo: number;
+        costo_uni: number;
     }[]
 }
 
@@ -75,7 +71,7 @@ export default function alta_articulo() {
     })
 
     const [articulos, setArticulos] = useState<{
-        error: boolean; codigo: string, descripcion: string, unidad: string, cantidad: number, precio_vta: number, costo: number
+        error: boolean; codigo: string, descripcion: string, unidad: string, cantidad: number, precio_vta: number, costo_uni: number
     }[]>([]);
 
     useEffect(() => {
@@ -174,7 +170,7 @@ export default function alta_articulo() {
 
         //calculo el costo total 
         data.total_costo = articulos?.reduce((acc: number, articulo: any) => {
-            const calculo = (articulo.costo * articulo.cantidad);
+            const calculo = (articulo.costo_uni * articulo.cantidad);
             return acc + parseFloat(calculo.toFixed(2));
         }, 0)
 

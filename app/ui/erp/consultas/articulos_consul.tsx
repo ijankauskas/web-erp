@@ -58,7 +58,8 @@ export default function ArticulosConsul({ setArticulo, open, setOpen }: any) {
             descripcion: articulo.descripcion,
             unidad: articulo.unidad,
             cantidad: articulo.cantidad || 0,
-            precio_vta: articulo.precio_vta || 0
+            precio_vta: articulo.precio_vta || 0,
+            costo_uni: articulo.costo || 0
         };
 
         setArticulo((prev: any) => [...prev, nuevo]);

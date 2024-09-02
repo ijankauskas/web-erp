@@ -7,7 +7,8 @@ const componenteSchema = z.object({
     cantidad: z.number()
         .refine(val => !isNaN(Number(val)), {
             message: "El precio de oferta debe ser un número.",
-        })
+        }),
+    costo_uni: z.any().optional()
 });
 
 export const articuloSchema = z.object({

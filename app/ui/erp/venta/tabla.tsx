@@ -56,7 +56,7 @@ export default function Tabla({ register, articulos, setAlerta, setArticulos }: 
                 unidad: data.unidad,
                 cantidad: parseFloat(data.cantidad) || 0,
                 precio_vta: parseFloat(data.precio_vta) || 0,
-                costo: data.costo || 0
+                costo_uni: data.costo || 0
             }];
 
             setArticulos((prev: any) => [...prev, ...articulos]);
