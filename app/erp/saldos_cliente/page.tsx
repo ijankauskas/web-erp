@@ -1,5 +1,6 @@
 'use client'
 import Paginado from '@/app/ui/erp/saldos_cliente/Paginado';
+import PaginadoComp from '@/app/ui/erp/saldos_cliente/PaginadoComp';
 import TablaClientes from '@/app/ui/erp/saldos_cliente/TablaClientes';
 import TablaClientesSkeleton from '@/app/ui/erp/saldos_cliente/TablaClientesSkeleton';
 import TablaComprobantes from '@/app/ui/erp/saldos_cliente/TablaComprobantes';
@@ -12,6 +13,7 @@ const ConsultaSaldos = () => {
     const [clienteSeleccionado, setClienteSeleccionado] = useState('');
     const [busqueda, setBusqueda] = useState('');
     const [pagina, setPagina] = useState(1);
+    const [paginaComps, setPaginaComps] = useState(1);
 
     const handleMouseDown = (event) => {
         const startX = event.clientX;
@@ -41,6 +43,10 @@ const ConsultaSaldos = () => {
 
     const cambiarPagina = (cambio: any) => {
         setPagina(pagina + cambio)
+    }
+
+    const cambiarPaginaComp = (cambio: any) => {
+        setPaginaComps(paginaComps + cambio)
     }
 
     return (
@@ -77,7 +83,7 @@ const ConsultaSaldos = () => {
                                 </div>
                             </div>
                             <div className="bg-gray-100 w-full p-0"> {/* Contenedor para el paginado que siempre estará al final */}
-                                <Paginado pagina={pagina} cambiarPagina={cambiarPagina}/>
+                                <Paginado pagina={pagina} cambiarPagina={cambiarPagina} />
                             </div>
                         </div>
 
@@ -104,8 +110,11 @@ const ConsultaSaldos = () => {
 
                         )}
                     </div>
-                    <div className="w-full overflow-x-auto">
-                        <TablaComprobantes cliente={clienteSeleccionado} />
+                    <div className="w-full h-full bg-white overflow-y-auto overflow-x-auto flex-grow">
+                        <TablaComprobantes cliente={clienteSeleccionado} pagina={paginaComps}/>
+                    </div>
+                    <div className="bg-gray-100 w-full p-0"> {/* Contenedor para el paginado que siempre estará al final */}
+                        <PaginadoComp pagina={paginaComps} cambiarPagina={cambiarPaginaComp} cliente={clienteSeleccionado}/>
                     </div>
                 </div>
             </div>

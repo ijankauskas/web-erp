@@ -138,9 +138,9 @@ export async function DbGrabartarFactura(data: string | null) {
     }
 }
 
-export async function DbCompEmitidosConsul(cliente: string | null) {
+export async function DbCompEmitidosConsul(cliente: string | null, pagina?: string | null,) {
     try {
-        const response = await fetch('http://localhost:8080/comp_emitidos?cliente=' + cliente, {
+        const response = await fetch('http://localhost:8080/comp_emitidos?cliente=' + cliente + '&pagina=' + pagina, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -159,9 +159,10 @@ export async function DbSaldosClientes(
     parametro?: string | null,
     columnaOrden?: string | null,
     dir?: string | null,
+    cliente?: string | null,
 ) {
     try {
-        const response = await fetch('http://localhost:8080/saldos_clientes?servicio=' + servicio + '&pagina=' + pagina + '&parametro=' + parametro + '&orden=' + columnaOrden + '&dir=' + dir, {
+        const response = await fetch('http://localhost:8080/saldos_clientes?servicio=' + servicio + '&pagina=' + pagina + '&parametro=' + parametro + '&orden=' + columnaOrden + '&dir=' + dir + '&cliente=' + cliente, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',

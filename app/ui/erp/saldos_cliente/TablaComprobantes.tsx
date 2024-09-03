@@ -5,7 +5,7 @@ import TablaComprobantesSkeleton from './TablaComprobantesSkeleton';
 import Image from 'next/image';
 
 
-const TablaComprobantes = ({ cliente }: any) => {
+const TablaComprobantes = ({ cliente, pagina }: any) => {
     const [columnWidths, setColumnWidths] = useState([25, 100, 25, 25, 25, 25, 50, 50]);
     const [compEmitidos, setCompEmitidos] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -18,16 +18,13 @@ const TablaComprobantes = ({ cliente }: any) => {
         if (cliente.codigo == '' || cliente.codigo == undefined) return
         setLoading(true);
         try {
-            const respuesta = await DbCompEmitidosConsul(cliente.codigo);
+            const respuesta = await DbCompEmitidosConsul(cliente.codigo,pagina);
             const data = await respuesta.json();
             if (!respuesta.ok) {
                 throw new Error('Error al cargar los clientes');
             }
 
             setCompEmitidos(data);
-
-            console.log(data);
-
         } catch (error) {
             console.error('Error al cargar los clientes:', error);
         } finally {
@@ -38,6 +35,10 @@ const TablaComprobantes = ({ cliente }: any) => {
     useEffect(() => {
         consultarComprobantes();
     }, [cliente]);
+
+    useEffect(() => {
+        consultarComprobantes();
+    }, [pagina]);
 
     const handleMouseDown = (index, event) => {
         const startX = event.clientX;
@@ -59,7 +60,7 @@ const TablaComprobantes = ({ cliente }: any) => {
     };
 
     return (
-        <div className="overflow-x-auto overflow-y-auto h-full">
+        <div className="overflow-x-auto overflow-y-auto max-h-[71vh] h-full">
             <table className="min-w-full w-full table-fixed">
                 <thead className="bg-gray-100 sticky top-0 z-10">
                     <tr className="border-b">

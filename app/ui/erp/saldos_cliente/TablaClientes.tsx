@@ -39,6 +39,7 @@ const TablaClientes = ({ busqueda, seleccionarCliente, pagina, setPagina }: any)
                 razon: cliente.razon || '',
                 saldo: cliente.saldoTotal,
             }));
+
             setClientes(clientesMapeados);
         } catch (error) {
             console.error('Error al cargar los clientes:', error);
@@ -56,8 +57,6 @@ const TablaClientes = ({ busqueda, seleccionarCliente, pagina, setPagina }: any)
     }, [ordenarConfig]);
 
     useEffect(() => {
-        console.log(pagina);
-
         cargarComponente();
     }, [pagina]);
 
@@ -97,10 +96,11 @@ const TablaClientes = ({ busqueda, seleccionarCliente, pagina, setPagina }: any)
                         <th
                             style={{ width: columnWidths[0] }}
                             scope="col"
-                            className="relative px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border border-gray-200 text-ellipsis overflow-hidden hover:bg-indigo-50 hover:!border-blue-500"
+                            className="relative text-left text-xs font-medium text-gray-500 uppercase tracking-wider border border-gray-200 text-ellipsis overflow-hidden hover:bg-indigo-50 hover:!border-blue-500"
+                            
                             onClick={() => orderClientes('codigo')}
                         >
-                            <div className='flex'>
+                            <div className='flex px-2 py-2'>
                                 Codigo
                                 {ordenarConfig.key === 'codigo' && (
                                     <span className="ml-2">
