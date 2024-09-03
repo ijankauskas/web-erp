@@ -1,13 +1,27 @@
 import React, { useState } from 'react';
-
+import ComboBoxSelect from '@/app/ui/ComboBoxSelect';
 import InputCommon from '../../inputCommon'
 import TextAreaCommon from '../../TextAreaCommon';
+import { umask } from 'process';
 
 function classNames(...classes: any[]) {
     return classes.filter(Boolean).join(' ');
 }
 
+const unidades = [
+    { id: '1', name: 'UNI' },
+    { id: '2', name: 'KG' },
+    { id: '3', name: 'KGS' },
+    { id: '4', name: 'LTS' },
+    { id: '5', name: 'MTS' },
+];
+
 const PreciosArticulo = ({ register, setValue, clearErrors, errors, getValues }: any) => {
+
+    const seleccionarUmSelec = (um: any) => {
+        setValue('um', um);
+        clearErrors('um');
+    }
 
     return (
         <div className="md:grid md:grid-cols-3 md:gap-6 pt-4 border-b">
@@ -75,12 +89,32 @@ const PreciosArticulo = ({ register, setValue, clearErrors, errors, getValues }:
                                     useForm={register("iva")}
                                 />
                             </div>
+
+                            <div className="col-span-6 sm:col-span-2">
+                                <ComboBoxSelect
+                                    titulo={"UM"}
+                                    data={unidades}
+                                    setearCodigo={seleccionarUmSelec}
+                                    error={errors.agru_1?.message}
+                                    seleccionado={getValues('um')}
+                                />
+                            </div>
+                            <div className="col-span-6 sm:col-span-3">
+                                <InputCommon
+                                    titulo={"Cantidad Default"}
+                                    tipo={"number"}
+                                    error={errors.cant_default?.message}
+                                    step={"1"}
+                                    id="cant_default"
+                                    useForm={register("cant_default")}
+                                />
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        
+
     );
 };
 

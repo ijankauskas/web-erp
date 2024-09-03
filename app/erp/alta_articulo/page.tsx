@@ -39,6 +39,11 @@ type Inputs = {
     unidad: any;
     cantidad: number;
   }[]
+  usa_compo: any,
+  sin_stock: any,
+  um: string,
+  cant_default: string,
+  cod_barras: string,
 }
 
 
@@ -106,6 +111,11 @@ export default function alta_articulo() {
         unidad: '',
         cantidad: 0
       }],
+      usa_compo: false,
+      sin_stock: false,
+      um: 'UNI',
+      cant_default:'1',
+      cod_barras:''
     },
     resolver: zodResolver(articuloSchema)
   })
@@ -147,6 +157,10 @@ export default function alta_articulo() {
     }
 
     data.activo = data.activo || data.activo == 'S' ? 'S' : 'N';
+
+    data.usa_compo = data.usa_compo || data.usa_compo == 'S' ? 'S' : 'N';
+    
+    data.sin_stock= data.sin_stock || data.sin_stock == 'S' ? 'S' : 'N';
 
     setCargando(true);
     ref.current?.continuousStart();
@@ -246,6 +260,13 @@ export default function alta_articulo() {
       setArticulosCompo(data.componentes)
       setCargando(false);
       ref.current?.complete();
+
+      data.usa_compo == 'S' ? setValue('usa_compo', true) : setValue('usa_compo', false);
+      data.sin_stock == 'S' ? setValue('sin_stock', true) : setValue('sin_stock', false);
+      setValue('um', data.um);
+      setValue('cant_default', data.cant_default);
+      setValue('cod_barras', data.cod_barras);
+
     } else {
       limpiar()
       setCargando(false);
@@ -275,6 +296,11 @@ export default function alta_articulo() {
     setValue('oferta', '');
     setValue('activo', true);
     setArticulosCompo([]);
+    setValue('usa_compo', false);
+    setValue('sin_stock', false);
+    setValue('um', '');
+    setValue('cant_default', '');
+    setValue('cod_barras', '');
   }
 
   useEffect(() => {
@@ -288,7 +314,7 @@ export default function alta_articulo() {
 
 
   return (
-    <div className="mx-auto py-0 px-4 sm:px-6 lg:px-8 bg-white max-w-screen-2xl">
+    <div className="max-w-7xl mx-auto py-0 px-4 sm:px-6 lg:px-8 bg-white">
       <div>
         <LoadingBar color='rgb(99 102 241)' ref={ref} />
       </div>
@@ -336,6 +362,13 @@ export default function alta_articulo() {
               </> :
               'Posición no definida.'}
           <div className="flex items-end justify-end px-4 py-3 bg-gray-50 text-right sm:px-6">
+
+            <button
+              type="button"
+              onClick={limpiar}
+              className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-gray-600 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 mr-2">
+              Limpiar
+            </button>
             <button
               type="submit"
               className="inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"

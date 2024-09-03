@@ -1,41 +1,80 @@
 import React, { useEffect, useState } from 'react';
-
 import ToggleSwitch from '../../ToggleSwitch';
 
-
 const CheckArticulo = ({ register, setValue, clearErrors, errors, getValues, watch }: any) => {
+  
     const [activo, setActivo] = useState(getValues('activo'));
+    const [usaCompo, setUsaCompo] = useState(getValues('usa_compo'));
+    const [sinStock, setSinStock] = useState(getValues('sin_stock'));
+    
     const activoValue = watch('activo');
+    const usaCompoValue = watch('usa_compo');
+    const sinStockValue = watch('sin_stock');
 
     useEffect(() => {
         setActivo(activoValue);
     }, [activoValue]);
+
+    useEffect(() => {
+        setUsaCompo(usaCompoValue);
+    }, [usaCompoValue]);
+
+    useEffect(() => {
+        setSinStock(sinStockValue);
+    }, [sinStockValue]);
 
     const setActivoHandleToggle = (ev: any) => {
         setActivo(ev);
         setValue('activo', ev);
     };
 
+    const setUsaCompoHandleToggle = (ev: any) => {
+        setUsaCompo(ev);
+        setValue('usa_compo', ev);
+    };
+
+    const setSinStockHandleToggle = (ev: any) => {
+        setSinStock(ev);
+        setValue('sin_stock', ev);
+    };
+
     return (
         <div className="md:grid md:grid-cols-3 md:gap-6 pt-4 border-b">
             <div className="md:col-span-1">
                 <div className="px-4 sm:px-0">
-                    <h3 className="text-lg font-medium leading-6 text-gray-900">Configuracion.</h3>
+                    <h3 className="text-lg font-medium leading-6 text-gray-900">Configuración</h3>
                     <p className="mt-1 text-sm text-gray-600">
-                        En esta seccion puedes aplicar configuraciones al articulo.
+                        En esta sección puedes aplicar configuraciones al artículo.
                     </p>
                 </div>
             </div>
             <div className="mt-5 md:mt-0 md:col-span-2">
-                <div className="">
-                    <div className="px-4 py-5 sm:p-6">
+                <div className="px-4 py-5 sm:p-6">
+                   
+                    <div className="space-y-6">
                         <ToggleSwitch
-                            label={"Activo"}
-                            description={"Si desactivas el articulo no podras verlo."}
+                            label="Activo"
+                            description="Si desactivas el artículo, no podrás verlo."
                             handleToggle={setActivoHandleToggle}
                             isChecked={activo}
                             error={errors.activo?.message}
-                            id={"activo"}
+                            id="activo"
+                        />
+                        <ToggleSwitch
+                            label="Usa Componentes"
+                            description="Indica si el artículo usa componentes adicionales."
+                            handleToggle={setUsaCompoHandleToggle}
+                            isChecked={usaCompo}
+                            error={errors.usa_compo?.message}
+                            id="usa_compo"
+                        />
+                        <ToggleSwitch
+                            label="Sin Stock"
+                            description="Indica si el artículo no utiliza stock."
+                            handleToggle={setSinStockHandleToggle}
+                            isChecked={sinStock}
+                            error={errors.sin_stock?.message}
+                            id="sin_stock"
                         />
                     </div>
                 </div>

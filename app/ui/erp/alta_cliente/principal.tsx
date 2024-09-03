@@ -40,7 +40,7 @@ function classNames(...classes: any[]) {
     return classes.filter(Boolean).join(' ');
 }
 
-const Principal = ({ register, setValue, clearErrors, errors, consultarCliente }: any) => {
+const Principal = ({ register, setValue, clearErrors, errors, consultarCliente, getValues }: any) => {
     const seleccionarCate_ivaSelec = (cate_iva: any) => {
         setValue('cate_iva', cate_iva);
         clearErrors('cate_iva');
@@ -124,6 +124,7 @@ const Principal = ({ register, setValue, clearErrors, errors, consultarCliente }
                                     data={iva}
                                     setearCodigo={seleccionarCate_ivaSelec}
                                     error={errors.cate_iva?.message}
+                                    seleccionado={getValues ('cate_iva')}
                                 />
                             </div>
 
@@ -143,6 +144,7 @@ const Principal = ({ register, setValue, clearErrors, errors, consultarCliente }
                                     data={people}
                                     setearCodigo={seleccionarAgru1Selec}
                                     error={errors.agru_1?.message}
+                                    seleccionado={getValues ('agru_1')}
                                 />
                             </div>
 
@@ -152,6 +154,7 @@ const Principal = ({ register, setValue, clearErrors, errors, consultarCliente }
                                     data={people}
                                     setearCodigo={seleccionarAgru2Selec}
                                     error={errors.agru_2?.message}
+                                    seleccionado={getValues ('agru_2')}
                                 />
                             </div>
 
@@ -161,6 +164,7 @@ const Principal = ({ register, setValue, clearErrors, errors, consultarCliente }
                                     data={people}
                                     setearCodigo={seleccionarAgru3Selec}
                                     error={errors.agru_3?.message}
+                                    seleccionado={getValues ('agru_3')}
                                 />
                             </div>
 

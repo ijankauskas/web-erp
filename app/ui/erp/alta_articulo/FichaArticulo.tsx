@@ -107,6 +107,16 @@ const FichaArticulo = ({ register, setValue, clearErrors, errors, consultarArtic
                                 />
                             </div>
 
+                            <div className="col-span-6">
+                                <InputCommon
+                                    titulo={"Codigo de barra"}
+                                    tipo={"text"}
+                                    error={errors.cod_barras?.message}
+                                    id="cod_barras"
+                                    useForm={register("cod_barras")}
+                                />
+                            </div>
+
                         </div>
                     </div>
                 </div>

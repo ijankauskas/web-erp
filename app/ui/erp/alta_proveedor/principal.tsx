@@ -82,15 +82,7 @@ const Principal = ({ register, setValue, clearErrors, errors, consultarProve, ge
                                     useForm={register("codigo", { onBlur: consultarProve })}
                                 />
                             </div>
-                            <div className="col-span-6 sm:col-span-2">
-                                <InputCommon
-                                    titulo={"Cuit"}
-                                    tipo={"text"}
-                                    error={errors.cuit?.message}
-                                    id="cuit"
-                                    useForm={register("cuit")}
-                                />
-                            </div>
+                            
 
                             <div className="hidden sm:flex sm:col-span-2">
                             </div>
@@ -104,7 +96,15 @@ const Principal = ({ register, setValue, clearErrors, errors, consultarProve, ge
                                     useForm={register("razon")}
                                 />
                             </div>
-
+                            <div className="col-span-6 sm:col-span-2">
+                                <InputCommon
+                                    titulo={"CUIT"}
+                                    tipo={"text"}
+                                    error={errors.cuit?.message}
+                                    id="cuit"
+                                    useForm={register("cuit")}
+                                />
+                            </div>
                             <div className=" col-span-6 sm:col-span-3">
                                 <InputCommon
                                     titulo={"Nombre Fantasia"}
@@ -121,6 +121,7 @@ const Principal = ({ register, setValue, clearErrors, errors, consultarProve, ge
                                     data={iva}
                                     setearCodigo={seleccionarCate_ivaSelec}
                                     error={errors.cate_iva?.message}
+                                    seleccionado={getValues ('cate_iva')}
                                 />
                             </div>
 

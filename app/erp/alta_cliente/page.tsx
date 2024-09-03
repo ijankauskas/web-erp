@@ -11,6 +11,7 @@ import Tabs from '@/app/ui/erp/alta_cliente/tabs';
 import Principal from '@/app/ui/erp/alta_cliente/principal';
 import DatosContacto from '@/app/ui/erp/alta_cliente/datosContacto';
 import Tabla from '@/app/ui/erp/alta_cliente/Tabla';
+import HeaderCliente from '@/app/ui/erp/alta_cliente/HeaderCliente';
 
 
 type Inputs = {
@@ -210,6 +211,7 @@ export default function alta_cliente() {
             <div>
                 <LoadingBar color='rgb(99 102 241)' ref={ref} />
             </div>
+            <HeaderCliente />
             <Tabs tabs={tabs} seleccionarTab={seleccionarTab} tab={tab} />
             <div className='relative '>
                 <form action="#" method="POST" onSubmit={handleSubmit(data => enviarForm(data))}>
@@ -220,7 +222,8 @@ export default function alta_cliente() {
                                 setValue={setValue}
                                 errors={errors}
                                 clearErrors={clearErrors}
-                                consultarCliente={consultarCliente} />
+                                consultarCliente={consultarCliente} 
+                                getValues = {getValues}/>
                             <DatosContacto
                                 register={register}
                                 setValue={setValue}

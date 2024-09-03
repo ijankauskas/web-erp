@@ -76,7 +76,25 @@ const DatosContacto = ({register,setValue,clearErrors,errors}:any) => {
                                     useForm={register("domicilio")}
                                 />
                             </div>
+                            <div className="col-span-6 sm:col-span-3">
+                                <InputCommon
+                                    titulo={"Localidad"}
+                                    tipo={"text"}
+                                    error={errors.localidad?.message}
+                                    id="localidad"
+                                    useForm={register("localidad")}
+                                />
+                            </div>
 
+                            <div className="col-span-6 sm:col-span-3">
+                                <InputCommon
+                                    titulo={"Observaciones"}
+                                    tipo={"text"}
+                                    error={errors.observaciones?.message}
+                                    id="observaciones"
+                                    useForm={register("observaciones")}
+                                />
+                            </div>
                         </div>
                     </div>
                 </div>

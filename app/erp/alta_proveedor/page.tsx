@@ -15,6 +15,7 @@ import { DbConsultarProveedor, DbGrabartarProveedor } from '@/app/lib/data';
 import DismissibleAlert from '@/app/ui/DismissAlerta';
 import { usePathname, useSearchParams, useRouter } from 'next/navigation';
 import ButtonCommon from '@/app/ui/erp/ButtonCommon';
+import HeaderProveedor from '@/app/ui/erp/alta_proveedor/HeaderProveedor';
 
 type Inputs = {
     codigo: number,
@@ -30,6 +31,8 @@ type Inputs = {
     celular: string,
     domicilio: string,
     activo: any,
+    localidad: string,
+    observaciones: string,
 }
 
 const people = [
@@ -90,6 +93,8 @@ export default function alta_proveedor() {
             celular: '',
             domicilio: '',
             activo: true,
+            localidad:'',
+            observaciones:''
         },
         resolver: zodResolver(proveedorSchema)
     })
@@ -136,6 +141,8 @@ export default function alta_proveedor() {
             setValue('celular', data.celular);
             setValue('domicilio', data.domicilio);
             data.activo == 'S' ? setValue('activo', true) : setValue('activo', false);
+            setValue('localidad', data.localidad);
+            setValue('observaciones', data.observaciones);
             setCargando(false);
             ref.current?.complete();
         } else {
@@ -193,6 +200,8 @@ export default function alta_proveedor() {
         setValue('celular', '');
         setValue('domicilio', '');
         setValue('activo', true);
+        setValue('localidad', '');
+        setValue('observaciones', '');
     }
 
     useEffect(() => {
@@ -205,10 +214,11 @@ export default function alta_proveedor() {
     }, []);
 
     return (
-        <div className="mx-auto py-0 px-4 sm:px-6 lg:px-8 bg-white">
+        <div className="max-w-7xl mx-auto py-0 px-4 sm:px-6 lg:px-8 bg-white">
             <div>
                 <LoadingBar color='rgb(99 102 241)' ref={ref} />
             </div>
+            <HeaderProveedor />
             <Tabs tabs={tabs} seleccionarTab={seleccionarTab} tab={tab} />
             <div className='relative '>
                 <form action="#" method="POST" onSubmit={handleSubmit(data => enviarForm(data))}>
@@ -239,14 +249,18 @@ export default function alta_proveedor() {
                         </> :
                         tab == 1 ? <DatosContacto register={register} setValue={setValue} errors={errors} clearErrors={clearErrors} /> :
                             'Posición no definida.'}
-                    <div className="flex items-end justify-end px-4 py-3 bg-gray-50 text-right sm:px-6">
-                        <div className='w-40'>
-                            <ButtonCommon
-                                texto={"Guardar"}
-                                type={"submit"}
-                            />
-
-                        </div>
+                   <div className="px-4 py-3 bg-white text-right sm:px-6">
+                        <button
+                            type="button"
+                            onClick={limpiar}  
+                            className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-gray-600 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 mr-2">
+                            Limpiar
+                        </button>
+                        <button
+                            type="submit"
+                            className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" >
+                            Guardar
+                        </button>
                     </div>
                 </form>
 

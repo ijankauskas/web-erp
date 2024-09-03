@@ -58,5 +58,13 @@ export const articuloSchema = z.object({
     }),
     activo: z.any().optional(),
     componentes: z.array(componenteSchema).optional(),
+    usa_compo: z.any().optional(),
+    sin_stock: z.any().optional(),
     iva: z.any().optional().transform(val => parseFloat(val)),
+    um: z.string().optional(),
+    cant_default: z.string().optional(),
+    cod_barras: z.string().optional(),
+    
+    
+
 })
