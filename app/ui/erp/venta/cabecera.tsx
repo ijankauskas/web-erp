@@ -44,7 +44,7 @@ export default function Cabecera({ register, setValue, clearErrors, errors, most
 
     return (
         <>
-            <div className="pt-2 grid gap-x-2 gap-y-2 grid-cols-6 sm:grid-cols-12">
+            <div className="pt-2 grid gap-x-2 gap-y-0 grid-cols-6 sm:grid-cols-12">
                 <div className="col-span-6 sm:col-span-6 md:col-span-3 flex items-center">
                     <div className='w-full mr-2 h-20'>
                         <ComboBoxSelect

@@ -176,7 +176,7 @@ export default function alta_articulo() {
 
         const response = await DbGrabartarFactura(data)
         const mensaje = await response.json();
-        
+
         if (response.ok) {
             ref.current?.complete();
             setCargando(false);
@@ -234,7 +234,7 @@ export default function alta_articulo() {
 
 
     return (
-        <div className='mx-auto max-w-screen-2xl'>
+        <div className='mx-auto max-w-screen-2xl bg-white'>
             <div>
                 <LoadingBar color='rgb(99 102 241)' ref={ref} />
             </div>
@@ -248,12 +248,17 @@ export default function alta_articulo() {
                         clearErrors={clearErrors}
                         getValues={getValues}
                     />
-                    <div className="flex justify-end my-2">
-                        <div className='w-3/6 sm:w-1/6 sm:max-w-[150px] sm:mr-4'>
-                            <ButtonCommon type="button" texto={"Agregar Articulo"} onClick={toggleAbrirArticulosConsul} />
+                    <div className="w-full flex justify-between my-2">
+                        <div>
+                            <h2 className='text-xl font-medium leading-7 text-gray-900 sm:truncate sm:text-xl sm:tracking-tight'>Articulos</h2>
                         </div>
-                        <div className='w-3/6 sm:w-1/6 sm:max-w-[150px]'>
-                            <ButtonCommon type="submit" texto={"Grabar"} />
+                        <div className='flex'>
+                            <div className='w-[150px] sm:mr-4'>
+                                <ButtonCommon type="button" texto={"Agregar Articulo"} onClick={toggleAbrirArticulosConsul} />
+                            </div>
+                            <div className='w-[150px]'>
+                                <ButtonCommon type="submit" texto={"Grabar"} />
+                            </div>
                         </div>
                     </div>
                     <div className="overflow-x-auto sm:-mx-6 lg:-mx-8">
