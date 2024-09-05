@@ -78,6 +78,7 @@ const Principal = ({ register, setValue, clearErrors, errors, consultarProve, ge
                                     titulo={"Numero de proveedor"}
                                     tipo={"number"}
                                     error={errors.codigo?.message}
+                                    step={"0.01"}
                                     id="codigo"
                                     useForm={register("codigo", { onBlur: consultarProve })}
                                 />
