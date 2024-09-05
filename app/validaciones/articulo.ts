@@ -4,7 +4,7 @@ import { z } from 'zod'
 const componenteSchema = z.object({
     cod_articulo: z.string().optional(),
     cod_articulo_compo: z.string().optional(),
-    cantidad: z.number()
+    cantidad: z.any()
         .refine(val => !isNaN(Number(val)), {
             message: "El precio de oferta debe ser un número.",
         }),
@@ -62,9 +62,13 @@ export const articuloSchema = z.object({
     sin_stock: z.any().optional(),
     iva: z.any().optional().transform(val => parseFloat(val)),
     um: z.string().optional(),
-    cant_default: z.string().optional(),
+    cant_default: z.any()
+        .transform(val => parseFloat(val))
+        .optional(),
     cod_barras: z.string().optional(),
     
-    
+    costo_iva: z.any().optional().transform(val => parseFloat(val)),
+
+
 
 })
