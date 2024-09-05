@@ -11,9 +11,7 @@ export default function ComboBoxSelect({ titulo, data, seleccionado, setearCodig
   const [selectedPerson, setSelectedPerson] = useState<{ id: any; name: string } | null>(null);
   const [query, setQuery] = useState('');
 
-  useEffect(() => {
-    console.log(seleccionado);
-    
+  useEffect(() => {    
     if (seleccionado == '' || seleccionado == null) {
       setSelectedPerson({ id: '', name: '' });
       setearCodigo('');
@@ -61,7 +59,7 @@ export default function ComboBoxSelect({ titulo, data, seleccionado, setearCodig
         <div className="relative mt-1">
           <Combobox.Input
             className={`w-full text-black rounded-md border bg-white py-2 pl-3 pr-10 shadow-sm focus:outline-none focus:ring-1 sm:text-sm
-            ${error ? 'focus:ring-red-600 border-red-300' : 'border-gray-300 focus:border-indigo-500 focus:ring-indigo-500'}`}
+            ${error ? 'focus:ring-red-600 border-red-300' : 'border-gray-300 focus:border-primary focus:ring-primary'}`}
             onChange={(event) => consultar(event)}
             displayValue={(person: any) => (person ? person.name : '')}
           />

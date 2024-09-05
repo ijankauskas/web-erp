@@ -6,8 +6,8 @@ import ButtonCommon from '@/app/ui/erp/ButtonCommon';
 import Alerta from '@/app/ui/erp/alerta';
 import Cabecera from '@/app/ui/erp/venta/cabecera';
 import ArticulosConsul from '@/app/ui/erp/consultas/articulos_consul';
-import TablaTotales from '@/app/ui/erp/venta/TablaTotales';
-import Tabla from '@/app/ui/erp/venta/tabla';
+import Bottom from '@/app/ui/erp/venta/Bottom';
+import TablaArticulos from '@/app/ui/erp/venta/TablaArticulos';
 import { VentaSchema } from '@/app/validaciones/venta';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useEffect, useRef, useState } from 'react';
@@ -262,7 +262,7 @@ export default function alta_articulo() {
                         </div>
                     </div>
                     <div className="overflow-x-auto sm:-mx-6 lg:-mx-8">
-                        <Tabla
+                        <TablaArticulos
                             register={register}
                             articulos={articulos}
                             setAlerta={setAlerta}
@@ -270,8 +270,8 @@ export default function alta_articulo() {
                         />
                     </div>
                 </div>
-                <div>
-                    <TablaTotales
+                <div className='!m-2'>
+                    <Bottom
                         articulos={articulos}
                     />
                 </div>

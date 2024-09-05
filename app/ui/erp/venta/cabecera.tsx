@@ -1,5 +1,5 @@
 'use client'
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ComboBoxSelect from "../../ComboBoxSelect";
 import InputCommon from "../../inputCommon";
 import { faPersonWalkingDashedLineArrowRight } from "@fortawesome/free-solid-svg-icons/faPersonWalkingDashedLineArrowRight";
@@ -10,6 +10,14 @@ import { DbConsultarCliente } from "@/app/lib/data";
 export default function Cabecera({ register, setValue, clearErrors, errors, mostrarErrorAlerta, getValues }: any) {
     const [num_cliente, setNum_cliente] = useState();
     const [clientes, setClientes] = useState<{}>([]);
+
+    useEffect(()=>{
+        cargarComponente()
+    },[])
+
+    function cargarComponente(){
+        consutlarClientes('');
+    }
 
     const seleccionarClienteSelec = (cliente: any) => {
         setNum_cliente(cliente);
@@ -30,8 +38,8 @@ export default function Cabecera({ register, setValue, clearErrors, errors, most
         setValue('num_cliente', cliente.target.value);
     }
 
-    const consutlarClientes = async (param: any) => {
-        const respuesta = await DbConsultarCliente(null, 'S', param,'razon','asc','1','50');
+    const consutlarClientes = async (param?: any) => {
+        const respuesta = await DbConsultarCliente(null, 'S', param,'razon','asc','1','50','S');
         const data = await respuesta.json();
         if (respuesta.ok) {
             const clientesMapeados = data.map((cliente: any) => ({

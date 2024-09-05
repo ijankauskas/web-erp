@@ -5,7 +5,7 @@ import InputCommon from "../../inputCommon";
 import { DbConsultarArticulo } from "@/app/lib/data";
 import Alerta from "../alerta";
 
-export default function Tabla({ register, articulos, setAlerta, setArticulos }: any) {
+export default function TablaArticulos({ register, articulos, setAlerta, setArticulos }: any) {
     const [columnWidths, setColumnWidths] = useState([150, 400, 100, 125, 125, 100]);
     const [error, setError] = useState({
         mostrar: false,
@@ -116,47 +116,47 @@ export default function Tabla({ register, articulos, setAlerta, setArticulos }: 
 
     return (
         <>
-            <div className="py-1 inline-block min-w-full sm:px-6 lg:px-8">
-                <div className="w-full h-[30.6vh] overflow-x-auto overflow-y-auto shadow-md sm:rounded-lg max-h-[400px] bg-white border-gray-200 border"> {/* Contenedor con ancho al 100% y overflow */}
+            <div className="py-1  min-w-full sm:px-6 lg:px-8 grid grid-cols-1">
+                <div className="w-full col-span-1 h-[30.6vh] overflow-x-auto overflow-y-auto shadow-md sm:rounded-lg bg-white border-gray-200 border"> {/* Contenedor con ancho al 100% y overflow */}
                     <table className="min-w-full w-full table-fixed">
                         <thead className="bg-gray-100">
                             <tr className="border-b">
-                                <th style={{ width: columnWidths[0] }} scope="col" className="relative px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-r border-gray-200 text-ellipsis overflow-hidden">
+                                <th style={{ width: columnWidths[0] }} scope="col" className="relative px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-r border-gray-200 text-ellipsis overflow-hidden">
                                     Codigo
                                     <div
                                         className="absolute right-0 top-0 w-1 h-full cursor-col-resize hover:bg-gray-300"
                                         onMouseDown={(e) => handleMouseDown(0, e)}
                                     />
                                 </th>
-                                <th style={{ width: columnWidths[1] }} scope="col" className="relative px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-r border-gray-200 text-ellipsis overflow-hidden">
+                                <th style={{ width: columnWidths[1] }} scope="col" className="relative px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-r border-gray-200 text-ellipsis overflow-hidden">
                                     Descripcion
                                     <div
                                         className="absolute right-0 top-0 w-1 h-full cursor-col-resize hover:bg-gray-300"
                                         onMouseDown={(e) => handleMouseDown(1, e)}
                                     />
                                 </th>
-                                <th style={{ width: columnWidths[2] }} scope="col" className="relative w-[50px] px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-r border-gray-200 text-ellipsis overflow-hidden">
+                                <th style={{ width: columnWidths[2] }} scope="col" className="relative w-[50px] px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-r border-gray-200 text-ellipsis overflow-hidden">
                                     Cantidad
                                     <div
                                         className="absolute right-0 top-0 w-1 h-full cursor-col-resize hover:bg-gray-300"
                                         onMouseDown={(e) => handleMouseDown(2, e)}
                                     />
                                 </th>
-                                <th style={{ width: columnWidths[3] }} scope="col" className="relative w-[125px] px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-r border-gray-200 text-ellipsis overflow-hidden">
+                                <th style={{ width: columnWidths[3] }} scope="col" className="relative w-[125px] px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-r border-gray-200 text-ellipsis overflow-hidden">
                                     Precio
                                     <div
                                         className="absolute right-0 top-0 w-1 h-full cursor-col-resize hover:bg-gray-300"
                                         onMouseDown={(e) => handleMouseDown(3, e)}
                                     />
                                 </th>
-                                <th style={{ width: columnWidths[4] }} scope="col" className="relative w-[125px] px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-r border-gray-200 text-ellipsis overflow-hidden">
+                                <th style={{ width: columnWidths[4] }} scope="col" className="relative w-[125px] px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-r border-gray-200 text-ellipsis overflow-hidden">
                                     Total
                                     <div
                                         className="absolute right-0 top-0 w-1 h-full cursor-col-resize hover:bg-gray-300"
                                         onMouseDown={(e) => handleMouseDown(4, e)}
                                     />
                                 </th>
-                                <th style={{ width: columnWidths[5] }} scope="col" className="relative px-6 py-2">
+                                <th style={{ width: columnWidths[5] }} scope="col" className="relative px-6 py-3">
                                     <span className="sr-only">Edit</span>
                                 </th>
                             </tr>
@@ -253,7 +253,7 @@ export default function Tabla({ register, articulos, setAlerta, setArticulos }: 
                                 <td className="px-2 py-1 whitespace-nowrap text-sm text-gray-500 border-r border-gray-200">
 
                                 </td>
-                                <td className="w-12 px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                <td className="w-12 px-6 py-2 whitespace-nowrap text-right text-sm font-medium">
                                     <a href="#" className="text-indigo-600 hover:text-indigo-900">
                                         Eliminar
                                     </a>

@@ -90,9 +90,10 @@ export async function DbConsultarCliente(
     dir?: string | null,
     page?: string | null,
     limit?: string | null,
+    activos?: string | null,
 ) {
     try {
-        const response = await fetch('http://localhost:8080/clientes?codigo=' + codigo + '&multiple=' + multiple + '&razon=' + razon + '&orden=' + columnaOrden + '&dir=' + dir + '&page=' + page + '&limit=' + limit, {
+        const response = await fetch('http://localhost:8080/clientes?codigo=' + codigo + '&multiple=' + multiple + '&razon=' + razon + '&orden=' + columnaOrden + '&dir=' + dir + '&page=' + page + '&limit=' + limit + '&activos=' + activos, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
