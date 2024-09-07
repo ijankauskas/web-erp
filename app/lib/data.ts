@@ -176,3 +176,19 @@ export async function DbSaldosClientes(
         throw new Error('Failed to fetch card data.');
     }
 }
+export async function DbValoresConsul(
+    activos: string | null,
+) {
+    try {
+        const response = await fetch('http://localhost:8080/valores?activo=' + activos , {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
+
+        return response;
+    } catch (error) {
+        throw new Error('Failed to fetch card data.');
+    }
+}

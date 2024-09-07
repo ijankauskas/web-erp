@@ -7,7 +7,7 @@ function classNames(...classes: any[]) {
   return classes.filter(Boolean).join(' ');
 }
 
-export default function ComboBoxSelect({ titulo, data, seleccionado, setearCodigo, mostrarError, useForm, error, llenarData }: any) {
+export default function ComboBoxSelect({ titulo='', data, seleccionado, setearCodigo, mostrarError, useForm, error, llenarData, paddingY = 'py-1.5', index }: any) {
   const [selectedPerson, setSelectedPerson] = useState<{ id: any; name: string } | null>(null);
   const [query, setQuery] = useState('');
 
@@ -40,7 +40,7 @@ export default function ComboBoxSelect({ titulo, data, seleccionado, setearCodig
 
   const seleccionarOpcion = (person: { id: any; name: string } | null) => {
     setSelectedPerson(person);
-    setearCodigo(person?.id)
+    setearCodigo(person?.id,index)
   };
 
   const filteredPeople =
@@ -56,10 +56,10 @@ export default function ComboBoxSelect({ titulo, data, seleccionado, setearCodig
     <>
       <Combobox as="div" value={selectedPerson} onChange={seleccionarOpcion} {...useForm}>
         <Combobox.Label className="block text-sm font-medium text-gray-700">{titulo}</Combobox.Label>
-        <div className="relative mt-1">
+        <div className={`relative ${titulo == ''? 'mt-0': 'mt-1'}`}>
           <Combobox.Input
-            className={`w-full text-black rounded-md border bg-white py-2 pl-3 pr-10 shadow-sm focus:outline-none focus:ring-1 sm:text-sm
-            ${error ? 'focus:ring-red-600 border-red-300' : 'border-gray-300 focus:border-primary focus:ring-primary'}`}
+            className={`relative z-0 block w-full rounded-md border-0 px-2.5 ${paddingY} text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6 
+            ${error ? 'focus:ring-red-600 ring-red-300' : 'focus:ring-primary'}`}
             onChange={(event) => consultar(event)}
             displayValue={(person: any) => (person ? person.name : '')}
           />

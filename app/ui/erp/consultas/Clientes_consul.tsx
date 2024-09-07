@@ -8,7 +8,7 @@ import { SetStateAction, useState } from "react";
 import Alerta from "../alerta";
 import { XMarkIcon } from '@heroicons/react/24/outline'
 
-export default function ArticulosConsul({ setArticulo, open, setOpen }: any) {
+export default function ClientesConsul({ setArticulo, open, setOpen }: any) {
     const [error, setError] = useState({
         mostrar: false,
         mensaje: '',
@@ -81,12 +81,12 @@ export default function ArticulosConsul({ setArticulo, open, setOpen }: any) {
                         >
                             <div className="w-10/12 py-2 inline-block min-w-full sm:px-6 lg:px-8">
                                 <div className="border-b flex items-start justify-between">
-                                    <DialogTitle className="text-lg font-medium text-gray-900">Consulta de Artículos.</DialogTitle>
+                                    <DialogTitle className="text-lg font-medium text-gray-900">Consulta de clientes.</DialogTitle>
                                     <div className="ml-3 flex h-7 items-center">
                                         <button
                                             type="button"
                                             className="relative -m-2 p-2 text-gray-400 hover:text-gray-500"
-                                            onClick={() => setOpen(false)}
+                                            onClick={()=>setOpen(false)}
                                         >
                                             <span className="absolute -inset-0.5" />
                                             <span className="sr-only">Close panel</span>
@@ -125,7 +125,10 @@ export default function ArticulosConsul({ setArticulo, open, setOpen }: any) {
                                                     Codigo
                                                 </th>
                                                 <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                    Descripcion
+                                                    Razon
+                                                </th>
+                                                <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                    Nombre de Fantasia
                                                 </th>
                                             </tr>
                                         </thead>
@@ -155,7 +158,7 @@ export default function ArticulosConsul({ setArticulo, open, setOpen }: any) {
                 titulo={error.titulo}
                 texto={error.mensaje}
             />
-
+            
         </>
     )
 }

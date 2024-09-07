@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { Dialog, DialogBackdrop, DialogPanel, DialogTitle } from '@headlessui/react'
-import { CheckBadgeIcon, ExclamationTriangleIcon } from '@heroicons/react/24/outline'
+import { CheckCircleIcon, ExclamationTriangleIcon } from '@heroicons/react/24/outline'
 
 export default function Alerta({ abrir, cerrar, titulo, texto, botonExtra, textoExtra, funcionExtra, tipo_aletar = 'error' }: any) {
 
@@ -28,7 +28,7 @@ export default function Alerta({ abrir, cerrar, titulo, texto, botonExtra, texto
                                 )}
                                 {tipo_aletar == 'exitoso' && (
                                     <div className="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-green-100 sm:mx-0 sm:h-10 sm:w-10">
-                                        <CheckBadgeIcon aria-hidden="true" className="h-6 w-6 text-green-600" />
+                                        <CheckCircleIcon aria-hidden="true" className="h-6 w-6 text-green-600" />
                                     </div>
                                 )}
                                 <div className="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">

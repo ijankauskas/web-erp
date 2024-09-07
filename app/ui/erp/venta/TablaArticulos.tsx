@@ -37,12 +37,14 @@ export default function TablaArticulos({ register, articulos, setAlerta, setArti
     };
 
     const [nuevoArticulo, setNuevoArticulo] = useState<any>({});
+    
     const manejarCambioNuevoArticulo = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { id, value } = e.target;
         setNuevoArticulo((prev: any) => ({ ...prev, [id]: value }));
     }
 
-    const consultarArticulo = async () => {
+    const consultarArticulo = async (e: any) => {
+        e.preventDefault();
         if (nuevoArticulo.codigo == '' || nuevoArticulo.codigo == undefined) return
 
         const respuesta = await DbConsultarArticulo(nuevoArticulo.codigo, 'N');
@@ -54,7 +56,7 @@ export default function TablaArticulos({ register, articulos, setAlerta, setArti
                 codigo: data.codigo,
                 descripcion: data.descripcion,
                 unidad: data.unidad,
-                cantidad: parseFloat(data.cantidad) || 0,
+                cantidad: parseFloat(data.cant_default ) || 0,
                 precio_vta: parseFloat(data.precio_vta) || 0,
                 costo_uni: data.costo || 0
             }];
@@ -72,7 +74,6 @@ export default function TablaArticulos({ register, articulos, setAlerta, setArti
     }
 
     const modificarArticulo = (e: React.ChangeEvent<HTMLInputElement>, index: any, field: string) => {
-        e.preventDefault();
         const { value } = e.target;
 
         const valueWithoutSeparators = value.replace(/\./g, '').replace(',', '.');
@@ -95,6 +96,7 @@ export default function TablaArticulos({ register, articulos, setAlerta, setArti
             funcionExtra: () => eliminar(index),
         });
     }
+    
     const eliminar = (index: any) => {
         const nuevosArticulos = articulos.filter((_: any, idx: any) => idx !== index);
 
@@ -121,35 +123,35 @@ export default function TablaArticulos({ register, articulos, setAlerta, setArti
                     <table className="min-w-full w-full table-fixed">
                         <thead className="bg-gray-100">
                             <tr className="border-b">
-                                <th style={{ width: columnWidths[0] }} scope="col" className="relative px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-r border-gray-200 text-ellipsis overflow-hidden">
+                                <th style={{ width: columnWidths[0] }} scope="col" className="relative px-3 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider border-r border-gray-200 text-ellipsis overflow-hidden">
                                     Codigo
                                     <div
                                         className="absolute right-0 top-0 w-1 h-full cursor-col-resize hover:bg-gray-300"
                                         onMouseDown={(e) => handleMouseDown(0, e)}
                                     />
                                 </th>
-                                <th style={{ width: columnWidths[1] }} scope="col" className="relative px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-r border-gray-200 text-ellipsis overflow-hidden">
+                                <th style={{ width: columnWidths[1] }} scope="col" className="relative px-3 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider border-r border-gray-200 text-ellipsis overflow-hidden">
                                     Descripcion
                                     <div
                                         className="absolute right-0 top-0 w-1 h-full cursor-col-resize hover:bg-gray-300"
                                         onMouseDown={(e) => handleMouseDown(1, e)}
                                     />
                                 </th>
-                                <th style={{ width: columnWidths[2] }} scope="col" className="relative w-[50px] px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-r border-gray-200 text-ellipsis overflow-hidden">
+                                <th style={{ width: columnWidths[2] }} scope="col" className="relative w-[50px] px-3 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider border-r border-gray-200 text-ellipsis overflow-hidden">
                                     Cantidad
                                     <div
                                         className="absolute right-0 top-0 w-1 h-full cursor-col-resize hover:bg-gray-300"
                                         onMouseDown={(e) => handleMouseDown(2, e)}
                                     />
                                 </th>
-                                <th style={{ width: columnWidths[3] }} scope="col" className="relative w-[125px] px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-r border-gray-200 text-ellipsis overflow-hidden">
+                                <th style={{ width: columnWidths[3] }} scope="col" className="relative w-[125px] px-3 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider border-r border-gray-200 text-ellipsis overflow-hidden">
                                     Precio
                                     <div
                                         className="absolute right-0 top-0 w-1 h-full cursor-col-resize hover:bg-gray-300"
                                         onMouseDown={(e) => handleMouseDown(3, e)}
                                     />
                                 </th>
-                                <th style={{ width: columnWidths[4] }} scope="col" className="relative w-[125px] px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-r border-gray-200 text-ellipsis overflow-hidden">
+                                <th style={{ width: columnWidths[4] }} scope="col" className="relative w-[125px] px-3 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider border-r border-gray-200 text-ellipsis overflow-hidden">
                                     Total
                                     <div
                                         className="absolute right-0 top-0 w-1 h-full cursor-col-resize hover:bg-gray-300"
@@ -223,7 +225,7 @@ export default function TablaArticulos({ register, articulos, setAlerta, setArti
                                         id="codigo"
                                         texto={nuevoArticulo.codigo}
                                         onChange={manejarCambioNuevoArticulo}
-                                        funcionOnblur={consultarArticulo}
+                                        funcionOnblur={(e: any) => consultarArticulo(e)}
                                         paddingY={'py-0.5'}
                                     />
                                 </td>

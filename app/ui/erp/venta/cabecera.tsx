@@ -4,18 +4,20 @@ import ComboBoxSelect from "../../ComboBoxSelect";
 import InputCommon from "../../inputCommon";
 import { faPersonWalkingDashedLineArrowRight } from "@fortawesome/free-solid-svg-icons/faPersonWalkingDashedLineArrowRight";
 import { DbConsultarCliente } from "@/app/lib/data";
+import ButtonCommon from "../ButtonCommon";
+import { MagnifyingGlassCircleIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 
 
 
-export default function Cabecera({ register, setValue, clearErrors, errors, mostrarErrorAlerta, getValues }: any) {
+export default function Cabecera({ register, setValue, clearErrors, errors, mostrarErrorAlerta, getValues, AbrirClientesConsul }: any) {
     const [num_cliente, setNum_cliente] = useState();
     const [clientes, setClientes] = useState<{}>([]);
 
-    useEffect(()=>{
+    useEffect(() => {
         cargarComponente()
-    },[])
+    }, [])
 
-    function cargarComponente(){
+    function cargarComponente() {
         consutlarClientes('');
     }
 
@@ -39,7 +41,7 @@ export default function Cabecera({ register, setValue, clearErrors, errors, most
     }
 
     const consutlarClientes = async (param?: any) => {
-        const respuesta = await DbConsultarCliente(null, 'S', param,'razon','asc','1','50','S');
+        const respuesta = await DbConsultarCliente(null, 'S', param, 'razon', 'asc', '1', '50', 'S');
         const data = await respuesta.json();
         if (respuesta.ok) {
             const clientesMapeados = data.map((cliente: any) => ({
@@ -117,6 +119,16 @@ export default function Cabecera({ register, setValue, clearErrors, errors, most
                             setearCodigo={seleccionarClienteSelec}
                             mostrarError={mostrarErrorAlerta}
                             llenarData={consutlarClientes}
+                        />
+                    </div>
+                    <div>
+                        <ButtonCommon
+                            type="button"
+                            texto={<MagnifyingGlassIcon aria-hidden="true" className="h-7 w-7" />}
+                            px={"px-1"}
+                            py={"py-1"}
+                            tooltip="Buscar Clientes"
+                            onClick={AbrirClientesConsul}
                         />
                     </div>
                 </div>

@@ -13,6 +13,9 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import LoadingBar, { LoadingBarRef } from 'react-top-loading-bar';
+import { PlusCircleIcon } from '@heroicons/react/24/outline';
+import ClientesConsul from '@/app/ui/erp/consultas/Clientes_consul';
+
 
 type Inputs = {
     tipo: string,
@@ -28,6 +31,11 @@ type Inputs = {
         cantidad: number;
         precio_vta: number;
         costo_uni: number;
+    }[],
+    pagos: {
+        id: string;
+        name: string;
+        importe: number;
     }[]
 }
 
@@ -36,6 +44,9 @@ const fecha_hoy = new Date().toISOString().split('T')[0];
 export default function alta_articulo() {
     const [cargando, setCargando] = useState(false);
     const ref = useRef<LoadingBarRef | null>(null);
+    const [isInitialMount, setIsInitialMount] = useState(true);
+    const [abrirArticulosConsul, setAbrirArticulosConsul] = useState(false);
+    const [abrirClientesConsul, setAbrirClientesConsul] = useState(false);
 
     useEffect(() => {
         if (ref.current) {
@@ -43,8 +54,6 @@ export default function alta_articulo() {
         }
     }, []);
 
-    const [isInitialMount, setIsInitialMount] = useState(true);
-    const [abrirArticulosConsul, setAbrirArticulosConsul] = useState(false);
     const [mensaje, setMensaje] = useState({
         mostrar: false,
         mensaje: '',
@@ -68,8 +77,7 @@ export default function alta_articulo() {
             }],
         },
         resolver: zodResolver(VentaSchema)
-    })
-
+    }) 
     const [articulos, setArticulos] = useState<{
         error: boolean; codigo: string, descripcion: string, unidad: string, cantidad: number, precio_vta: number, costo_uni: number
     }[]>([]);
@@ -77,6 +85,14 @@ export default function alta_articulo() {
     useEffect(() => {
         setValue('articulos', articulos);
     }, [articulos]);
+
+    const [pagos, setPagos] = useState<{
+        error: boolean; id: string, name: string, importe: number
+    }[]>([]);
+
+    useEffect(() => {
+        setValue('pagos', pagos);
+    }, [pagos]);
 
     const formRef = useRef(null);
 
@@ -93,6 +109,7 @@ export default function alta_articulo() {
         type: "",
         alertVisible: false
     });
+
     const closeAlertaDismiss = () => {
         setAlerta({
             message: '',
@@ -147,6 +164,11 @@ export default function alta_articulo() {
 
     const toggleAbrirArticulosConsul = () => {
         setAbrirArticulosConsul(!abrirArticulosConsul)
+    }
+    const toggleAbrirClientesConsul = () => {
+        console.log('aca');
+        
+        setAbrirClientesConsul(!abrirClientesConsul)
     }
 
     const enviarForm = async (data?: any) => {
@@ -247,6 +269,7 @@ export default function alta_articulo() {
                         mostrarErrorAlerta={mostrarErrorAlerta}
                         clearErrors={clearErrors}
                         getValues={getValues}
+                        AbrirClientesConsul={toggleAbrirClientesConsul}
                     />
                     <div className="w-full flex justify-between my-2">
                         <div>
@@ -254,10 +277,10 @@ export default function alta_articulo() {
                         </div>
                         <div className='flex'>
                             <div className='w-[150px] sm:mr-4'>
-                                <ButtonCommon type="button" texto={"Agregar Articulo"} onClick={toggleAbrirArticulosConsul} />
+                                <ButtonCommon type="button" texto={"Buscar Articulos"} onClick={toggleAbrirArticulosConsul} />
                             </div>
                             <div className='w-[150px]'>
-                                <ButtonCommon type="submit" texto={"Grabar"} />
+                                <ButtonCommon type="submit" texto={<><PlusCircleIcon aria-hidden="true" className="mr-1.5 h-5 w-5" />Guardar</>} />
                             </div>
                         </div>
                     </div>
@@ -272,7 +295,12 @@ export default function alta_articulo() {
                 </div>
                 <div className='!m-2'>
                     <Bottom
+                        register={register}
                         articulos={articulos}
+                        setAlerta={setAlerta}
+                        setArticulos={setArticulos}
+                        pagos={pagos}
+                        setPagos={setPagos}
                     />
                 </div>
             </form>
@@ -292,6 +320,12 @@ export default function alta_articulo() {
                 setOpen={setAbrirArticulosConsul}
             />
 
+            <ClientesConsul
+                setArticulo={setArticulos}
+                open={abrirClientesConsul}
+                setOpen={setAbrirClientesConsul}
+            />
+
             {alerta.alertVisible && (
                 <DismissibleAlert
                     message={alerta.message}
@@ -299,6 +333,7 @@ export default function alta_articulo() {
                     onClose={closeAlertaDismiss}
                 />
             )}
+
         </div>
     );
 

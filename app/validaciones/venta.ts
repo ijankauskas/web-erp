@@ -3,6 +3,7 @@ import { z } from 'zod'
 const articulos = z.object({
     codigo: z.any().optional(),
     cantidad: z.any()
+        .transform(val => parseFloat(val))
         .refine(val => !isNaN(Number(val)), {
             message: "La cantidad debe ser un número.",
         })
@@ -11,6 +12,14 @@ const articulos = z.object({
         }),
     precio_vta: z.any().optional(),
     costo_uni: z.any().optional(),
+});
+
+const pagos = z.object({
+    id: z.any().optional(),
+    importe: z.any()
+        .refine(val => !isNaN(Number(val)), {
+            message: "La cantidad debe ser un número.",
+        })
 });
 
 export const VentaSchema = z.object({
@@ -29,4 +38,5 @@ export const VentaSchema = z.object({
             message: "Debe seleccionar un cliente.",
         }),
     articulos: z.array(articulos).optional(),
+    pagos: z.array(pagos).optional(),
 })
