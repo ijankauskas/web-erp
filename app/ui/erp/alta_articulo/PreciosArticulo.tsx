@@ -37,6 +37,18 @@ const PreciosArticulo = ({ register, setValue, clearErrors, errors, getValues }:
                 <div className="">
                     <div className="px-4 py-5 sm:p-6">
                         <div className="grid grid-cols-6 gap-6 gap-y-4">
+
+                        <div className="col-span-6 sm:col-span-3">
+                                <InputCommon
+                                    titulo={"Stock"}
+                                    tipo={"number"}
+                                    error={errors.stock?.message}
+                                    step={"0.01"}
+                                    id="stock"
+                                    useForm={register("stock")}
+                                />
+                            </div>
+
                             <div className="col-span-6 sm:col-span-3">
                                 <InputCommon
                                     titulo={"Costo"}
@@ -47,16 +59,18 @@ const PreciosArticulo = ({ register, setValue, clearErrors, errors, getValues }:
                                     useForm={register("costo")}
                                 />
                             </div>
+
                             <div className="col-span-6 sm:col-span-3">
                                 <InputCommon
-                                    titulo={"Stock"}
-                                    tipo={"number"}
-                                    error={errors.stock?.message}
+                                    titulo={"Costo c/IVA"}
+                                    tipo={'number'}
+                                    error={errors.costo_iva?.message}
                                     step={"0.01"}
-                                    id="stock"
-                                    useForm={register("stock")}
+                                    id="costo"
+                                    useForm={register("cocosto_ivasto")}
                                 />
                             </div>
+                           
                             <div className="col-span-6 sm:col-span-3">
                                 <InputCommon
                                     titulo={"Precio de venta"}

@@ -44,6 +44,7 @@ type Inputs = {
   um: string,
   cant_default: string,
   cod_barras: string,
+  costo_iva: string,
 }
 
 
@@ -115,7 +116,8 @@ export default function alta_articulo() {
       sin_stock: false,
       um: 'UNI',
       cant_default:'1',
-      cod_barras:''
+      cod_barras:'',
+      costo_iva: ''
     },
     resolver: zodResolver(articuloSchema)
   })
@@ -266,6 +268,7 @@ export default function alta_articulo() {
       setValue('um', data.um);
       setValue('cant_default', data.cant_default);
       setValue('cod_barras', data.cod_barras);
+      setValue('costo_iva', data.costo_iva);
 
     } else {
       limpiar()
@@ -301,6 +304,7 @@ export default function alta_articulo() {
     setValue('um', '');
     setValue('cant_default', '');
     setValue('cod_barras', '');
+    setValue('costo_iva', '');
   }
 
   useEffect(() => {
