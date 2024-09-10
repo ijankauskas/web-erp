@@ -5,7 +5,7 @@ export default function ButtonCommon({ texto, onClick, type, desactivado, toolti
         <button
             onClick={onClick}
             type={type}
-            className={`w-full text-end flex items-center justify-center inline-flex ${px} ${py} border border-transparent text-sm font-medium rounded-md shadow-sm text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500
+            className={`w-full text-end items-center justify-center inline-flex ${px} ${py} border border-transparent text-sm font-medium rounded-md shadow-sm text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500
                         ${desactivado ? 'bg-gray-300' : 'bg-primary hover:bg-indigo-700'}`}
             disabled={desactivado}
         >

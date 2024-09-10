@@ -118,7 +118,7 @@ export default function TablaArticulos({ register, articulos, setAlerta, setArti
 
     return (
         <>
-            <div className="py-1  min-w-full sm:px-6 lg:px-8 grid grid-cols-1">
+            <div className="py-1 min-w-full sm:px-6 lg:px-8 grid grid-cols-1">
                 <div className="w-full col-span-1 h-[30.6vh] overflow-x-auto overflow-y-auto shadow-md sm:rounded-lg bg-white border-gray-200 border"> {/* Contenedor con ancho al 100% y overflow */}
                     <table className="min-w-full w-full table-fixed">
                         <thead className="bg-gray-100">

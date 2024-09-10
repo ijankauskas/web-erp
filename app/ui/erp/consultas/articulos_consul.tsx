@@ -7,8 +7,14 @@ import { DbConsultarArticulo } from "@/app/lib/data";
 import { SetStateAction, useState } from "react";
 import Alerta from "../alerta";
 import { XMarkIcon } from '@heroicons/react/24/outline'
+import { Pagination } from "@nextui-org/react";
 
 export default function ArticulosConsul({ setArticulo, open, setOpen }: any) {
+    const [columnWidths, setColumnWidths] = useState([50, 500]);
+    const [articulos, setArticulos] = useState<[]>([]);
+    const [sCodarticulos, setSCodarticulos] = useState('');
+    const [sDescrip, setSDescrip] = useState('');
+
     const [error, setError] = useState({
         mostrar: false,
         mensaje: '',
@@ -24,13 +30,28 @@ export default function ArticulosConsul({ setArticulo, open, setOpen }: any) {
         });
     }
 
-    const [articulos, setArticulos] = useState<[]>([]);
+    const handleMouseDown = (index: any, event: any) => {
+        const startX = event.clientX;
+        const startWidth = columnWidths[index];
+        const onMouseMove = (e: any) => {
+            const newWidth = startWidth + (e.clientX - startX);
+            const newWidths = [...columnWidths];
+            newWidths[index] = Math.max(newWidth, 10); // Establece un ancho mínimo
+            setColumnWidths(newWidths);
+        };
 
-    const [sCodarticulos, setSCodarticulos] = useState('');
+        const onMouseUp = () => {
+            document.removeEventListener('mousemove', onMouseMove);
+            document.removeEventListener('mouseup', onMouseUp);
+        };
+
+        document.addEventListener('mousemove', onMouseMove);
+        document.addEventListener('mouseup', onMouseUp);
+    };
+
     const settearSCodarticulos = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSCodarticulos(e.target.value);
     }
-    const [sDescrip, setSDescrip] = useState('');
     const settearSDescrip = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSDescrip(e.target.value);
     }
@@ -117,15 +138,49 @@ export default function ArticulosConsul({ setArticulo, open, setOpen }: any) {
                                         </div>
                                     </div>
                                 </div>
-                                <div className="h-[60vh] mt-4 w-full overflow-hidden shadow-md sm:rounded-lg">
-                                    <table className="min-w-full">
-                                        <thead className="bg-gray-50">
+                                <div className="w-full h-[60vh] mt-4 w-full overflow-hidden shadow-md sm:rounded-lg overflow-x-auto overflow-y-auto">
+                                    <table className="w-full min-w-full table-fixed">
+                                        <thead className="bg-gray-100 sticky top-0 z-10">
                                             <tr className="border-b">
-                                                <th scope="col" className="w-[50px] px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-r border-gray-200">
-                                                    Codigo
+                                                <th
+                                                    style={{ width: columnWidths[0] }}
+                                                    scope="col"
+                                                    className="relative text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-r border-gray-200 text-ellipsis overflow-hidden hover:bg-indigo-100"
+
+                                                // onClick={() => orderClientes('codigo')}
+                                                >
+                                                    <div className='flex px-2 py-2'>
+                                                        Codigo
+                                                        {/* {ordenarConfig.key === 'codigo' && (
+                                                            <span className="ml-2">
+                                                                {ordenarConfig.direction === 'asc' ? <ChevronUpIcon className="h-4 w-4" /> : <ChevronDownIcon className="h-4 w-4" />}
+                                                            </span>
+                                                        )} */}
+                                                        <div
+                                                            className="absolute right-0 top-0 w-1 h-full cursor-col-resize hover:bg-gray-300"
+                                                            onMouseDown={(e) => handleMouseDown(0, e)}
+                                                        />
+                                                    </div>
                                                 </th>
-                                                <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                    Descripcion
+                                                <th
+                                                    style={{ width: columnWidths[1] }}
+                                                    scope="col"
+                                                    className="relative text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-r border-gray-200 text-ellipsis overflow-hidden hover:bg-indigo-100"
+
+                                                // onClick={() => orderClientes('codigo')}
+                                                >
+                                                    <div className='flex px-2 py-2'>
+                                                        Descripcion
+                                                        {/* {ordenarConfig.key === 'codigo' && (
+                                                            <span className="ml-2">
+                                                                {ordenarConfig.direction === 'asc' ? <ChevronUpIcon className="h-4 w-4" /> : <ChevronDownIcon className="h-4 w-4" />}
+                                                            </span>
+                                                        )} */}
+                                                        <div
+                                                            className="absolute right-0 top-0 w-1 h-full cursor-col-resize hover:bg-gray-300"
+                                                            onMouseDown={(e) => handleMouseDown(1, e)}
+                                                        />
+                                                    </div>
                                                 </th>
                                             </tr>
                                         </thead>
@@ -143,6 +198,9 @@ export default function ArticulosConsul({ setArticulo, open, setOpen }: any) {
                                         </tbody>
                                     </table>
                                 </div>
+                            </div>
+                            <div className="flex w-full items-center justify-center mb-4">
+                                <Pagination color="primary" isCompact showControls total={50} initialPage={1} />
                             </div>
                         </DialogPanel>
                     </div>

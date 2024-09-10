@@ -1,7 +1,16 @@
-export async function DbConsultarArticulo(cod_articulo?: string | null, multiple?: string | null, descripcion?: string | null) {
+export async function DbConsultarArticulo(
+    cod_articulo?: string | null,
+    multiple?: string | null,
+    descripcion?: string | null,
+    columnaOrden?: string | null,
+    dir?: string | null,
+    page?: string | null,
+    limit?: string | null,
+    activos?: string | null,
+) {
 
     try {
-        const response = await fetch('http://localhost:8080/articulos?codigo=' + cod_articulo + '&multiple=' + multiple + '&descripcion=' + descripcion, {
+        const response = await fetch('http://localhost:8080/articulos?codigo=' + cod_articulo + '&multiple=' + multiple + '&descripcion=' + descripcion + '&columnaOrden=' + columnaOrden + '&dir=' + dir + '&page=' + page + '&limit=' + limit + '&activos=' + activos, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -180,7 +189,7 @@ export async function DbValoresConsul(
     activos: string | null,
 ) {
     try {
-        const response = await fetch('http://localhost:8080/valores?activo=' + activos , {
+        const response = await fetch('http://localhost:8080/valores?activo=' + activos, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
