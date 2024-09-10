@@ -65,7 +65,7 @@ export default function alta_articulo() {
             tipo: '',
             numero: '',
             fecha: fecha_hoy,
-            mone: '',
+            mone: 'PES',
             num_cliente: '',
             razon_cliente: '',
             articulos: [{

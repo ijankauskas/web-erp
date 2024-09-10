@@ -31,7 +31,12 @@ export const VentaSchema = z.object({
     fecha: z.string().min(1, {
         message: "La fecha no puede estar vacio."
     }),
-    mone: z.string().optional(),
+    
+    mone: z.string()
+    .min(1, {
+        message: "Debe completar la moneda.",
+    }),
+
     num_cliente: z.any()
         .transform(val => parseFloat(val))
         .refine(val => val > 0, {
