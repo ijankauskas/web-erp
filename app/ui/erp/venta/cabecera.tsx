@@ -31,6 +31,11 @@ export default function Cabecera({ register, setValue, clearErrors, errors, most
         clearErrors('num_cliente');
     }
 
+    const seleccionarMoneSelec = (cliente: any) => {
+    }
+    const seleccionarCompSelec = (cliente: any) => {
+    }
+
 
     const consultarClientesPorCodigo = async (cliente: any) => {
 
@@ -95,9 +100,8 @@ export default function Cabecera({ register, setValue, clearErrors, errors, most
                         <ComboBoxSelect
                             titulo={"Tipo"}
                             data={comp}
-                            seleccionado={num_cliente}
-                            setearCodigo={seleccionarClienteSelec}
-                            mostrarError={mostrarErrorAlerta}
+                            // seleccionado={num_cliente}
+                            setearCodigo={seleccionarCompSelec}
                         />
                     </div>
                 </div>
@@ -128,7 +132,7 @@ export default function Cabecera({ register, setValue, clearErrors, errors, most
                             titulo={"Moneda"}
                             data={monedas}
                             seleccionado={getValues('mone')}
-                            setearCodigo={seleccionarClienteSelec}
+                            setearCodigo={seleccionarMoneSelec}
                             mostrarError={mostrarErrorAlerta}
                         />
                     </div>
