@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import ComboBoxSelect from "../../ComboBoxSelect";
 import InputCommon from "../../inputCommon";
 import { faPersonWalkingDashedLineArrowRight } from "@fortawesome/free-solid-svg-icons/faPersonWalkingDashedLineArrowRight";
-import { DbConsultarCliente } from "@/app/lib/data";
+import { DbCompConsul, DbConsultarCliente, DbMonedasConsul } from "@/app/lib/data";
 import ButtonCommon from "../ButtonCommon";
 import { MagnifyingGlassCircleIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 
@@ -12,6 +12,8 @@ import { MagnifyingGlassCircleIcon, MagnifyingGlassIcon } from "@heroicons/react
 export default function Cabecera({ register, setValue, clearErrors, errors, mostrarErrorAlerta, getValues, AbrirClientesConsul }: any) {
     const [num_cliente, setNum_cliente] = useState();
     const [clientes, setClientes] = useState<{}>([]);
+    const [monedas, setMonedas] = useState<{}>([]);
+    const [comp, setComp] = useState<{}>([]);
 
     useEffect(() => {
         cargarComponente()
@@ -19,6 +21,8 @@ export default function Cabecera({ register, setValue, clearErrors, errors, most
 
     function cargarComponente() {
         consutlarClientes('');
+        consultarMonedas();
+        consultarComp();
     }
 
     const seleccionarClienteSelec = (cliente: any) => {
@@ -32,7 +36,7 @@ export default function Cabecera({ register, setValue, clearErrors, errors, most
 
         const respuesta = await DbConsultarCliente(cliente.target.value);
         const data = await respuesta.json();
-
+        console.log(data)
         if (respuesta.ok) {
             setClientes([{ id: data.codigo, name: data.razon }])
         }
@@ -52,6 +56,37 @@ export default function Cabecera({ register, setValue, clearErrors, errors, most
         }
     }
 
+    const consultarMonedas = async () => {
+
+        const respuesta = await DbMonedasConsul();
+        const data = await respuesta.json();
+        if (respuesta.ok) {
+            const MonedasMapeados = data.map((mone: any) => ({
+                id: mone.mone || '',
+                name: mone.mone || '',
+            }));
+            setMonedas(MonedasMapeados);
+        }
+
+
+    }
+
+    const consultarComp = async () => {
+
+        const respuesta = await DbCompConsul('S', 'F');
+        const data = await respuesta.json();
+        if (respuesta.ok) {
+            const CompMapeados = data.map((comp: any) => ({
+                id: comp.tipo || '',
+                name: comp.descrip || '',
+            }));
+            setComp(CompMapeados);
+        }
+
+
+    }
+
+
     return (
         <>
             <div className="pt-2 grid gap-x-2 gap-y-0 grid-cols-6 sm:grid-cols-12">
@@ -59,7 +94,7 @@ export default function Cabecera({ register, setValue, clearErrors, errors, most
                     <div className='w-full mr-2 h-20'>
                         <ComboBoxSelect
                             titulo={"Tipo"}
-                            data={clientes}
+                            data={comp}
                             seleccionado={num_cliente}
                             setearCodigo={seleccionarClienteSelec}
                             mostrarError={mostrarErrorAlerta}
@@ -91,8 +126,8 @@ export default function Cabecera({ register, setValue, clearErrors, errors, most
                     <div className='w-full mr-2 h-20'>
                         <ComboBoxSelect
                             titulo={"Moneda"}
-                            data={clientes}
-                            seleccionado={num_cliente}
+                            data={monedas}
+                            seleccionado={getValues('mone')}
                             setearCodigo={seleccionarClienteSelec}
                             mostrarError={mostrarErrorAlerta}
                         />
