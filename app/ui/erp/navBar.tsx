@@ -104,6 +104,12 @@ const menus = [
                         href: '/erp/venta',
                         current: false,
                         icon: ShoppingBagIcon,
+                    },
+                    {
+                        nombre: "Pedidos",
+                        href: '/erp/venta',
+                        current: false,
+                        icon: ShoppingBagIcon,
                     }
                 ]
             }
