@@ -4,8 +4,8 @@ export async function DbConsultarArticulo(
     descripcion?: string | null,
     columnaOrden?: string | null,
     dir?: string | null,
-    page?: string | null,
-    limit?: string | null,
+    page?: any | null,
+    limit?: any | null,
     activos?: string | null,
 ) {
 
@@ -148,7 +148,7 @@ export async function DbGrabartarFactura(data: string | null) {
     }
 }
 
-export async function DbCompEmitidosConsul(cliente: string | null, pagina?: string | null,) {
+export async function DbCompEmitidosConsul(cliente: string | null, pagina?: any | null,) {
     try {
         const response = await fetch('http://localhost:8080/comp_emitidos?cliente=' + cliente + '&pagina=' + pagina, {
             method: 'GET',
@@ -218,9 +218,9 @@ export async function DbMonedasConsul() {
     }
 }
 
-export async function DbCompConsul(activo?:string,tipo?:string) {
+export async function DbCompConsul(activo?: string, tipo?: string) {
     try {
-        const response = await fetch('http://localhost:8080/comp?tipo='+tipo+'&activo='+activo, {
+        const response = await fetch('http://localhost:8080/comp?tipo=' + tipo + '&activo=' + activo, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -232,3 +232,18 @@ export async function DbCompConsul(activo?:string,tipo?:string) {
         throw new Error('Failed to fetch card data.');
     }
 }
+export async function imprimirPDF(tipoReporte: string, tipo?: string, num?: number) {
+    try {
+        const response = await fetch('http://localhost:8080/imprimirPDF?tipoReporte' + tipoReporte + 'tipo=' + tipo + '&num=' + num, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/pdf',
+            }
+        });
+
+        return response;
+    } catch (error) {
+        throw new Error('Failed to fetch card data.');
+    }
+}
+

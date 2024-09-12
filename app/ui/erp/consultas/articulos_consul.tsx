@@ -57,7 +57,7 @@ export default function ArticulosConsul({ setArticulo, open, setOpen }: any) {
     }
 
     const consultar = async () => {
-        const respuesta = await DbConsultarArticulo(sCodarticulos, 'S', sDescrip);
+        const respuesta = await DbConsultarArticulo(sCodarticulos, 'S', sDescrip,'descripcion','asc',1,50,'S');
         const data = await respuesta.json();
 
         if (respuesta.ok) {
@@ -138,7 +138,7 @@ export default function ArticulosConsul({ setArticulo, open, setOpen }: any) {
                                         </div>
                                     </div>
                                 </div>
-                                <div className="w-full h-[60vh] mt-4 w-full overflow-hidden shadow-md sm:rounded-lg overflow-x-auto overflow-y-auto">
+                                <div className="w-full h-[60vh] mt-4 overflow-hidden shadow-md sm:rounded-lg overflow-x-auto overflow-y-auto">
                                     <table className="w-full min-w-full table-fixed">
                                         <thead className="bg-gray-100 sticky top-0 z-10">
                                             <tr className="border-b">

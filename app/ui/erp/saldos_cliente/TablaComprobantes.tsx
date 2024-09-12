@@ -6,7 +6,7 @@ import Image from 'next/image';
 
 
 const TablaComprobantes = ({ cliente, pagina }: any) => {
-    const [columnWidths, setColumnWidths] = useState([25, 100, 25, 25, 25, 25, 50, 50]);
+    const [columnWidths, setColumnWidths] = useState([25, 100, 25, 50, 25, 25, 50, 50]);
     const [compEmitidos, setCompEmitidos] = useState([]);
     const [loading, setLoading] = useState(false);
 
@@ -40,10 +40,10 @@ const TablaComprobantes = ({ cliente, pagina }: any) => {
         consultarComprobantes();
     }, [pagina]);
 
-    const handleMouseDown = (index, event) => {
+    const handleMouseDown = (index:any, event:any) => {
         const startX = event.clientX;
         const startWidth = columnWidths[index];
-        const onMouseMove = (e) => {
+        const onMouseMove = (e:any) => {
             const newWidth = startWidth + (e.clientX - startX);
             const newWidths = [...columnWidths];
             newWidths[index] = Math.max(newWidth, 10); // Establece un ancho mínimo
