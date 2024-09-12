@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import ModalPagos from "./ModalPagos";
 import Modal from "./modal";
 import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/24/outline";
-import { DbAltaCliente, DbCompEmitidosConsul } from "@/app/lib/data";
+import { imprimirPDF, DbCompEmitidosConsul } from "@/app/lib/data";
 import Image from "next/image";
 
 export default function Tabla({ cliente }: any) {
@@ -72,8 +72,8 @@ export default function Tabla({ cliente }: any) {
 
     const imprimirComprobante = async (comp: any) => {
 
-        const response = await DbAltaCliente(comp.tipo, comp.num);
-        
+        const response = await imprimirPDF('FAC', comp.tipo, comp.num);
+
         // Convertir la respuesta en un Blob de tipo PDF
         const pdfBlob = await response.blob();
 

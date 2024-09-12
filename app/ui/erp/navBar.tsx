@@ -52,6 +52,12 @@ const menus = [
                         current: false,
                         icon: PlusCircleIcon,
                     },
+                    {
+                        nombre: "Depositos2222",
+                        href: '/erp/alta_articulo',
+                        current: false,
+                        icon: PlusCircleIcon,
+                    },
 
                 ]
             },
@@ -234,7 +240,9 @@ export default function NavBar({ children }: { children: React.ReactNode }) {
                                             ))}
                                         </MenuItems>
                                     </Menu>
+
                                 </div>
+
                             </div>
                             <div className="-mr-2 flex md:hidden">
                                 {/* Mobile menu button */}
