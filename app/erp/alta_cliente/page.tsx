@@ -1,18 +1,19 @@
 "use client"
 
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { articuloSchema } from '../../validaciones/articulo';
-import { PhotoIcon } from '@heroicons/react/24/outline';
-import InputCommon from '@/app/ui/inputCommon';
 import { clienteSchema } from '@/app/validaciones/cliente';
-import Tabs from '@/app/ui/erp/alta_cliente/tabs';
 import Principal from '@/app/ui/erp/alta_cliente/principal';
 import DatosContacto from '@/app/ui/erp/alta_cliente/datosContacto';
 import Tabla from '@/app/ui/erp/alta_cliente/Tabla';
 import HeaderCliente from '@/app/ui/erp/alta_cliente/HeaderCliente';
-
+import CheckCliente from '@/app/ui/erp/alta_cliente/CheckCliente';
+import { usePathname, useSearchParams, useRouter } from 'next/navigation';
+import { DbConsultarCliente, DbGrabartarCliente } from '@/app/lib/data';
+import DismissibleAlert from '@/app/ui/DismissAlerta';
+import { Tabs, Tab, Chip } from "@nextui-org/react";
+import { ClipboardDocumentCheckIcon, ClipboardIcon, CurrencyDollarIcon } from '@heroicons/react/24/outline';
 
 type Inputs = {
     codigo: number,
@@ -32,34 +33,8 @@ type Inputs = {
     activo: any
 }
 
-import CheckCliente from '@/app/ui/erp/alta_cliente/CheckCliente';
-import LoadingBar, { LoadingBarRef } from 'react-top-loading-bar';
-import { usePathname, useSearchParams, useRouter } from 'next/navigation';
-import { DbConsultarCliente, DbGrabartarCliente } from '@/app/lib/data';
-import DismissibleAlert from '@/app/ui/DismissAlerta';
-
-const people = [
-    { id: '1', name: 'asdr' },
-    { id: '2', name: 'Arlene Mccoy' },
-    { id: '3', name: 'Devon Webb' },
-    { id: '4', name: 'Tom Cook' },
-    { id: '5', name: 'Tanya Fox' },
-    { id: '6', name: 'Hellen Schmidt' },
-];
-
-const tabs = [
-    { name: 'Ficha', id: '0', current: true },
-    { name: 'Comprobantes', id: '1', current: false },
-    { name: 'Team Members', id: '2', current: false },
-    { name: 'Billing', id: '3', current: false },
-];
-
-
 export default function alta_cliente() {
     const [cargando, setCargando] = useState(false)
-    const ref = useRef<LoadingBarRef | null>(null);
-    const [tab, setTab] = useState(0)
-
     const searchParams = useSearchParams();
     const pathname = usePathname();
     const { replace } = useRouter();
@@ -81,7 +56,7 @@ export default function alta_cliente() {
         defaultValues: {
             codigo: 0,
             cuit: '',
-            cate_iva:'',
+            cate_iva: '',
             razon: '',
             nombre_fantasia: '',
             mail: '',
@@ -98,9 +73,14 @@ export default function alta_cliente() {
         resolver: zodResolver(clienteSchema)
     })
 
-    const seleccionarTab = (tab: any) => {
-        setTab(tab)
-    }
+    useEffect(() => {
+        const params = new URLSearchParams(searchParams);
+        let codigo: string | null = params.get('codigo');
+        if (codigo != '' && codigo != null) {
+            setValue('codigo', parseFloat(codigo));
+            consultarCliente();
+        }
+    }, []);
 
     const consultarCliente = async () => {
         const params = new URLSearchParams(searchParams);
@@ -122,7 +102,6 @@ export default function alta_cliente() {
             return
         }
         setCargando(true);
-        ref.current?.continuousStart();
 
         const respuesta = await DbConsultarCliente(codigo);
         const data = await respuesta.json();
@@ -144,11 +123,9 @@ export default function alta_cliente() {
             setValue('observaciones', data.observaciones);
             data.activo == 'S' ? setValue('activo', true) : setValue('activo', false);
             setCargando(false);
-            ref.current?.complete();
         } else {
             limpiar()
             setCargando(false);
-            ref.current?.complete();
         }
 
     }
@@ -160,14 +137,12 @@ export default function alta_cliente() {
         data.activo = data.activo || data.activo == 'S' ? 'S' : 'N';
 
         setCargando(true);
-        ref.current?.continuousStart();
         //llamada al servicio
         const respuesta = await DbGrabartarCliente(data)
 
         if (respuesta.ok) {
             const data = await respuesta.json();
             setValue('codigo', data.codigo);
-            ref.current?.complete();
             setCargando(false);
             setAlerta({
                 message: 'Se guardo correctamente el cliente',
@@ -176,7 +151,6 @@ export default function alta_cliente() {
             });
         } else {
             const errorMessage = await respuesta.json();
-            ref.current?.complete();
             setCargando(false);
             setAlerta({
                 message: errorMessage.message,
@@ -207,44 +181,71 @@ export default function alta_cliente() {
 
 
     return (
-        <div className="max-w-7xl mx-auto py-0 px-4 sm:px-6 lg:px-8 bg-white">
-            <div>
-                <LoadingBar color='rgb(99 102 241)' ref={ref} />
-            </div>
+        <div className="max-w-screen-2xl mx-auto py-0 px-4 sm:px-6 lg:px-8 bg-white">
             <HeaderCliente />
-            <Tabs tabs={tabs} seleccionarTab={seleccionarTab} tab={tab} />
             <div className='relative '>
                 <form action="#" method="POST" onSubmit={handleSubmit(data => enviarForm(data))}>
-                    {tab == 0 ?
-                        <>
-                            <Principal
-                                register={register}
-                                setValue={setValue}
-                                errors={errors}
-                                clearErrors={clearErrors}
-                                consultarCliente={consultarCliente} 
-                                getValues = {getValues}/>
-                            <DatosContacto
-                                register={register}
-                                setValue={setValue}
-                                errors={errors}
-                                clearErrors={clearErrors} />
-                            <CheckCliente
-                                register={register}
-                                setValue={setValue}
-                                errors={errors}
-                                clearErrors={clearErrors}
-                                getValues={getValues}
-                                watch={watch}
-                            />
-                        </> :
-                        tab == 1 ? <Tabla /> :
-                            'Posición no definida.'}
+                    <div className="flex w-full flex-col">
+                        <Tabs
+                            aria-label="Options"
+                            color={"primary"}
+                            variant="underlined"
+                            classNames={{
+                                tabList: "gap-6 w-full relative rounded-none p-0 border-b border-divider",
+                                cursor: "w-full bg-primary",
+                                tab: "max-w-fit px-0 h-12",
+                                tabContent: "group-data-[selected=true]:text-primary"
+                            }}
+                        >
+                            <Tab
+                                key="photos"
+                                title={
+                                    <div className="flex items-center space-x-2">
+                                        <ClipboardIcon className="h-6 w-6"/>
+                                        <span>Principal</span>
+                                    </div>
+                                }
+                            >
+                                <Principal
+                                    register={register}
+                                    setValue={setValue}
+                                    errors={errors}
+                                    clearErrors={clearErrors}
+                                    consultarCliente={consultarCliente}
+                                    getValues={getValues} />
+                                <DatosContacto
+                                    register={register}
+                                    setValue={setValue}
+                                    errors={errors}
+                                    clearErrors={clearErrors} />
+                                <CheckCliente
+                                    register={register}
+                                    setValue={setValue}
+                                    errors={errors}
+                                    clearErrors={clearErrors}
+                                    getValues={getValues}
+                                    watch={watch}
+                                />
+                            </Tab>
+                            <Tab
+                                key="music"
+                                title={
+                                    <div className="flex items-center space-x-2">
+                                        <CurrencyDollarIcon className="h-6 w-6"/>
+                                        <span>Comprobantes</span>
+                                        <Chip size="sm" variant="faded">230</Chip>
+                                    </div>
+                                }
+                            >
+                                <Tabla cliente={getValues('codigo')} />
+                            </Tab>
+                        </Tabs>
+                    </div>
 
                     <div className="px-4 py-3 bg-white text-right sm:px-6">
                         <button
                             type="button"
-                            onClick={limpiar}  
+                            onClick={limpiar}
                             className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-gray-600 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 mr-2">
                             Limpiar
                         </button>
