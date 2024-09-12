@@ -98,8 +98,8 @@ export default function Cabecera({ register, setValue, clearErrors, errors, most
 
     return (
         <>
-            <div className="pt-2 grid gap-x-2 gap-y-0 grid-cols-6 sm:grid-cols-12">
-                <div className="col-span-6 sm:col-span-6 md:col-span-3 flex items-center">
+            <div className="pt-2 grid gap-x-2 gap-y-0 grid-cols-10">
+                <div className="col-span-6 sm:col-span-6 md:col-span-2 flex items-center">
                     <div className='w-full mr-2 h-20'>
                         <ComboBoxSelect
                             titulo={"Tipo"}
@@ -110,7 +110,7 @@ export default function Cabecera({ register, setValue, clearErrors, errors, most
                     </div>
                 </div>
 
-                <div className="col-span-6 sm:col-span-6 md:col-span-3 flex items-center">
+                <div className="col-span-6 sm:col-span-6 md:col-span-2 flex items-center">
                     <div className='w-full mr-2 h-20'>
                         <InputCommon
                             titulo={"Numero"}
@@ -120,7 +120,7 @@ export default function Cabecera({ register, setValue, clearErrors, errors, most
                             useForm={register("numero")} />
                     </div>
                 </div>
-                <div className="col-span-6 sm:col-span-6 md:col-span-3 flex items-center">
+                <div className="col-span-6 sm:col-span-6 md:col-span-2 flex items-center">
                     <div className='w-full mr-2 h-20'>
                         <InputCommon
                             titulo={"Fecha"}
@@ -130,7 +130,7 @@ export default function Cabecera({ register, setValue, clearErrors, errors, most
                             useForm={register("fecha")} />
                     </div>
                 </div>
-                <div className="col-span-6 sm:col-span-6 md:col-span-3 flex items-center">
+                <div className="col-span-6 sm:col-span-6 md:col-span-2 flex items-center">
                     <div className='w-full mr-2 h-20'>
                         <ComboBoxSelect
                             titulo={"Moneda"}
@@ -141,7 +141,15 @@ export default function Cabecera({ register, setValue, clearErrors, errors, most
                         />
                     </div>
                 </div>
-                <div className="col-span-2 sm:col-span-3 md:col-span-3 flex items-center">
+                <div className="col-span-6 sm:col-span-6 md:col-span-2 flex items-center">
+                    <div className='w-full mr-2 h-20'>
+                        <InputCommon
+                            titulo={"Cotizacion"}
+                            tipo={'number'}                          
+                            useForm={register("numero")} />
+                    </div>
+                </div>
+                <div className="col-span-2 sm:col-span-3 md:col-span-2 flex items-center">
                     <div className='w-full mr-2 h-20'>
                         <InputCommon
                             titulo={"Codigo"}
@@ -153,7 +161,7 @@ export default function Cabecera({ register, setValue, clearErrors, errors, most
                     </div>
                 </div>
 
-                <div className="col-span-4 sm:col-span-5 md:col-span-5 flex items-center">
+                <div className="col-span-4 sm:col-span-5 md:col-span-3 flex items-center">
                     <div className='w-full mr-2 h-20'>
                         <ComboBoxSelect
                             titulo={"Cliente"}
