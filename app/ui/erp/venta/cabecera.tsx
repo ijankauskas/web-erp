@@ -14,6 +14,7 @@ export default function Cabecera({ register, setValue, clearErrors, errors, most
     const [clientes, setClientes] = useState<{}>([]);
     const [monedas, setMonedas] = useState<{}>([]);
     const [comp, setComp] = useState<{}>([]);
+    
 
     useEffect(() => {
         cargarComponente()
@@ -23,6 +24,7 @@ export default function Cabecera({ register, setValue, clearErrors, errors, most
         consutlarClientes('');
         consultarMonedas();
         consultarComp();
+       
     }
 
     const seleccionarClienteSelec = (cliente: any) => {
@@ -90,6 +92,8 @@ export default function Cabecera({ register, setValue, clearErrors, errors, most
 
 
     }
+
+   
 
 
     return (

@@ -3,7 +3,7 @@ import React from "react";
 import { Tabs, Tab, Card, CardBody } from "@nextui-org/react";
 import InputCommon from "../../inputCommon";
 import ComboBoxSelect from "../../ComboBoxSelect";
-import { DbValoresConsul } from "@/app/lib/data";
+import { DbCompConsul, DbValoresConsul } from "@/app/lib/data";
 import ButtonCommon from "../ButtonCommon";
 
 
@@ -11,11 +11,31 @@ import ButtonCommon from "../ButtonCommon";
 export default function BottomDerecho({ register, articulos, setAlerta, pagos, setPagos }: any) {
     const [columnWidths, setColumnWidths] = useState([150, 400, 100, 125, 125, 100]);
     const [valores, setValores] = useState([]);
+    const [comp, setComp] = useState<{}>([]);
     useEffect(() => {
         cargarComponente()
     }, [])
     function cargarComponente() {
         consultarValores();
+        consultarReci();
+    }
+
+    const consultarReci = async () => {
+
+        const respuesta = await DbCompConsul('S', 'I');
+        const data = await respuesta.json();
+        if (respuesta.ok) {
+            const CompMapeados = data.map((comp: any) => ({
+                id: comp.tipo || '',
+                name: comp.descrip || '',
+            }));
+            setComp(CompMapeados);
+        }
+
+
+    }
+
+    const seleccionarCompSelec = (cliente: any) => {
     }
 
     const handleMouseDown = (index: any, event: any) => {
@@ -93,7 +113,8 @@ export default function BottomDerecho({ register, articulos, setAlerta, pagos, s
             <div className="flex w-full flex-col">
                 <Tabs color={"primary"} aria-label="Pagos">
                     <Tab key="photos" title="Pagos">
-                        <div className="flex">
+                        <div className="flex ">
+
                             <div className="mr-2 h-[25vh] overflow-y-auto overflow-x-auto shadow-md sm:rounded-lg max-h-[400px] bg-white border-gray-200 border">
                                 <table className="min-w-full w-full table-fixed relative">
                                     <thead className="bg-gray-100 sticky top-0 z-10">
@@ -158,7 +179,7 @@ export default function BottomDerecho({ register, articulos, setAlerta, pagos, s
                                 </table>
                             </div>
                             <div className="h-8">
-                                <ButtonCommon type={"button"} texto={"+"} onClick={agregarFilaPago} tooltip="Agregar Fila"/>
+                                <ButtonCommon type={"button"} texto={"+"} onClick={agregarFilaPago} tooltip="Agregar Fila" />
                             </div>
                         </div>
                     </Tab>
@@ -215,7 +236,33 @@ export default function BottomDerecho({ register, articulos, setAlerta, pagos, s
                         </Card>
                     </Tab>
                 </Tabs>
+
+                <div className="pt-2 grid gap-x-2 gap-y-0 grid-cols-6 sm:grid-cols-12" >
+                    <div className="col-span-4 sm:col-span-4 md:col-span-4 flex items-center">
+                        <div className="w-full mr-2 h-20"> {/* Cambié w-full a w-1/2 para ocupar la mitad del ancho */}
+
+                            <ComboBoxSelect
+                                titulo={"Recibo"}
+                                data={comp}
+                                setearCodigo={seleccionarCompSelec}
+                            />
+                        </div>
+                    </div>
+
+                    <div className="col-span-6 sm:col-span-6 md:col-span-3 flex items-center">
+                        <div className='w-full mr-2 h-20'>
+                            <InputCommon
+                                titulo={"Numero"}
+                                tipo={'number'}
+                                placeholder={"Numero del Recibo"}
+                                useForm={register("numero")} />
+                        </div>
+                    </div>
+
+                </div>
+
+
             </div>
-        </div>
+        </div >
     );
 }
