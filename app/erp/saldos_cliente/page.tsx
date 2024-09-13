@@ -15,11 +15,11 @@ const ConsultaSaldos = () => {
     const [pagina, setPagina] = useState(1);
     const [paginaComps, setPaginaComps] = useState(1);
 
-    const handleMouseDown = (event) => {
+    const handleMouseDown = (event:any) => {
         const startX = event.clientX;
         const startDividerPosition = dividerPosition;
 
-        const onMouseMove = (e) => {
+        const onMouseMove = (e:any) => {
             const newDividerPosition = startDividerPosition + ((e.clientX - startX) / window.innerWidth) * 100;
             setDividerPosition(Math.min(Math.max(newDividerPosition, 10), 90));
         };
@@ -111,7 +111,7 @@ const ConsultaSaldos = () => {
                         )}
                     </div>
                     <div className="w-full h-full bg-white overflow-y-auto overflow-x-auto flex-grow">
-                        <TablaComprobantes cliente={clienteSeleccionado} pagina={paginaComps}/>
+                        <TablaComprobantes cliente={clienteSeleccionado} pagina={paginaComps} setPagina={setPaginaComps}/>
                     </div>
                     <div className="bg-gray-100 w-full p-0"> {/* Contenedor para el paginado que siempre estará al final */}
                         <PaginadoComp pagina={paginaComps} cambiarPagina={cambiarPaginaComp} cliente={clienteSeleccionado}/>

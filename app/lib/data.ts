@@ -148,9 +148,14 @@ export async function DbGrabartarFactura(data: string | null) {
     }
 }
 
-export async function DbCompEmitidosConsul(cliente: string | null, pagina?: any | null,) {
+export async function DbCompEmitidosConsul(
+    cliente: string | null,
+    pagina?: any | null,
+    columnaOrden?: string | null,
+    dir?: string | null,
+) {
     try {
-        const response = await fetch('http://localhost:8080/comp_emitidos?cliente=' + cliente + '&pagina=' + pagina, {
+        const response = await fetch('http://localhost:8080/comp_emitidos?cliente=' + cliente + '&pagina=' + pagina + '&orden=' + columnaOrden + '&dir=' + dir, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
