@@ -1,9 +1,11 @@
 'use client'
 import React, { useState, useRef, useEffect } from 'react';
-import { DbCompEmitidosConsul } from '@/app/lib/data';
+import { DbCompEmitidosConsul, imprimirPDF } from '@/app/lib/data';
 import TablaComprobantesSkeleton from './TablaComprobantesSkeleton';
 import Image from 'next/image';
 import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/24/outline';
+import PopOverComp from './PopOverComp';
+
 
 
 const TablaComprobantes = ({ cliente, pagina, setPagina }: any) => {
@@ -11,6 +13,9 @@ const TablaComprobantes = ({ cliente, pagina, setPagina }: any) => {
     const [compEmitidos, setCompEmitidos] = useState([]);
     const [ordenarConfig, setOrdenarConfig] = useState({ key: 'tipo', direction: 'asc' });
     const [loading, setLoading] = useState(false);
+    const [popoverPosition, setPopoverPosition] = useState({ x: 0, y: 0 });
+    const [isPopoverOpen, setIsPopoverOpen] = useState(false);
+    const [comprobante, setComprobante] = useState();
 
     useEffect(() => {
         consultarComprobantes();
@@ -73,6 +78,44 @@ const TablaComprobantes = ({ cliente, pagina, setPagina }: any) => {
         setPagina(1);
         setOrdenarConfig({ key, direction });
     };
+
+    const handleContextMenu = (event: any, comp: any) => {
+        event.preventDefault();
+        setPopoverPosition({ x: event.clientX, y: event.clientY });
+        setComprobante(comp);
+        setIsPopoverOpen(true);
+    };
+
+    const closePopover = () => {
+        setIsPopoverOpen(false);
+    };
+
+    const imprimirComprobante = async (comp: any) => {
+
+        const response = await imprimirPDF('FAC', comp.tipo, comp.num);
+
+        // Convertir la respuesta en un Blob de tipo PDF
+        const pdfBlob = await response.blob();
+
+        // Crear una URL para el Blob del PDF
+        const pdfURL = URL.createObjectURL(pdfBlob);
+
+        // Crear un iframe invisible para cargar el PDF
+        const iframe = document.createElement('iframe');
+        iframe.style.display = 'none'; // Ocultar el iframe
+        iframe.src = pdfURL;
+
+        // Cuando el iframe esté cargado, ejecutar el cuadro de diálogo de impresión
+        iframe.onload = () => {
+            iframe.contentWindow?.print(); // Abrir el cuadro de impresión nativo de Chrome
+        };
+
+        // Añadir el iframe al documento
+        document.body.appendChild(iframe);
+
+
+    }
+
 
     return (
         <div className="overflow-x-auto overflow-y-auto max-h-[71vh] h-full">
@@ -183,29 +226,29 @@ const TablaComprobantes = ({ cliente, pagina, setPagina }: any) => {
                     ) : (
                         compEmitidos.length > 0 ? (
                             compEmitidos?.map((comprobante: any, index: number) => (
-                                <tr key={index} className="border-b">
-                                    <td className="text-center text-ellipsis truncate px-2 py-1 whitespace-nowrap text-sm font-medium text-gray-900 border border-gray-200">
+                                <tr key={index} className="border-b hover:bg-gray-400 hover:!text-white" onContextMenu={(e) => handleContextMenu(e, comprobante)} >
+                                    <td className="text-center text-ellipsis truncate px-2 py-1 whitespace-nowrap text-sm border border-gray-200">
                                         {comprobante.tipo}
                                     </td>
-                                    <td className="text-start text-ellipsis truncate px-2 py-1 whitespace-nowrap text-sm text-gray-500 border border-gray-200">
+                                    <td className="text-start text-ellipsis truncate px-2 py-1 whitespace-nowrap text-sm border border-gray-200">
                                         {comprobante.descripcion}
                                     </td>
-                                    <td className="text-end text-ellipsis truncate px-2 py-1 whitespace-nowrap text-sm text-gray-500 border border-gray-200">
+                                    <td className="text-end text-ellipsis truncate px-2 py-1 whitespace-nowrap text-sm border border-gray-200">
                                         {comprobante.num}
                                     </td>
-                                    <td className="text-center text-ellipsis truncate px-2 py-1 whitespace-nowrap text-sm text-gray-500 border border-gray-200">
+                                    <td className="text-center text-ellipsis truncate px-2 py-1 whitespace-nowrap text-sm border border-gray-200">
                                         {comprobante.fecha}
                                     </td>
-                                    <td className="text-center text-ellipsis truncate px-2 py-1 whitespace-nowrap text-sm text-gray-500 border border-gray-200">
+                                    <td className="text-center text-ellipsis truncate px-2 py-1 whitespace-nowrap text-sm border border-gray-200">
                                         {comprobante.estado}
                                     </td>
-                                    <td className="text-center text-ellipsis truncate px-2 py-1 whitespace-nowrap text-sm text-gray-500 border border-gray-200">
+                                    <td className="text-center text-ellipsis truncate px-2 py-1 whitespace-nowrap text-sm border border-gray-200">
                                         {comprobante.moneda}
                                     </td>
-                                    <td className="text-ellipsis trunatce text-end px-2 py-1 whitespace-nowrap text-sm text-gray-500 border border-gray-200">
+                                    <td className="text-ellipsis trunatce text-end px-2 py-1 whitespace-nowrap text-sm border border-gray-200">
                                         {comprobante.total.toLocaleString('es-AR')}
                                     </td>
-                                    <td className="text-ellipsis trunatce text-end px-2 py-1 whitespace-nowrap text-sm text-gray-500 border border-gray-200">
+                                    <td className="text-ellipsis trunatce text-end px-2 py-1 whitespace-nowrap text-sm border border-gray-200">
                                         {comprobante.saldo.toLocaleString('es-AR')}
                                     </td>
                                 </tr>
@@ -231,6 +274,15 @@ const TablaComprobantes = ({ cliente, pagina, setPagina }: any) => {
                     )}
                 </tbody>
             </table>
+            {/* Popover */}
+            <PopOverComp
+                popoverPosition={popoverPosition}
+                isPopoverOpen={isPopoverOpen}
+                closePopover={closePopover}
+                comprobante={comprobante}
+                imprimirComprobante={imprimirComprobante}
+            />
+
         </div>
     );
 };
