@@ -1,9 +1,9 @@
 'use client'
 
 import { useRef, useState } from "react";
-import InputCommon from "../../inputCommon";
+import InputCommon from "../../../inputCommon";
 import { DbConsultarArticulo } from "@/app/lib/data";
-import Alerta from "../alerta";
+import Alerta from "../../alerta";
 
 export default function TablaArticulos({ register, articulos, setAlerta, setArticulos }: any) {
     const [columnWidths, setColumnWidths] = useState([150, 400, 100, 125, 125, 100]);

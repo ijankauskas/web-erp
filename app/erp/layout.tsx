@@ -56,7 +56,7 @@ const navigation = [
         optiones: [
             {
                 name: 'Ventas',
-                href: '/erp/venta',
+                href: '/erp/operaciones/venta',
                 current: false,
                 icon: ShoppingBagIcon,
             },

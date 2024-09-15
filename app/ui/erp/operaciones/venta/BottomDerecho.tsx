@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import React from "react";
 import { Tabs, Tab, Card, CardBody } from "@nextui-org/react";
-import InputCommon from "../../inputCommon";
-import ComboBoxSelect from "../../ComboBoxSelect";
+import InputCommon from "../../../inputCommon";
+import ComboBoxSelect from "../../../ComboBoxSelect";
 import { DbCompConsul, DbValoresConsul } from "@/app/lib/data";
-import ButtonCommon from "../ButtonCommon";
+import ButtonCommon from "../../ButtonCommon";
 
 
 

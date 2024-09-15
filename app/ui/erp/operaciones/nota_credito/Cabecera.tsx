@@ -1,20 +1,20 @@
 'use client'
 import { useEffect, useState } from "react";
-import ComboBoxSelect from "../../ComboBoxSelect";
-import InputCommon from "../../inputCommon";
+import ComboBoxSelect from "../../../ComboBoxSelect";
+import InputCommon from "../../../inputCommon";
 import { faPersonWalkingDashedLineArrowRight } from "@fortawesome/free-solid-svg-icons/faPersonWalkingDashedLineArrowRight";
 import { DbCompConsul, DbConsultarCliente, DbMonedasConsul } from "@/app/lib/data";
-import ButtonCommon from "../ButtonCommon";
+import ButtonCommon from "../../ButtonCommon";
 import { MagnifyingGlassCircleIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 
 
 
-export default function Cabecera({ register, setValue, clearErrors, errors, mostrarErrorAlerta, getValues, AbrirClientesConsul }: any) {
+export default function Cabecera({ register, setValue, clearErrors, errors, setMensaje, getValues, AbrirClientesConsul }: any) {
     const [num_cliente, setNum_cliente] = useState();
     const [clientes, setClientes] = useState<{}>([]);
     const [monedas, setMonedas] = useState<{}>([]);
     const [comp, setComp] = useState<{}>([]);
-    
+
 
     useEffect(() => {
         cargarComponente()
@@ -24,7 +24,7 @@ export default function Cabecera({ register, setValue, clearErrors, errors, most
         consutlarClientes('');
         consultarMonedas();
         consultarComp();
-       
+
     }
 
     const seleccionarClienteSelec = (cliente: any) => {
@@ -40,18 +40,26 @@ export default function Cabecera({ register, setValue, clearErrors, errors, most
 
 
     const consultarClientesPorCodigo = async (cliente: any) => {
-
+        if (cliente.target.value == '') return
         const respuesta = await DbConsultarCliente(cliente.target.value);
         const data = await respuesta.json();
-        console.log(data)
+
         if (respuesta.ok) {
             setClientes([{ id: data.codigo, name: data.razon }])
+        } else {
+            setMensaje({
+                mostrar: true,
+                mensaje: data.message,
+                titulo: 'Oops...',
+                tipo_aletar: 'error',
+            });
         }
         setNum_cliente(cliente.target.value)
         setValue('num_cliente', cliente.target.value);
     }
 
     const consutlarClientes = async (param?: any) => {
+
         const respuesta = await DbConsultarCliente(null, 'S', param, 'razon', 'asc', '1', '50', 'S');
         const data = await respuesta.json();
         if (respuesta.ok) {
@@ -80,7 +88,7 @@ export default function Cabecera({ register, setValue, clearErrors, errors, most
 
     const consultarComp = async () => {
 
-        const respuesta = await DbCompConsul('S', 'F');
+        const respuesta = await DbCompConsul('S', 'C');
         const data = await respuesta.json();
         if (respuesta.ok) {
             const CompMapeados = data.map((comp: any) => ({
@@ -93,7 +101,7 @@ export default function Cabecera({ register, setValue, clearErrors, errors, most
 
     }
 
-   
+
 
 
     return (
@@ -137,7 +145,7 @@ export default function Cabecera({ register, setValue, clearErrors, errors, most
                             data={monedas}
                             seleccionado={getValues('mone')}
                             setearCodigo={seleccionarMoneSelec}
-                            mostrarError={mostrarErrorAlerta}
+
                         />
                     </div>
                 </div>
@@ -145,7 +153,7 @@ export default function Cabecera({ register, setValue, clearErrors, errors, most
                     <div className='w-full mr-2 h-20'>
                         <InputCommon
                             titulo={"Cotizacion"}
-                            tipo={'number'}                          
+                            tipo={'number'}
                             useForm={register("numero")} />
                     </div>
                 </div>
@@ -168,7 +176,7 @@ export default function Cabecera({ register, setValue, clearErrors, errors, most
                             data={clientes}
                             seleccionado={num_cliente}
                             setearCodigo={seleccionarClienteSelec}
-                            mostrarError={mostrarErrorAlerta}
+
                             llenarData={consutlarClientes}
                         />
                     </div>
@@ -180,6 +188,19 @@ export default function Cabecera({ register, setValue, clearErrors, errors, most
                             py={"py-1"}
                             tooltip="Buscar Clientes"
                             onClick={AbrirClientesConsul}
+                        />
+                    </div>
+                </div>
+                <div className="col-span-1 sm:col-span-1 md:col-span-1 flex items-center">
+
+                </div>
+                <div className="col-span-2 sm:col-span-3 md:col-span-2 flex items-center">
+                    <div className='w-full mr-2 h-20'>
+                        <InputCommon
+                            titulo={"Factura"}
+                            tipo={'number'}
+
+                            placeholder={""}
                         />
                     </div>
                 </div>

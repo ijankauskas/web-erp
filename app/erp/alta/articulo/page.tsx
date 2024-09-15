@@ -2,7 +2,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { articuloSchema } from '../../validaciones/articulo';
+import { articuloSchema } from '../../../validaciones/articulo';
 import TabsArticulo from '@/app/ui/erp/alta_articulo/TabsArticulo';
 import FichaArticulo from '@/app/ui/erp/alta_articulo/FichaArticulo';
 import PreciosArticulo from '@/app/ui/erp/alta_articulo/PreciosArticulo';

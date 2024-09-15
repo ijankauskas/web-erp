@@ -42,19 +42,19 @@ const menus = [
                 pantallas: [
                     {
                         nombre: "Articulos",
-                        href: '/erp/alta_articulo',
+                        href: '/erp/alta/articulo',
                         current: false,
                         icon: PlusCircleIcon,
                     },
                     {
                         nombre: "Depositos",
-                        href: '/erp/alta_articulo',
+                        href: '/erp/alta/articulo',
                         current: false,
                         icon: PlusCircleIcon,
                     },
                     {
                         nombre: "Depositos2222",
-                        href: '/erp/alta_articulo',
+                        href: '/erp/alta/articulo',
                         current: false,
                         icon: PlusCircleIcon,
                     },
@@ -66,13 +66,13 @@ const menus = [
                 pantallas: [
                     {
                         nombre: "Clientes",
-                        href: '/erp/alta_cliente',
+                        href: '/erp/alta/cliente',
                         current: false,
                         icon: UserPlusIcon,
                     },
                     {
                         nombre: "Lista de Precios",
-                        href: '/erp/alta_cliente',
+                        href: '/erp/alta/cliente',
                         current: false,
                         icon: UserPlusIcon,
                     },
@@ -84,13 +84,13 @@ const menus = [
                 pantallas: [
                     {
                         nombre: 'Proveedores',
-                        href: '/erp/alta_proveedor',
+                        href: '/erp/alta/proveedor',
                         current: false,
                         icon: UserPlusIcon,
                     },
                     {
                         nombre: "Lista de Precios",
-                        href: '/erp/alta_proveedor',
+                        href: '/erp/alta/proveedor',
                         current: false,
                         icon: UserPlusIcon,
                     },
@@ -107,13 +107,19 @@ const menus = [
                 pantallas: [
                     {
                         nombre: "Facturas",
-                        href: '/erp/venta',
+                        href: '/erp/operaciones/venta',
                         current: false,
                         icon: ShoppingBagIcon,
                     },
                     {
                         nombre: "Pedidos",
-                        href: '/erp/venta',
+                        href: '/erp/operaciones/venta',
+                        current: false,
+                        icon: ShoppingBagIcon,
+                    },
+                    {
+                        nombre: "Pedidos",
+                        href: '/erp/operaciones/nota_credito',
                         current: false,
                         icon: ShoppingBagIcon,
                     }
@@ -129,7 +135,7 @@ const menus = [
                 pantallas: [
                     {
                         nombre: "Saldo de clientes",
-                        href: '/erp/saldos_cliente',
+                        href: '/erp/consultas/saldos_cliente',
                         current: false,
                         icon: CurrencyDollarIcon,
                     }
