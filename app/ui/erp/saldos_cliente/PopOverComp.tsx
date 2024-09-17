@@ -26,13 +26,13 @@ const PopOverComp = ({ isPopoverOpen, closePopover, popoverPosition, comprobante
                     </div>
                     <div className="px-1 py-2">
                         <a className="block rounded-lg py-2 px-3 transition hover:bg-gray-300" onClick={()=>imprimirComprobante(comprobante)}>
-                            <p className="">Imprimir.</p>
+                            <p className="">Imprimir</p>
                         </a>
                         <a className="block rounded-lg py-2 px-3 transition hover:bg-gray-300" >
-                            <p className="">Consultar Comprobante.</p>
+                            <p className="">Consultar Comprobante</p>
                         </a>
                         <a className="block rounded-lg py-2 px-3 transition hover:bg-gray-300" >
-                            <p className="">Enviar por mail.</p>
+                            <p className="">Enviar por mail</p>
                         </a>
                     </div>
                 </PopoverContent>
