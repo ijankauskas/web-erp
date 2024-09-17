@@ -188,6 +188,7 @@ export default function alta_proveedor() {
 
     const limpiar = () => {
 
+        setValue('codigo', 0);
         setValue('cuit', '');
         setValue('cate_iva', '');
         setValue('razon', '');

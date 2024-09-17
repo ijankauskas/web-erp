@@ -1,6 +1,7 @@
 import { Tooltip } from "@nextui-org/react";
 
-export default function ButtonCommon({ texto, onClick, type, desactivado, tooltip = '', px="px-4", py="py-2"  }: any) {
+export default function ButtonCommon({ texto, onClick, type, desactivado, tooltip = '', px = "px-4", py = "py-2" }: any) {
+
     const buttonContent = (
         <button
             onClick={onClick}

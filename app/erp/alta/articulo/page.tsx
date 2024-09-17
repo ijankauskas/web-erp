@@ -286,6 +286,8 @@ export default function alta_articulo() {
 
   const limpiar = () => {
 
+    
+    setValue('codigo', '');
     setValue('descripcion', '');
     setValue('descripcion_adicional', '');
     setValue('agru_1', '');
