@@ -92,9 +92,6 @@ export default function BottomDerecho({ register, articulos, setAlerta, pagos, s
                             </CardBody>
                         </Card>
                     </Tab>
-                    <Tab key="photos" title="Pagos">
-
-                    </Tab>
                 </Tabs>
             </div>
         </div >

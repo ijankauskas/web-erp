@@ -5,7 +5,7 @@ import BottomDerecho from "./BottomDerecho";
 
 
 
-export default function Bottom({ register, articulos, pagos, setAlerta, setPagos }: any) {
+export default function Bottom({ register, articulos }: any) {
 
     return (
         <>
@@ -14,7 +14,7 @@ export default function Bottom({ register, articulos, pagos, setAlerta, setPagos
 
                 </div>
                 <div className="col-span-8">
-                    <BottomDerecho register={register} articulos={articulos} pagos={pagos} setPagos={setPagos} />
+                    <BottomDerecho register={register} articulos={articulos} />
 
                 </div>
 
