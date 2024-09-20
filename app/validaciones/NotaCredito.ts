@@ -14,21 +14,14 @@ const articulos = z.object({
     costo_uni: z.any().optional(),
 });
 
-const pagos = z.object({
-    id: z.any().optional(),
-    importe: z.any()
-        .refine(val => !isNaN(Number(val)), {
-            message: "La cantidad debe ser un número.",
-        })
-});
-
-export const VentaSchema = z.object({
+export const NotaCreditoSchema = z.object({
     tipo: z.string().min(1, {
         message: "Debe seleccionar un comprobante."
     }),
     numero: z.string().min(1, {
         message: "El numero no puede estar vacio."
-    }).transform(val => parseFloat(val)),
+    })
+        .transform(val => parseFloat(val)),
     fecha: z.string().min(1, {
         message: "La fecha no puede estar vacio."
     }),
@@ -47,5 +40,4 @@ export const VentaSchema = z.object({
             message: "Debe seleccionar un cliente.",
         }),
     articulos: z.array(articulos).optional(),
-    pagos: z.array(pagos).optional(),
 })

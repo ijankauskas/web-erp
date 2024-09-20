@@ -172,6 +172,8 @@ export default function alta_articulo() {
     }
 
     const enviarForm = async (data?: any) => {
+        console.log('entra');
+        
         if (articulos.length <= 0) {
             setMensaje({
                 mostrar: true,

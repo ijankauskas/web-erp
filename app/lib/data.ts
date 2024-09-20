@@ -252,3 +252,18 @@ export async function imprimirPDF(tipoReporte: string, tipo?: string, num?: numb
     }
 }
 
+export async function DbGrabarNotaCredito(data: string | null) {
+    try {
+        const response = await fetch('http://localhost:8080/nota_credito', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        });
+
+        return response;
+    } catch (error) {
+        throw new Error('Failed to fetch card data.');
+    }
+}

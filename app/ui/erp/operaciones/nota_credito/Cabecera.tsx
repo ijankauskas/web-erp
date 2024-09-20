@@ -13,6 +13,7 @@ export default function Cabecera({ register, setValue, clearErrors, errors, setM
     const [num_cliente, setNum_cliente] = useState();
     const [clientes, setClientes] = useState<{}>([]);
     const [monedas, setMonedas] = useState<{}>([]);
+    const [moneDefault, setMoneDefault] = useState('PES');
     const [comp, setComp] = useState<{}>([]);
 
 
@@ -33,9 +34,13 @@ export default function Cabecera({ register, setValue, clearErrors, errors, setM
         clearErrors('num_cliente');
     }
 
-    const seleccionarMoneSelec = (cliente: any) => {
+    const seleccionarMoneSelec = (moneda: any) => {
+        setValue('mone', moneda);
+        clearErrors('mone');
     }
-    const seleccionarCompSelec = (cliente: any) => {
+    const seleccionarCompSelec = (comp: any) => {
+        setValue('tipo', comp);
+        clearErrors('tipo');
     }
 
 
@@ -98,10 +103,7 @@ export default function Cabecera({ register, setValue, clearErrors, errors, setM
             setComp(CompMapeados);
         }
 
-
     }
-
-
 
 
     return (
@@ -112,8 +114,9 @@ export default function Cabecera({ register, setValue, clearErrors, errors, setM
                         <ComboBoxSelect
                             titulo={"Tipo"}
                             data={comp}
-                            // seleccionado={num_cliente}
+                            seleccionado={getValues('tipo')}
                             setearCodigo={seleccionarCompSelec}
+                            error={errors.tipo?.message}
                         />
                     </div>
                 </div>
@@ -143,9 +146,9 @@ export default function Cabecera({ register, setValue, clearErrors, errors, setM
                         <ComboBoxSelect
                             titulo={"Moneda"}
                             data={monedas}
-                            seleccionado={getValues('mone')}
+                            seleccionado={moneDefault}
                             setearCodigo={seleccionarMoneSelec}
-
+                            error={errors.mone?.message}
                         />
                     </div>
                 </div>
@@ -154,7 +157,9 @@ export default function Cabecera({ register, setValue, clearErrors, errors, setM
                         <InputCommon
                             titulo={"Cotizacion"}
                             tipo={'number'}
-                            useForm={register("numero")} />
+                            useForm={register("mone_coti")}
+                            error={errors.mone_coti?.message}
+                        />
                     </div>
                 </div>
                 <div className="col-span-2 sm:col-span-3 md:col-span-2 flex items-center">
@@ -176,7 +181,6 @@ export default function Cabecera({ register, setValue, clearErrors, errors, setM
                             data={clientes}
                             seleccionado={num_cliente}
                             setearCodigo={seleccionarClienteSelec}
-
                             llenarData={consutlarClientes}
                         />
                     </div>
@@ -195,14 +199,13 @@ export default function Cabecera({ register, setValue, clearErrors, errors, setM
 
                 </div>
                 <div className="col-span-2 sm:col-span-3 md:col-span-2 flex items-center">
-                    <div className='w-full mr-2 h-20'>
+                    {/* <div className='w-full mr-2 h-20'>
                         <InputCommon
                             titulo={"Factura"}
                             tipo={'number'}
-
                             placeholder={""}
                         />
-                    </div>
+                    </div> */}
                 </div>
             </div>
         </>

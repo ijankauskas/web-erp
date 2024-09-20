@@ -1,11 +1,10 @@
 "use client"
 
-import { DbGrabartarFactura } from '@/app/lib/data';
+import { DbGrabarNotaCredito } from '@/app/lib/data';
 import DismissibleAlert from '@/app/ui/DismissAlerta';
 import ButtonCommon from '@/app/ui/erp/ButtonCommon';
 import Alerta from '@/app/ui/erp/alerta';
 import ArticulosConsul from '@/app/ui/erp/consultas/articulos_consul';
-import { VentaSchema } from '@/app/validaciones/venta';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -14,6 +13,7 @@ import ClientesConsul from '@/app/ui/erp/consultas/Clientes_consul';
 import Cabecera from '@/app/ui/erp/operaciones/nota_credito/Cabecera';
 import TablaArticulos from '@/app/ui/erp/operaciones/nota_credito/TablaArticulos';
 import Bottom from '@/app/ui/erp/operaciones/nota_credito/Bottom';
+import { NotaCreditoSchema } from '@/app/validaciones/NotaCredito';
 
 
 type Inputs = {
@@ -30,11 +30,6 @@ type Inputs = {
         cantidad: number;
         precio_vta: number;
         costo_uni: number;
-    }[],
-    pagos: {
-        id: string;
-        name: string;
-        importe: number;
     }[]
 }
 
@@ -67,7 +62,7 @@ export default function NotaCredito() {
                 precio_vta: 0
             }],
         },
-        resolver: zodResolver(VentaSchema)
+        resolver: zodResolver(NotaCreditoSchema)
     })
     const [articulos, setArticulos] = useState<{
         error: boolean; codigo: string, descripcion: string, unidad: string, cantidad: number, precio_vta: number, costo_uni: number
@@ -80,10 +75,6 @@ export default function NotaCredito() {
     const [pagos, setPagos] = useState<{
         error: boolean; id: string, name: string, importe: number
     }[]>([]);
-
-    useEffect(() => {
-        setValue('pagos', pagos);
-    }, [pagos]);
 
     const formRef = useRef(null);
 
@@ -144,10 +135,11 @@ export default function NotaCredito() {
     }
 
     const enviarForm = async (data?: any) => {
+
         if (articulos.length <= 0) {
             setMensaje({
                 mostrar: true,
-                mensaje: 'No se puede grabar una factura sin articulos.',
+                mensaje: 'No se puede grabar una nota de credito sin articulos.',
                 titulo: 'Oops...',
                 tipo_aletar: 'error',
             });
@@ -168,7 +160,7 @@ export default function NotaCredito() {
             return acc + parseFloat(calculo.toFixed(2));
         }, 0)
 
-        const response = await DbGrabartarFactura(data)
+        const response = await DbGrabarNotaCredito(data)
         const mensaje = await response.json();
 
         if (response.ok) {

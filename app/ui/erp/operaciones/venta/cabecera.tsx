@@ -13,8 +13,9 @@ export default function Cabecera({ register, setValue, clearErrors, errors, most
     const [num_cliente, setNum_cliente] = useState();
     const [clientes, setClientes] = useState<{}>([]);
     const [monedas, setMonedas] = useState<{}>([]);
+    const [moneDefault, setMoneDefault] = useState('PES');
     const [comp, setComp] = useState<{}>([]);
-    
+
 
     useEffect(() => {
         cargarComponente()
@@ -24,7 +25,7 @@ export default function Cabecera({ register, setValue, clearErrors, errors, most
         consutlarClientes('');
         consultarMonedas();
         consultarComp();
-       
+        setValue('mone', moneDefault);
     }
 
     const seleccionarClienteSelec = (cliente: any) => {
@@ -33,9 +34,13 @@ export default function Cabecera({ register, setValue, clearErrors, errors, most
         clearErrors('num_cliente');
     }
 
-    const seleccionarMoneSelec = (cliente: any) => {
+    const seleccionarMoneSelec = (moneda: any) => {
+        setValue('mone', moneda);
+        clearErrors('mone');
     }
-    const seleccionarCompSelec = (cliente: any) => {
+    const seleccionarCompSelec = (comp: any) => {
+        setValue('tipo', comp);
+        clearErrors('tipo');
     }
 
 
@@ -93,7 +98,7 @@ export default function Cabecera({ register, setValue, clearErrors, errors, most
 
     }
 
-   
+
 
 
     return (
@@ -104,8 +109,9 @@ export default function Cabecera({ register, setValue, clearErrors, errors, most
                         <ComboBoxSelect
                             titulo={"Tipo"}
                             data={comp}
-                            // seleccionado={num_cliente}
+                            seleccionado={getValues('tipo')}
                             setearCodigo={seleccionarCompSelec}
+                            error={errors.tipo?.message}
                         />
                     </div>
                 </div>
@@ -135,7 +141,7 @@ export default function Cabecera({ register, setValue, clearErrors, errors, most
                         <ComboBoxSelect
                             titulo={"Moneda"}
                             data={monedas}
-                            seleccionado={getValues('mone')}
+                            seleccionado={moneDefault}
                             setearCodigo={seleccionarMoneSelec}
                             mostrarError={mostrarErrorAlerta}
                         />
@@ -145,8 +151,9 @@ export default function Cabecera({ register, setValue, clearErrors, errors, most
                     <div className='w-full mr-2 h-20'>
                         <InputCommon
                             titulo={"Cotizacion"}
-                            tipo={'number'}                          
-                            useForm={register("numero")} />
+                            tipo={'number'}
+                            useForm={register("mone_coti")}
+                            error={errors.mone_coti?.message} />
                     </div>
                 </div>
                 <div className="col-span-2 sm:col-span-3 md:col-span-2 flex items-center">

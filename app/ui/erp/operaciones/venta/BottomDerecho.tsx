@@ -241,21 +241,21 @@ export default function BottomDerecho({ register, articulos, setAlerta, pagos, s
                     <div className="col-span-4 sm:col-span-4 md:col-span-4 flex items-center">
                         <div className="w-full mr-2 h-20"> {/* Cambié w-full a w-1/2 para ocupar la mitad del ancho */}
 
-                            <ComboBoxSelect
+                            {/* <ComboBoxSelect
                                 titulo={"Recibo"}
                                 data={comp}
                                 setearCodigo={seleccionarCompSelec}
-                            />
+                            /> */}
                         </div>
                     </div>
 
                     <div className="col-span-6 sm:col-span-6 md:col-span-3 flex items-center">
                         <div className='w-full mr-2 h-20'>
-                            <InputCommon
+                            {/* <InputCommon
                                 titulo={"Numero"}
                                 tipo={'number'}
                                 placeholder={"Numero del Recibo"}
-                                useForm={register("numero")} />
+                                useForm={register("numero")} /> */}
                         </div>
                     </div>
 
