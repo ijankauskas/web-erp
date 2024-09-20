@@ -92,7 +92,6 @@ export default function Cabecera({ register, setValue, clearErrors, errors, setM
     }
 
     const consultarComp = async () => {
-
         const respuesta = await DbCompConsul('S', 'C');
         const data = await respuesta.json();
         if (respuesta.ok) {
@@ -102,7 +101,6 @@ export default function Cabecera({ register, setValue, clearErrors, errors, setM
             }));
             setComp(CompMapeados);
         }
-
     }
 
 

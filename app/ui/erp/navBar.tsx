@@ -37,6 +37,20 @@ const menus = [
     {
         nombre: "Altas",
         subMenu: [
+
+            {
+                nombre: "Generales",
+                pantallas: [
+                    {
+                        nombre: "Comprobantes",
+                        href: '/erp/alta/comprobantes',
+                        current: false,
+                        icon: UserPlusIcon,
+                    },
+
+
+                ]
+            },
             {
                 nombre: "Stock",
                 pantallas: [

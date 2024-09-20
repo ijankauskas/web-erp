@@ -14,6 +14,7 @@ import Cabecera from '@/app/ui/erp/operaciones/nota_credito/Cabecera';
 import TablaArticulos from '@/app/ui/erp/operaciones/nota_credito/TablaArticulos';
 import Bottom from '@/app/ui/erp/operaciones/nota_credito/Bottom';
 import { NotaCreditoSchema } from '@/app/validaciones/NotaCredito';
+import CompPendiente from '@/app/ui/erp/consultas/CompPendientes';
 
 
 type Inputs = {
@@ -39,6 +40,7 @@ export default function NotaCredito() {
     const [cargando, setCargando] = useState(false);
     const [abrirArticulosConsul, setAbrirArticulosConsul] = useState(false);
     const [abrirClientesConsul, setAbrirClientesConsul] = useState(false);
+    const [abrirCompPend, setAbrirCompPend] = useState(false);
 
     const [mensaje, setMensaje] = useState({
         mostrar: false,
@@ -71,10 +73,6 @@ export default function NotaCredito() {
     useEffect(() => {
         setValue('articulos', articulos);
     }, [articulos]);
-
-    const [pagos, setPagos] = useState<{
-        error: boolean; id: string, name: string, importe: number
-    }[]>([]);
 
     const formRef = useRef(null);
 
@@ -132,6 +130,9 @@ export default function NotaCredito() {
     }
     const toggleAbrirClientesConsul = () => {
         setAbrirClientesConsul(!abrirClientesConsul)
+    }
+    const toggleAbrirCompPend = () => {
+        setAbrirCompPend(!abrirCompPend)
     }
 
     const enviarForm = async (data?: any) => {
@@ -238,8 +239,11 @@ export default function NotaCredito() {
                             <div className='w-[150px] sm:mr-4'>
                                 <ButtonCommon type="button" texto={"Buscar Articulos"} onClick={toggleAbrirArticulosConsul} />
                             </div>
-                            <div className='w-[150px]'>
+                            <div className='w-[150px] sm:mr-4'>
                                 <ButtonCommon type="submit" texto={<><PlusCircleIcon aria-hidden="true" className="mr-1.5 h-5 w-5" />Guardar</>} />
+                            </div>
+                            <div className='w-[40px]'>
+                                <ButtonCommon type="button" tooltip="Facturas Pendientes" texto="FC" onClick={toggleAbrirCompPend} />
                             </div>
                         </div>
                     </div>
@@ -258,8 +262,6 @@ export default function NotaCredito() {
                         articulos={articulos}
                         setAlerta={setAlerta}
                         setArticulos={setArticulos}
-                        pagos={pagos}
-                        setPagos={setPagos}
                     />
                 </div>
             </form>
@@ -283,6 +285,11 @@ export default function NotaCredito() {
                 setArticulo={setArticulos}
                 open={abrirClientesConsul}
                 setOpen={setAbrirClientesConsul}
+            />
+
+            <CompPendiente
+                open={abrirCompPend}
+                setOpen={setAbrirCompPend}
             />
 
             {alerta.alertVisible && (
