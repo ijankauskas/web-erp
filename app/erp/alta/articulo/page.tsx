@@ -86,7 +86,7 @@ export default function alta_articulo() {
   });
 
   const eliminarArticulo = async () => {
-    let articulo={codigo:getValues("codigo")}
+    let articulo = { codigo: getValues("codigo") }
     const response = await DbBorrarArticulo(articulo);
     const mensaje = await response.json();
     if (response.ok) {
@@ -292,12 +292,12 @@ export default function alta_articulo() {
     } else {
       limpiar()
       setCargando(false);
+
       ref.current?.complete();
-      setError({
-        mostrar: true,
-        mensaje: data.message,
-        titulo: 'Oops...',
-        icono: 'error-icon',
+      setAlerta({
+        message: data.message,
+        type: "error",
+        alertVisible: true
       });
     }
 
@@ -326,7 +326,7 @@ export default function alta_articulo() {
     setValue('costo_iva', '');
   }
 
-  const btnLimpiar= () => {
+  const btnLimpiar = () => {
 
     setValue('codigo', '');
     limpiar()
@@ -391,14 +391,14 @@ export default function alta_articulo() {
                 />
               </> :
               'Posición no definida.'}
-          <div className="flex items-end justify-end px-4 py-3 bg-gray-50 text-right sm:px-6">
-
+          <div className="flex items-center justify-end px-4 py-3 bg-gray-50 text-right sm:px-6 space-x-4">
             <button
               type="button"
               onClick={btnLimpiar}
-              className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-gray-600 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 mr-2">
+              className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-gray-600 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
               Limpiar
             </button>
+
             <button
               type="submit"
               className="inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
@@ -406,13 +406,15 @@ export default function alta_articulo() {
               <CheckIcon aria-hidden="true" className="-ml-0.5 mr-1.5 h-5 w-5" />
               Guardar
             </button>
+
             <button
               type="button"
               onClick={eliminarArticulo}
-              className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-gray-600 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 mr-2">
+              className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
               Eliminar
             </button>
           </div>
+
         </form>
         <Alerta
           abrir={error.mostrar}

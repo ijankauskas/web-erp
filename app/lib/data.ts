@@ -317,3 +317,19 @@ export async function DbBorrarArticulo(data: any | null) {
         throw new Error('Failed to fetch card data.');
     }
 }
+
+export async function DbBorrarCliente(data: any | null) {
+    try {
+        const response = await fetch('http://localhost:8080/clientes', {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        });
+
+        return response;
+    } catch (error) {
+        throw new Error('Failed to fetch card data.');
+    }
+}
