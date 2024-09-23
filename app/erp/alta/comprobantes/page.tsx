@@ -5,11 +5,15 @@ import Cabecera from "@/app/ui/erp/comprobantes/Cabecera"
 import TablaComprobantes from "@/app/ui/erp/comprobantes/TablaComprobantes"
 import { ClipboardIcon, CurrencyDollarIcon } from "@heroicons/react/24/outline"
 import { Tab, Tabs } from "@nextui-org/react"
+import { useEffect, useState } from "react"
 
 
 
 
 export default function Comprobantes() {
+
+    const [compSelect, setCompSelect] = useState({});
+    
 
     return (
         <div className="max-w-screen-2xl mx-auto py-0 px-4 sm:px-6 lg:px-8 bg-white">
@@ -39,6 +43,7 @@ export default function Comprobantes() {
 
                         <div className="overflow-x-auto sm:-mx-6 lg:-mx-8">
                             <TablaComprobantes
+                                setCompSelect={setCompSelect}
 
                             />
                         </div>
@@ -54,11 +59,11 @@ export default function Comprobantes() {
                         </div>
                     }
                 >
-                    <Cabecera 
-                    
+                    <Cabecera
+                        compSelect={compSelect}
                     />
 
-                  
+
                 </Tab>
             </Tabs>
 
