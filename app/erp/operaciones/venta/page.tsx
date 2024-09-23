@@ -14,7 +14,6 @@ import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import LoadingBar, { LoadingBarRef } from 'react-top-loading-bar';
 import { PlusCircleIcon } from '@heroicons/react/24/outline';
-import ClientesConsul from '@/app/ui/erp/consultas/Clientes_consul';
 
 
 type Inputs = {
@@ -46,7 +45,6 @@ export default function alta_articulo() {
     const ref = useRef<LoadingBarRef | null>(null);
     const [isInitialMount, setIsInitialMount] = useState(true);
     const [abrirArticulosConsul, setAbrirArticulosConsul] = useState(false);
-    const [abrirClientesConsul, setAbrirClientesConsul] = useState(false);
 
     useEffect(() => {
         if (ref.current) {
@@ -165,15 +163,7 @@ export default function alta_articulo() {
     const toggleAbrirArticulosConsul = () => {
         setAbrirArticulosConsul(!abrirArticulosConsul)
     }
-    const toggleAbrirClientesConsul = () => {
-        console.log('aca');
-        
-        setAbrirClientesConsul(!abrirClientesConsul)
-    }
-
     const enviarForm = async (data?: any) => {
-        console.log('entra');
-        
         if (articulos.length <= 0) {
             setMensaje({
                 mostrar: true,
@@ -256,7 +246,6 @@ export default function alta_articulo() {
 
     }, [errors]);
 
-
     return (
         <div className='mx-auto max-w-screen-2xl bg-white'>
             <div>
@@ -271,7 +260,6 @@ export default function alta_articulo() {
                         mostrarErrorAlerta={mostrarErrorAlerta}
                         clearErrors={clearErrors}
                         getValues={getValues}
-                        AbrirClientesConsul={toggleAbrirClientesConsul}
                     />
                     <div className="w-full flex justify-between my-2">
                         <div>
@@ -320,12 +308,6 @@ export default function alta_articulo() {
                 setArticulo={setArticulos}
                 open={abrirArticulosConsul}
                 setOpen={setAbrirArticulosConsul}
-            />
-
-            <ClientesConsul
-                setArticulo={setArticulos}
-                open={abrirClientesConsul}
-                setOpen={setAbrirClientesConsul}
             />
 
             {alerta.alertVisible && (

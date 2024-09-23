@@ -4,9 +4,9 @@ import { Dialog, DialogBackdrop, DialogPanel, DialogTitle } from "@headlessui/re
 import InputCommon from "../../inputCommon";
 import ButtonCommon from "../ButtonCommon";
 import { DbConsultarArticulo } from "@/app/lib/data";
-import { SetStateAction, useState } from "react";
+import { SetStateAction, useEffect, useState } from "react";
 import Alerta from "../alerta";
-import { XMarkIcon } from '@heroicons/react/24/outline'
+import { ChevronDownIcon, ChevronUpIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import { Pagination } from "@nextui-org/react";
 
 export default function ArticulosConsul({ setArticulo, open, setOpen }: any) {
@@ -14,6 +14,10 @@ export default function ArticulosConsul({ setArticulo, open, setOpen }: any) {
     const [articulos, setArticulos] = useState<[]>([]);
     const [sCodarticulos, setSCodarticulos] = useState('');
     const [sDescrip, setSDescrip] = useState('');
+    const [pagina, setPagina] = useState(1);
+    const [totalPages, setTotalPages] = useState(0);
+    const [totalxPagina, setTotalxPagina] = useState(50);
+    const [ordenarConfig, setOrdenarConfig] = useState({ key: 'razon', direction: 'asc' });
 
     const [error, setError] = useState({
         mostrar: false,
@@ -28,6 +32,46 @@ export default function ArticulosConsul({ setArticulo, open, setOpen }: any) {
             titulo: '',
             icono: '',
         });
+    }
+
+    useEffect(() => {
+        cargarComponente();
+    }, []);
+
+    async function cargarComponente() {
+        const respuesta = await DbConsultarArticulo(sCodarticulos, 'S', sDescrip, 'descripcion', 'asc', 1, 5, 'S', 'S');
+        const data = await respuesta.json();
+        if (!respuesta.ok) {
+            throw new Error('Error al cargar los articulos');
+        }
+        setArticulos(data.articulos);
+
+        let total = data.total
+        setTotalPages(Math.ceil(total / totalxPagina));
+    }
+
+    const settearSCodarticulos = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setSCodarticulos(e.target.value);
+    }
+    const settearSDescrip = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setSDescrip(e.target.value);
+    }
+
+    const consultar = async () => {
+        const respuesta = await DbConsultarArticulo(sCodarticulos, 'S', sDescrip, ordenarConfig.key, ordenarConfig.direction, pagina, 50, 'S', 'N');
+        const data = await respuesta.json();
+        if (respuesta.ok) {
+            console.log(data);
+
+            setArticulos(data.articulos);
+        } else {
+            setError({
+                mostrar: true,
+                mensaje: data.message,
+                titulo: 'Oops...',
+                icono: 'error-icon',
+            });
+        }
     }
 
     const handleMouseDown = (index: any, event: any) => {
@@ -49,31 +93,16 @@ export default function ArticulosConsul({ setArticulo, open, setOpen }: any) {
         document.addEventListener('mouseup', onMouseUp);
     };
 
-    const settearSCodarticulos = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setSCodarticulos(e.target.value);
-    }
-    const settearSDescrip = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setSDescrip(e.target.value);
-    }
-
-    const consultar = async () => {
-        const respuesta = await DbConsultarArticulo(sCodarticulos, 'S', sDescrip,'descripcion','asc',1,50,'S');
-        const data = await respuesta.json();
-
-        if (respuesta.ok) {
-            setArticulos(data)
-        } else {
-            setError({
-                mostrar: true,
-                mensaje: data.message,
-                titulo: 'Oops...',
-                icono: 'error-icon',
-            });
+    const orderArticulos = (key: any) => {
+        let direction = 'asc';
+        if (ordenarConfig.key === key && ordenarConfig.direction === 'asc') {
+            direction = 'desc';
         }
-    }
+        setPagina(1);
+        setOrdenarConfig({ key, direction });
+    };
 
     const agregarArticulo = ({ articulo }: any) => {
-
         const nuevo = {
             codigo: articulo.codigo,
             descripcion: articulo.descripcion,
@@ -82,9 +111,16 @@ export default function ArticulosConsul({ setArticulo, open, setOpen }: any) {
             precio_vta: articulo.precio_vta || 0,
             costo_uni: articulo.costo || 0
         };
-
         setArticulo((prev: any) => [...prev, nuevo]);
     }
+
+    useEffect(() => {
+        consultar();
+    }, [ordenarConfig]);
+
+    useEffect(() => {
+        consultar();
+    }, [pagina]);
 
     return (
         <>
@@ -146,16 +182,15 @@ export default function ArticulosConsul({ setArticulo, open, setOpen }: any) {
                                                     style={{ width: columnWidths[0] }}
                                                     scope="col"
                                                     className="relative text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-r border-gray-200 text-ellipsis overflow-hidden hover:bg-indigo-100"
-
-                                                // onClick={() => orderClientes('codigo')}
+                                                    onClick={() => orderArticulos('codigo')}
                                                 >
                                                     <div className='flex px-2 py-2'>
                                                         Codigo
-                                                        {/* {ordenarConfig.key === 'codigo' && (
+                                                        {ordenarConfig.key === 'codigo' && (
                                                             <span className="ml-2">
                                                                 {ordenarConfig.direction === 'asc' ? <ChevronUpIcon className="h-4 w-4" /> : <ChevronDownIcon className="h-4 w-4" />}
                                                             </span>
-                                                        )} */}
+                                                        )}
                                                         <div
                                                             className="absolute right-0 top-0 w-1 h-full cursor-col-resize hover:bg-gray-300"
                                                             onMouseDown={(e) => handleMouseDown(0, e)}
@@ -166,16 +201,15 @@ export default function ArticulosConsul({ setArticulo, open, setOpen }: any) {
                                                     style={{ width: columnWidths[1] }}
                                                     scope="col"
                                                     className="relative text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-r border-gray-200 text-ellipsis overflow-hidden hover:bg-indigo-100"
-
-                                                // onClick={() => orderClientes('codigo')}
+                                                    onClick={() => orderArticulos('descripcion')}
                                                 >
                                                     <div className='flex px-2 py-2'>
                                                         Descripcion
-                                                        {/* {ordenarConfig.key === 'codigo' && (
+                                                        {ordenarConfig.key === 'descripcion' && (
                                                             <span className="ml-2">
                                                                 {ordenarConfig.direction === 'asc' ? <ChevronUpIcon className="h-4 w-4" /> : <ChevronDownIcon className="h-4 w-4" />}
                                                             </span>
-                                                        )} */}
+                                                        )}
                                                         <div
                                                             className="absolute right-0 top-0 w-1 h-full cursor-col-resize hover:bg-gray-300"
                                                             onMouseDown={(e) => handleMouseDown(1, e)}
@@ -187,10 +221,10 @@ export default function ArticulosConsul({ setArticulo, open, setOpen }: any) {
                                         <tbody className="bg-white divide-y divide-gray-200">
                                             {articulos?.map((articulo: any, index: number) => (
                                                 <tr onClick={() => agregarArticulo({ articulo })} className="border-b text-gray-900 hover:text-gray-100 hover:bg-indigo-500 hover:cursor-pointer ">
-                                                    <td className="px-4 py-2 whitespace-nowrap text-sm border-r border-gray-200">
+                                                    <td className="px-4 py-2 whitespace-nowrap text-sm border border-gray-200">
                                                         {articulo.codigo}
                                                     </td>
-                                                    <td className="px-4 py-2 whitespace-nowrap text-sm border-l border-gray-200">
+                                                    <td className="px-4 py-2 whitespace-nowrap text-sm border border-gray-200">
                                                         {articulo.descripcion}
                                                     </td>
                                                 </tr>
@@ -200,7 +234,13 @@ export default function ArticulosConsul({ setArticulo, open, setOpen }: any) {
                                 </div>
                             </div>
                             <div className="flex w-full items-center justify-center mb-4">
-                                <Pagination color="primary" isCompact showControls total={50} initialPage={1} />
+                                <Pagination color="primary"
+                                    isCompact
+                                    showControls
+                                    total={totalPages}
+                                    page={pagina}
+                                    onChange={setPagina}
+                                />
                             </div>
                         </DialogPanel>
                     </div>

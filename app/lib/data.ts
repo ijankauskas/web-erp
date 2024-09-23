@@ -1,3 +1,11 @@
+let produccion = false;
+let url = '';
+if (produccion) {
+    url = ''
+} else {
+    url = 'http://localhost:8080'
+}
+
 export async function DbConsultarArticulo(
     cod_articulo?: string | null,
     multiple?: string | null,
@@ -7,10 +15,11 @@ export async function DbConsultarArticulo(
     page?: any | null,
     limit?: any | null,
     activos?: string | null,
+    total?: string | null,
 ) {
 
     try {
-        const response = await fetch('http://localhost:8080/articulos?codigo=' + cod_articulo + '&multiple=' + multiple + '&descripcion=' + descripcion + '&columnaOrden=' + columnaOrden + '&dir=' + dir + '&page=' + page + '&limit=' + limit + '&activos=' + activos, {
+        const response = await fetch(url + '/articulos?codigo=' + cod_articulo + '&multiple=' + multiple + '&descripcion=' + descripcion + '&columnaOrden=' + columnaOrden + '&dir=' + dir + '&page=' + page + '&limit=' + limit + '&activos=' + activos+ '&total=' + total, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -26,7 +35,7 @@ export async function DbConsultarArticulo(
 
 export async function DbGrabartarArticulo(data: string | null) {
     try {
-        const response = await fetch('http://localhost:8080/articulos', {
+        const response = await fetch(url + '/articulos', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -43,7 +52,7 @@ export async function DbGrabartarArticulo(data: string | null) {
 
 export async function DbGrabartarProveedor(data: string | null) {
     try {
-        const response = await fetch('http://localhost:8080/proveedores', {
+        const response = await fetch(url + '/proveedores', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -59,7 +68,7 @@ export async function DbGrabartarProveedor(data: string | null) {
 
 export async function DbConsultarProveedor(codigo: number | null) {
     try {
-        const response = await fetch('http://localhost:8080/proveedores?codigo=' + codigo, {
+        const response = await fetch(url + 'proveedores?codigo=' + codigo, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -75,7 +84,7 @@ export async function DbConsultarProveedor(codigo: number | null) {
 
 export async function DbSingIn(data: any) {
     try {
-        const response = await fetch('http://localhost:8080/signIn', {
+        const response = await fetch(url + '/signIn', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -102,7 +111,7 @@ export async function DbConsultarCliente(
     activos?: string | null,
 ) {
     try {
-        const response = await fetch('http://localhost:8080/clientes?codigo=' + codigo + '&multiple=' + multiple + '&razon=' + razon + '&orden=' + columnaOrden + '&dir=' + dir + '&page=' + page + '&limit=' + limit + '&activos=' + activos, {
+        const response = await fetch(url + '/clientes?codigo=' + codigo + '&multiple=' + multiple + '&razon=' + razon + '&orden=' + columnaOrden + '&dir=' + dir + '&page=' + page + '&limit=' + limit + '&activos=' + activos, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -118,7 +127,7 @@ export async function DbConsultarCliente(
 
 export async function DbGrabartarCliente(data: string | null) {
     try {
-        const response = await fetch('http://localhost:8080/clientes', {
+        const response = await fetch(url + '/clientes', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -134,7 +143,7 @@ export async function DbGrabartarCliente(data: string | null) {
 
 export async function DbGrabartarFactura(data: string | null) {
     try {
-        const response = await fetch('http://localhost:8080/facturas', {
+        const response = await fetch(url + '/facturas', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -155,7 +164,7 @@ export async function DbCompEmitidosConsul(
     dir?: string | null,
 ) {
     try {
-        const response = await fetch('http://localhost:8080/comp_emitidos?cliente=' + cliente + '&pagina=' + pagina + '&orden=' + columnaOrden + '&dir=' + dir, {
+        const response = await fetch(url + '/comp_emitidos?cliente=' + cliente + '&pagina=' + pagina + '&orden=' + columnaOrden + '&dir=' + dir, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -177,7 +186,7 @@ export async function DbSaldosClientes(
     cliente?: string | null,
 ) {
     try {
-        const response = await fetch('http://localhost:8080/saldos_clientes?servicio=' + servicio + '&pagina=' + pagina + '&parametro=' + parametro + '&orden=' + columnaOrden + '&dir=' + dir + '&cliente=' + cliente, {
+        const response = await fetch(url + '/saldos_clientes?servicio=' + servicio + '&pagina=' + pagina + '&parametro=' + parametro + '&orden=' + columnaOrden + '&dir=' + dir + '&cliente=' + cliente, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -194,7 +203,7 @@ export async function DbValoresConsul(
     activos: string | null,
 ) {
     try {
-        const response = await fetch('http://localhost:8080/valores?activo=' + activos, {
+        const response = await fetch(url + '/valores?activo=' + activos, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -210,7 +219,7 @@ export async function DbValoresConsul(
 
 export async function DbMonedasConsul() {
     try {
-        const response = await fetch('http://localhost:8080/monedas', {
+        const response = await fetch(url + '/monedas', {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -225,7 +234,7 @@ export async function DbMonedasConsul() {
 
 export async function DbCompConsul(activo?: string, tipo?: string) {
     try {
-        const response = await fetch('http://localhost:8080/comp?tipo=' + tipo + '&activo=' + activo, {
+        const response = await fetch(url + '/comp?tipo=' + tipo + '&activo=' + activo, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -239,7 +248,7 @@ export async function DbCompConsul(activo?: string, tipo?: string) {
 }
 export async function imprimirPDF(tipoReporte: string, tipo?: string, num?: number) {
     try {
-        const response = await fetch('http://localhost:8080/imprimirPDF?tipoReporte' + tipoReporte + 'tipo=' + tipo + '&num=' + num, {
+        const response = await fetch(url + '/imprimirPDF?tipoReporte' + tipoReporte + 'tipo=' + tipo + '&num=' + num, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/pdf',
@@ -253,7 +262,7 @@ export async function imprimirPDF(tipoReporte: string, tipo?: string, num?: numb
 }
 export async function DbGrabarNotaCredito(data: string | null) {
     try {
-        const response = await fetch('http://localhost:8080/nota_credito', {
+        const response = await fetch(url + '/nota_credito', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -269,7 +278,7 @@ export async function DbGrabarNotaCredito(data: string | null) {
 
 export async function DbGrabarComp(data: string | null) {
     try {
-        const response = await fetch('http://localhost:8080/comp', {
+        const response = await fetch(url + '/comp', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

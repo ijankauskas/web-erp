@@ -2,19 +2,20 @@
 import { useEffect, useState } from "react";
 import ComboBoxSelect from "../../../ComboBoxSelect";
 import InputCommon from "../../../inputCommon";
-import { faPersonWalkingDashedLineArrowRight } from "@fortawesome/free-solid-svg-icons/faPersonWalkingDashedLineArrowRight";
 import { DbCompConsul, DbConsultarCliente, DbMonedasConsul } from "@/app/lib/data";
 import ButtonCommon from "../../ButtonCommon";
-import { MagnifyingGlassCircleIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
+import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
+import ClientesConsul from '@/app/ui/erp/consultas/Clientes_consul';
 
 
 
-export default function Cabecera({ register, setValue, clearErrors, errors, mostrarErrorAlerta, getValues, AbrirClientesConsul }: any) {
+export default function Cabecera({ register, setValue, clearErrors, errors, mostrarErrorAlerta, getValues }: any) {
     const [num_cliente, setNum_cliente] = useState();
     const [clientes, setClientes] = useState<{}>([]);
     const [monedas, setMonedas] = useState([]);
     const [moneDefault, setMoneDefault] = useState('PES');
     const [comp, setComp] = useState([]);
+    const [abrirClientesConsul, setAbrirClientesConsul] = useState(false);
 
     useEffect(() => {
         cargarComponente()
@@ -43,7 +44,7 @@ export default function Cabecera({ register, setValue, clearErrors, errors, most
     }
 
     const seleccionarCompSelec = (compSelect: any) => {
-        const prox_num: any = comp.filter((comp: any) => comp.id == compSelect);
+        const prox_num: any = comp.filter((comp: any) => comp.id == compSelect);        
         if (prox_num.length > 0) {
             setValue('numero', prox_num[0].prox_num);
         }
@@ -94,11 +95,22 @@ export default function Cabecera({ register, setValue, clearErrors, errors, most
             const CompMapeados = data.map((comp: any) => ({
                 id: comp.tipo || '',
                 name: comp.descrip || '',
-                prox_num: comp.prox_num || 1,
+                prox_num: comp.prox_num.toString() || 1,
             }));
             setComp(CompMapeados);
         }
     }
+
+    const toggleAbrirClientesConsul = () => {
+        setAbrirClientesConsul(!abrirClientesConsul)
+    }
+
+    const setCliente = (cliente: any) => {        
+        setClientes([{ id: cliente.codigo, name: cliente.razon }])
+        setNum_cliente(cliente.codigo);
+        setValue('num_cliente', cliente.codigo);
+    }
+
 
     return (
         <>
@@ -142,6 +154,7 @@ export default function Cabecera({ register, setValue, clearErrors, errors, most
                             data={monedas}
                             seleccionado={moneDefault}
                             setearCodigo={seleccionarMoneSelec}
+                            error={errors.mone?.message}
                             mostrarError={mostrarErrorAlerta}
                         />
                     </div>
@@ -152,9 +165,9 @@ export default function Cabecera({ register, setValue, clearErrors, errors, most
                             titulo={"Cotizacion"}
                             tipo={'number'}
                             useForm={register("mone_coti")}
-                            error={errors.mone_coti?.message} 
-                            desactivado={getValues('mone')=='PES'}
-                            />
+                            error={errors.mone_coti?.message}
+                            desactivado={getValues('mone') == 'PES'}
+                        />
                     </div>
                 </div>
                 <div className="col-span-2 sm:col-span-3 md:col-span-2 flex items-center">
@@ -187,11 +200,17 @@ export default function Cabecera({ register, setValue, clearErrors, errors, most
                             px={"px-1"}
                             py={"py-1"}
                             tooltip="Buscar Clientes"
-                            onClick={AbrirClientesConsul}
+                            onClick={toggleAbrirClientesConsul}
                         />
                     </div>
                 </div>
             </div>
+            
+            <ClientesConsul
+                setCliente={setCliente}
+                open={abrirClientesConsul}
+                setOpen={setAbrirClientesConsul}
+            />
         </>
     )
 
