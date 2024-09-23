@@ -9,7 +9,7 @@ import PreciosArticulo from '@/app/ui/erp/alta_articulo/PreciosArticulo';
 import CheckArticulo from '@/app/ui/erp/alta_articulo/CheckArticulo';
 import Componentes from '@/app/ui/erp/alta_articulo/Componentes';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { DbConsultarArticulo, DbGrabartarArticulo } from '@/app/lib/data';
+import { DbBorrarArticulo, DbConsultarArticulo, DbGrabartarArticulo } from '@/app/lib/data';
 import Alerta from '@/app/ui/erp/alerta';
 import ButtonCommon from '@/app/ui/erp/ButtonCommon';
 import LoadingBar, { LoadingBarRef } from 'react-top-loading-bar';
@@ -85,6 +85,25 @@ export default function alta_articulo() {
     icono: '',
   });
 
+  const eliminarArticulo = async () => {
+    let articulo={codigo:getValues("codigo")}
+    const response = await DbBorrarArticulo(articulo);
+    const mensaje = await response.json();
+    if (response.ok) {
+      setAlerta({
+        message: mensaje.message,
+        type: "success",
+        alertVisible: true
+      });
+    } else {
+      setAlerta({
+        message: mensaje.message,
+        type: "error",
+        alertVisible: true
+      });
+    }
+  };
+
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const { replace } = useRouter();
@@ -115,8 +134,8 @@ export default function alta_articulo() {
       usa_compo: false,
       sin_stock: false,
       um: 'UNI',
-      cant_default:'1',
-      cod_barras:'',
+      cant_default: '1',
+      cod_barras: '',
       costo_iva: ''
     },
     resolver: zodResolver(articuloSchema)
@@ -161,8 +180,8 @@ export default function alta_articulo() {
     data.activo = data.activo || data.activo == 'S' ? 'S' : 'N';
 
     data.usa_compo = data.usa_compo || data.usa_compo == 'S' ? 'S' : 'N';
-    
-    data.sin_stock= data.sin_stock || data.sin_stock == 'S' ? 'S' : 'N';
+
+    data.sin_stock = data.sin_stock || data.sin_stock == 'S' ? 'S' : 'N';
 
     setCargando(true);
     ref.current?.continuousStart();
@@ -286,8 +305,6 @@ export default function alta_articulo() {
 
   const limpiar = () => {
 
-    
-    setValue('codigo', '');
     setValue('descripcion', '');
     setValue('descripcion_adicional', '');
     setValue('agru_1', '');
@@ -308,6 +325,13 @@ export default function alta_articulo() {
     setValue('cod_barras', '');
     setValue('costo_iva', '');
   }
+
+  const btnLimpiar= () => {
+
+    setValue('codigo', '');
+    limpiar()
+  }
+
 
   useEffect(() => {
     const params = new URLSearchParams(searchParams);
@@ -371,7 +395,7 @@ export default function alta_articulo() {
 
             <button
               type="button"
-              onClick={limpiar}
+              onClick={btnLimpiar}
               className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-gray-600 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 mr-2">
               Limpiar
             </button>
@@ -381,6 +405,12 @@ export default function alta_articulo() {
             >
               <CheckIcon aria-hidden="true" className="-ml-0.5 mr-1.5 h-5 w-5" />
               Guardar
+            </button>
+            <button
+              type="button"
+              onClick={eliminarArticulo}
+              className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-gray-600 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 mr-2">
+              Eliminar
             </button>
           </div>
         </form>

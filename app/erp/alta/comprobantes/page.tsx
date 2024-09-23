@@ -1,5 +1,6 @@
 "use client"
 
+import DismissibleAlert from "@/app/ui/DismissAlerta"
 import ButtonCommon from "@/app/ui/erp/ButtonCommon"
 import Cabecera from "@/app/ui/erp/comprobantes/Cabecera"
 import TablaComprobantes from "@/app/ui/erp/comprobantes/TablaComprobantes"
@@ -8,12 +9,22 @@ import { Tab, Tabs } from "@nextui-org/react"
 import { useEffect, useState } from "react"
 
 
-
-
 export default function Comprobantes() {
 
     const [compSelect, setCompSelect] = useState({});
-    
+    const [alerta, setAlerta] = useState({
+        message: "",
+        type: "",
+        alertVisible: false
+    });
+
+    const closeAlertaDismiss = () => {
+        setAlerta({
+            message: '',
+            type: "",
+            alertVisible: false
+        });
+    };
 
     return (
         <div className="max-w-screen-2xl mx-auto py-0 px-4 sm:px-6 lg:px-8 bg-white">
@@ -61,19 +72,17 @@ export default function Comprobantes() {
                 >
                     <Cabecera
                         compSelect={compSelect}
+                        setAlerta={setAlerta}
                     />
-
-
                 </Tab>
             </Tabs>
-
-
-
+            {alerta.alertVisible && (
+                <DismissibleAlert
+                    message={alerta.message}
+                    type={alerta.type}
+                    onClose={closeAlertaDismiss}
+                />
+            )}
         </div>
-
-
-
-
-
     )
 }
