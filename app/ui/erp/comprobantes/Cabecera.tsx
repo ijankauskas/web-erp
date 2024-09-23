@@ -1,19 +1,14 @@
 "use client"
 
-import React, { useState } from 'react';
-
+import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import ComboBoxSelect from '@/app/ui/ComboBoxSelect';
-import { clienteSchema } from '@/app/validaciones/cliente';
-import InputCommon from '../../inputCommon';
 import { compSchema } from '@/app/validaciones/comp';
-
+import InputCommon from '../../inputCommon';
 import CheckComp from './CheckComp';
 import ButtonCommon from '../ButtonCommon';
-import { PlusCircleIcon } from '@heroicons/react/24/outline';
-import { DbCompConsul, DbGrabarComp } from '@/app/lib/data';
-
+import { PlusCircleIcon, TrashIcon } from '@heroicons/react/24/outline'; // Importamos el icono de eliminar
+import { DbGrabarComp } from '@/app/lib/data';
 
 type Inputs = {
     tipo: string,
@@ -25,23 +20,7 @@ type Inputs = {
     activo: any,
 }
 
-const people = [
-    { id: '1', name: 'asdr' },
-    { id: '2', name: 'Arlene Mccoy' },
-    { id: '3', name: 'Devon Webb' },
-    { id: '4', name: 'Tom Cook' },
-    { id: '5', name: 'Tanya Fox' },
-    { id: '6', name: 'Hellen Schmidt' },
-];
-
-
-
-function classNames(...classes: any[]) {
-    return classes.filter(Boolean).join(' ');
-}
-
-const Cabecera = () => {
-
+const Cabecera = ({ compSelect }: any) => {
     const { register, handleSubmit, formState: { errors }, setValue, clearErrors, getValues, watch } = useForm<Inputs>({
         defaultValues: {
             tipo: '',
@@ -53,10 +32,10 @@ const Cabecera = () => {
             activo: true,
         },
         resolver: zodResolver(compSchema)
-    })
+    });
+
+    // Función para limpiar el formulario
     const limpiar = () => {
-
-
         setValue('tipo', '');
         setValue('letra', '');
         setValue('prox_num', '');
@@ -64,41 +43,32 @@ const Cabecera = () => {
         setValue('porcentaje', '');
         setValue('prefijo', '');
         setValue('activo', '');
-
-    }
-
-  
-
-
-
-    const enviarForm = async (data: any) => {
-
-
-        data.activo = data.activo || data.activo == 'S' ? 'S' : 'N';
-
-
-        const response = await DbGrabarComp(data)
-
-        if (response.ok) {
-
-            // setAlerta({
-            //     message: 'Se guardo correctamente el comprobante',
-            //     type: "success",
-            //     alertVisible: true
-            // });
-        } else {
-            const errorMessage = await response.json();
-
-            // setAlerta({
-            //     message: errorMessage.message,
-            //     type: "error",
-            //     alertVisible: true
-            // });
-        }
     };
 
-   
-   
+    // Efecto para cargar los valores seleccionados en el formulario
+    useEffect(() => {
+        setValue('tipo', compSelect.tipo);
+        setValue('letra', compSelect.letra);
+        setValue('prox_num', compSelect.prox_num);
+        setValue('descrip', compSelect.descrip);
+        setValue('porcentaje', compSelect.porcentaje);
+        setValue('prefijo', compSelect.prefijo);
+        setValue('activo', compSelect.activo === "S" ? true : false);
+    }, [compSelect, setValue]);
+
+    // Función para manejar el envío del formulario (guardar)
+    const enviarForm = async (data: any) => {
+        data.activo = data.activo ? 'S' : 'N';
+
+        const response = await DbGrabarComp(data);
+
+        if (response.ok) {
+            console.log('Guardado correctamente');
+        } else {
+            const errorMessage = await response.json();
+            console.error('Error al guardar:', errorMessage.message);
+        }
+    };
 
 
     return (
@@ -112,7 +82,6 @@ const Cabecera = () => {
                 </div>
             </div>
             <div className="mt-5 md:mt-0 md:col-span-2">
-
                 <form action="#" method="POST" onSubmit={handleSubmit(data => enviarForm(data))}>
                     <div className="">
                         <div className="px-4 py-5 bg-white sm:p-6">
@@ -124,7 +93,6 @@ const Cabecera = () => {
                                         error={errors.tipo?.message}
                                         id="tipo"
                                         useForm={register("tipo")}
-
                                     />
                                 </div>
 
@@ -167,6 +135,7 @@ const Cabecera = () => {
                                         useForm={register("porcentaje")}
                                     />
                                 </div>
+
                                 <div className="col-span-6 sm:col-span-3">
                                     <InputCommon
                                         titulo={"Prefijo"}
@@ -187,17 +156,29 @@ const Cabecera = () => {
                                         watch={watch}
                                     />
                                 </div>
-
                             </div>
                         </div>
                     </div>
-                    <div className=' flex items-end justify-end w-full' >
-
-                        <div className='w-[150] mr-4'>
-                            <ButtonCommon type="button" onClick={limpiar} texto={<><PlusCircleIcon aria-hidden="true" className="mr-1.5 h-5 w-5" />Limpiar</>} />
+                    <div className="flex items-end justify-end w-full">
+                        <div className="w-[150] mr-4">
+                            <ButtonCommon
+                                type="button"
+                                onClick={limpiar}
+                                texto={<><PlusCircleIcon aria-hidden="true" className="mr-1.5 h-5 w-5" />Limpiar</>}
+                            />
                         </div>
-                        <div className='w-[150]'>
-                            <ButtonCommon type="submit" texto={<><PlusCircleIcon aria-hidden="true" className="mr-1.5 h-5 w-5" />Guardar</>} />
+                        <div className="w-[150] mr-4">
+                            <ButtonCommon
+                                type="submit"
+                                texto={<><PlusCircleIcon aria-hidden="true" className="mr-1.5 h-5 w-5" />Guardar</>}
+                            />
+                        </div>
+                        <div className="w-[150]">
+                            <ButtonCommon
+                                type="button"
+                                //onClick={eliminarComp}
+                                texto={<><TrashIcon aria-hidden="true" className="mr-1.5 h-5 w-5" />Eliminar</>}
+                            />
                         </div>
                     </div>
                 </form>

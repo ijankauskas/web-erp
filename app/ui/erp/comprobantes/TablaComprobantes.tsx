@@ -4,11 +4,15 @@ import { useEffect, useRef, useState } from "react";
 import { DbCompConsul } from "@/app/lib/data";
 import InputCommon from "../../inputCommon";
 import Alerta from "../alerta";
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
-export default function TablaComprobantes() {
+export default function TablaComprobantes({setCompSelect}:any) {
 
     const [comps, setComps] = useState([]);
-    const [columnWidths, setColumnWidths] = useState([150, 400, 100, 125, 125, 100,100,100]);
+    const [columnWidths, setColumnWidths] = useState([150, 400, 100, 125, 125, 100, 100, 100]);
+    const searchParams = useSearchParams();
+    const pathname = usePathname();
+    const { replace } = useRouter();
     const [error, setError] = useState({
         mostrar: false,
         mensaje: '',
@@ -30,16 +34,42 @@ export default function TablaComprobantes() {
 
     const consultarComp = async () => {
 
-        const respuesta = await DbCompConsul('','');
+        const respuesta = await DbCompConsul('', '');
         const data = await respuesta.json();
         if (respuesta.ok) {
             const CompMapeados = data.map((comp: any) => ({
-               
+
             }));
             setComps(data);
-            
+
         }
 
+
+    }
+
+
+    const cargarComprobante = async (comp: any) => {
+        const params = new URLSearchParams(searchParams);
+        let codigo: string | null = comp.tipo;
+        if (codigo) {
+            params.set('tipo', codigo);
+            replace(`${pathname}?${params.toString()}`);
+
+        } else {
+            params.delete('tipo');
+            replace(`${pathname}?${params.toString()}`);
+
+
+            return
+
+
+        }
+        const respuesta = await DbCompConsul('', codigo);
+        const data = await respuesta.json();
+        if (respuesta.ok) {
+
+            setCompSelect(data[0])
+        }
 
     }
 
@@ -68,7 +98,7 @@ export default function TablaComprobantes() {
     return (
         <>
             <div className="py-1 min-w-full sm:px-6 lg:px-8 grid grid-cols-1">
-                <div className="w-full col-span-1 h-[30.6vh] overflow-x-auto overflow-y-auto shadow-md sm:rounded-lg bg-white border-gray-200 border"> {/* Contenedor con ancho al 100% y overflow */}
+                <div className="w-full col-span-1 h-[83vh] overflow-x-auto overflow-y-auto shadow-md sm:rounded-lg bg-white border-gray-200 border"> {/* Contenedor con ancho al 100% y overflow */}
                     <table className="min-w-full w-full table-fixed">
                         <thead className="bg-gray-100">
                             <tr className="border-b">
@@ -121,37 +151,37 @@ export default function TablaComprobantes() {
                                         onMouseDown={(e) => handleMouseDown(6, e)}
                                     />
                                 </th>
-                                
+
                             </tr>
                         </thead>
                         <tbody className="bg-white divide-y divide-gray-200">
                             {comps?.map((comp: any, index: number) => (
-                                <tr key={index} className={`${comp.error ? 'bg-red-300' : ''}`}>
-                                    <td className="px-2 py-1 whitespace-nowrap text-sm font-medium text-gray-900 border-r border-gray-200 text-ellipsis overflow-hidden">
+                                <tr key={index} className="hover:bg-primary hover:text-white" onClick={() => cargarComprobante(comp)}>
+                                    <td className="px-2 py-1 whitespace-nowrap text-sm font-medium  border border-gray-200 text-ellipsis overflow-hidden">
                                         {comp.tipo}
                                     </td>
-                                    <td className="px-2 py-1 whitespace-nowrap text-sm text-gray-500 border-r border-gray-200 text-ellipsis overflow-hidden">
+                                    <td className="px-2 py-1 whitespace-nowrap text-sm  border border-gray-200 text-ellipsis overflow-hidden">
                                         {comp.descrip}
                                     </td>
-                                    <td className="px-2 py-1 whitespace-nowrap text-sm text-gray-500 border-r border-gray-200 text-ellipsis overflow-hidden">
-                                    {comp.letra}
+                                    <td className="px-2 py-1 whitespace-nowrap text-sm  border border-gray-200 text-ellipsis overflow-hidden">
+                                        {comp.letra}
                                     </td>
-                                    <td className="px-2 py-1 whitespace-nowrap text-sm text-gray-500 border-r border-gray-200 text-ellipsis overflow-hidden">
-                                    {comp.prox_num}
-                                    </td>
-
-                                    <td className="text-end px-3 py-1 whitespace-nowrap text-sm text-gray-500 border-r border-gray-200 text-ellipsis overflow-hidden">
-                                    {comp.porcentaje}
+                                    <td className="px-2 py-1 whitespace-nowrap text-sm  border border-gray-200 text-ellipsis overflow-hidden">
+                                        {comp.prox_num}
                                     </td>
 
-                                    <td className="text-end px-3 py-1 whitespace-nowrap text-sm text-gray-500 border-r border-gray-200 text-ellipsis overflow-hidden">
-                                    {comp.prefijo}
+                                    <td className="text-end px-3 py-1 whitespace-nowrap text-sm  border border-gray-200 text-ellipsis overflow-hidden">
+                                        {comp.porcentaje}
                                     </td>
 
-                                    <td className="text-end px-3 py-1 whitespace-nowrap text-sm text-gray-500 border-r border-gray-200 text-ellipsis overflow-hidden">
-                                    {comp.activo}
+                                    <td className="text-end px-3 py-1 whitespace-nowrap text-sm  border border-gray-200 text-ellipsis overflow-hidden">
+                                        {comp.prefijo}
                                     </td>
-                                    
+
+                                    <td className="text-end px-3 py-1 whitespace-nowrap text-sm  border border-gray-200 text-ellipsis overflow-hidden">
+                                        {comp.activo}
+                                    </td>
+
                                 </tr>
                             ))}
 
