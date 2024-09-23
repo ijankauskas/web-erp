@@ -12,10 +12,9 @@ import { MagnifyingGlassCircleIcon, MagnifyingGlassIcon } from "@heroicons/react
 export default function Cabecera({ register, setValue, clearErrors, errors, mostrarErrorAlerta, getValues, AbrirClientesConsul }: any) {
     const [num_cliente, setNum_cliente] = useState();
     const [clientes, setClientes] = useState<{}>([]);
-    const [monedas, setMonedas] = useState<{}>([]);
+    const [monedas, setMonedas] = useState([]);
     const [moneDefault, setMoneDefault] = useState('PES');
-    const [comp, setComp] = useState<{}>([]);
-
+    const [comp, setComp] = useState([]);
 
     useEffect(() => {
         cargarComponente()
@@ -35,20 +34,27 @@ export default function Cabecera({ register, setValue, clearErrors, errors, most
     }
 
     const seleccionarMoneSelec = (moneda: any) => {
+        const mone_coti: any = monedas.filter((mone: any) => mone.id == moneda);
+        if (mone_coti.length > 0) {
+            setValue('mone_coti', mone_coti[0].mone_coti);
+        }
         setValue('mone', moneda);
         clearErrors('mone');
     }
-    const seleccionarCompSelec = (comp: any) => {
-        setValue('tipo', comp);
+
+    const seleccionarCompSelec = (compSelect: any) => {
+        const prox_num: any = comp.filter((comp: any) => comp.id == compSelect);
+        if (prox_num.length > 0) {
+            setValue('numero', prox_num[0].prox_num);
+        }
+        setValue('tipo', compSelect);
         clearErrors('tipo');
     }
 
 
     const consultarClientesPorCodigo = async (cliente: any) => {
-
         const respuesta = await DbConsultarCliente(cliente.target.value);
         const data = await respuesta.json();
-        console.log(data)
         if (respuesta.ok) {
             setClientes([{ id: data.codigo, name: data.razon }])
         }
@@ -57,7 +63,7 @@ export default function Cabecera({ register, setValue, clearErrors, errors, most
     }
 
     const consutlarClientes = async (param?: any) => {
-        const respuesta = await DbConsultarCliente(null, 'S', param, 'razon', 'asc', '1', '50', 'S');
+        const respuesta = await DbConsultarCliente(null, 'S', param, 'razon', 'asc', 1, '50', 'S');
         const data = await respuesta.json();
         if (respuesta.ok) {
             const clientesMapeados = data.map((cliente: any) => ({
@@ -69,37 +75,30 @@ export default function Cabecera({ register, setValue, clearErrors, errors, most
     }
 
     const consultarMonedas = async () => {
-
         const respuesta = await DbMonedasConsul();
         const data = await respuesta.json();
         if (respuesta.ok) {
             const MonedasMapeados = data.map((mone: any) => ({
                 id: mone.mone || '',
                 name: mone.mone || '',
+                mone_coti: mone.mone_coti || 0,
             }));
             setMonedas(MonedasMapeados);
         }
-
-
     }
 
     const consultarComp = async () => {
-
         const respuesta = await DbCompConsul('S', 'F');
         const data = await respuesta.json();
         if (respuesta.ok) {
             const CompMapeados = data.map((comp: any) => ({
                 id: comp.tipo || '',
                 name: comp.descrip || '',
+                prox_num: comp.prox_num || 1,
             }));
             setComp(CompMapeados);
         }
-
-
     }
-
-
-
 
     return (
         <>
@@ -153,7 +152,9 @@ export default function Cabecera({ register, setValue, clearErrors, errors, most
                             titulo={"Cotizacion"}
                             tipo={'number'}
                             useForm={register("mone_coti")}
-                            error={errors.mone_coti?.message} />
+                            error={errors.mone_coti?.message} 
+                            desactivado={getValues('mone')=='PES'}
+                            />
                     </div>
                 </div>
                 <div className="col-span-2 sm:col-span-3 md:col-span-2 flex items-center">

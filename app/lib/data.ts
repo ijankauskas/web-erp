@@ -97,7 +97,7 @@ export async function DbConsultarCliente(
     razon?: string | null,
     columnaOrden?: string | null,
     dir?: string | null,
-    page?: string | null,
+    page?: number | null,
     limit?: string | null,
     activos?: string | null,
 ) {
