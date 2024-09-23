@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useRef, useState } from 'react';
+import { Suspense, useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { clienteSchema } from '@/app/validaciones/cliente';
@@ -9,11 +9,10 @@ import DatosContacto from '@/app/ui/erp/alta_cliente/datosContacto';
 import Tabla from '@/app/ui/erp/alta_cliente/Tabla';
 import HeaderCliente from '@/app/ui/erp/alta_cliente/HeaderCliente';
 import CheckCliente from '@/app/ui/erp/alta_cliente/CheckCliente';
-import { usePathname, useSearchParams, useRouter } from 'next/navigation';
 import { DbBorrarCliente, DbConsultarCliente, DbGrabartarCliente } from '@/app/lib/data';
 import DismissibleAlert from '@/app/ui/DismissAlerta';
 import { Tabs, Tab, Chip } from "@nextui-org/react";
-import { CheckIcon, ClipboardDocumentCheckIcon, ClipboardIcon, CurrencyDollarIcon } from '@heroicons/react/24/outline';
+import { CheckIcon, ClipboardIcon, CurrencyDollarIcon } from '@heroicons/react/24/outline';
 
 type Inputs = {
     codigo: number,
@@ -33,30 +32,27 @@ type Inputs = {
     activo: any
 }
 
-export default function alta_cliente() {
+export default function Alta_cliente() {
     const [cargando, setCargando] = useState(false)
-    const searchParams = useSearchParams();
-    const pathname = usePathname();
-    const { replace } = useRouter();
 
     const eliminarCliente = async () => {
         let cliente = { codigo: getValues("codigo") }
         const response = await DbBorrarCliente(cliente);
         const mensaje = await response.json();
         if (response.ok) {
-          setAlerta({
-            message: mensaje.message,
-            type: "success",
-            alertVisible: true
-          });
+            setAlerta({
+                message: mensaje.message,
+                type: "success",
+                alertVisible: true
+            });
         } else {
-          setAlerta({
-            message: mensaje.message,
-            type: "error",
-            alertVisible: true
-          });
+            setAlerta({
+                message: mensaje.message,
+                type: "error",
+                alertVisible: true
+            });
         }
-      };
+    };
 
     const [alerta, setAlerta] = useState({
         message: "",
@@ -92,30 +88,8 @@ export default function alta_cliente() {
         resolver: zodResolver(clienteSchema)
     })
 
-    useEffect(() => {
-        const params = new URLSearchParams(searchParams);
-        let codigo: string | null = params.get('codigo');
-        if (codigo != '' && codigo != null) {
-            setValue('codigo', parseFloat(codigo));
-            consultarCliente();
-        }
-    }, []);
-
     const consultarCliente = async () => {
-        const params = new URLSearchParams(searchParams);
         let codigo: number | null = getValues('codigo');
-        //para que no consuma al limpiar la pantalla        
-        if (codigo && codigo != 0) {
-            params.set('codigo', codigo.toString());
-            replace(`${pathname}?${params.toString()}`);
-            clearErrors()
-        } else {
-            params.delete('codigo');
-            replace(`${pathname}?${params.toString()}`);
-            clearErrors();
-            limpiar();
-            return
-        }
 
         if (cargando) {
             return
@@ -181,7 +155,7 @@ export default function alta_cliente() {
 
     const limpiar = () => {
 
-       
+
         setValue('cuit', '');
         setValue('cate_iva', '');
         setValue('razon', '');
@@ -202,106 +176,108 @@ export default function alta_cliente() {
 
         setValue('codigo', 0);
         limpiar()
-      }
+    }
 
 
     return (
-        <div className="max-w-screen-2xl mx-auto py-0 px-4 sm:px-6 lg:px-8 bg-white">
-            <HeaderCliente />
-            <div className='relative '>
-                <form action="#" method="POST" onSubmit={handleSubmit(data => enviarForm(data))}>
-                    <div className="flex w-full flex-col">
-                        <Tabs
-                            aria-label="Options"
-                            color={"primary"}
-                            variant="underlined"
-                            classNames={{
-                                tabList: "gap-6 w-full relative rounded-none p-0 border-b border-divider",
-                                cursor: "w-full bg-primary",
-                                tab: "max-w-fit px-0 h-12",
-                                tabContent: "group-data-[selected=true]:text-primary"
-                            }}
-                        >
-                            <Tab
-                                key="photos"
-                                title={
-                                    <div className="flex items-center space-x-2">
-                                        <ClipboardIcon className="h-6 w-6" />
-                                        <span>Principal</span>
-                                    </div>
-                                }
+        <Suspense fallback={<div>Loading...</div>}>
+            <div className="max-w-screen-2xl mx-auto py-0 px-4 sm:px-6 lg:px-8 bg-white">
+                <HeaderCliente />
+                <div className='relative '>
+                    <form action="#" method="POST" onSubmit={handleSubmit(data => enviarForm(data))}>
+                        <div className="flex w-full flex-col">
+                            <Tabs
+                                aria-label="Options"
+                                color={"primary"}
+                                variant="underlined"
+                                classNames={{
+                                    tabList: "gap-6 w-full relative rounded-none p-0 border-b border-divider",
+                                    cursor: "w-full bg-primary",
+                                    tab: "max-w-fit px-0 h-12",
+                                    tabContent: "group-data-[selected=true]:text-primary"
+                                }}
                             >
-                                <Principal
-                                    register={register}
-                                    setValue={setValue}
-                                    errors={errors}
-                                    clearErrors={clearErrors}
-                                    consultarCliente={consultarCliente}
-                                    getValues={getValues} />
-                                <DatosContacto
-                                    register={register}
-                                    setValue={setValue}
-                                    errors={errors}
-                                    clearErrors={clearErrors} />
-                                <CheckCliente
-                                    register={register}
-                                    setValue={setValue}
-                                    errors={errors}
-                                    clearErrors={clearErrors}
-                                    getValues={getValues}
-                                    watch={watch}
-                                />
-                            </Tab>
-                            <Tab
-                                key="music"
-                                title={
-                                    <div className="flex items-center space-x-2">
-                                        <CurrencyDollarIcon className="h-6 w-6" />
-                                        <span>Comprobantes</span>
-                                        <Chip size="sm" variant="faded">230</Chip>
-                                    </div>
-                                }
+                                <Tab
+                                    key="photos"
+                                    title={
+                                        <div className="flex items-center space-x-2">
+                                            <ClipboardIcon className="h-6 w-6" />
+                                            <span>Principal</span>
+                                        </div>
+                                    }
+                                >
+                                    <Principal
+                                        register={register}
+                                        setValue={setValue}
+                                        errors={errors}
+                                        clearErrors={clearErrors}
+                                        consultarCliente={consultarCliente}
+                                        getValues={getValues} />
+                                    <DatosContacto
+                                        register={register}
+                                        setValue={setValue}
+                                        errors={errors}
+                                        clearErrors={clearErrors} />
+                                    <CheckCliente
+                                        register={register}
+                                        setValue={setValue}
+                                        errors={errors}
+                                        clearErrors={clearErrors}
+                                        getValues={getValues}
+                                        watch={watch}
+                                    />
+                                </Tab>
+                                <Tab
+                                    key="music"
+                                    title={
+                                        <div className="flex items-center space-x-2">
+                                            <CurrencyDollarIcon className="h-6 w-6" />
+                                            <span>Comprobantes</span>
+                                            <Chip size="sm" variant="faded">230</Chip>
+                                        </div>
+                                    }
+                                >
+                                    <Tabla cliente={getValues('codigo')} />
+                                </Tab>
+                            </Tabs>
+                        </div>
+
+                        <div className="flex items-center justify-end px-4 py-3 bg-gray-50 text-right sm:px-6 space-x-4">
+                            <button
+                                type="button"
+                                onClick={btnLimpiar}
+                                className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-gray-600 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
+                                Limpiar
+                            </button>
+
+                            <button
+                                type="submit"
+                                className="inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                             >
-                                <Tabla cliente={getValues('codigo')} />
-                            </Tab>
-                        </Tabs>
-                    </div>
+                                <CheckIcon aria-hidden="true" className="-ml-0.5 mr-1.5 h-5 w-5" />
+                                Guardar
+                            </button>
 
-                    <div className="flex items-center justify-end px-4 py-3 bg-gray-50 text-right sm:px-6 space-x-4">
-                        <button
-                            type="button"
-                            onClick={btnLimpiar}
-                            className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-gray-600 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
-                            Limpiar
-                        </button>
-
-                        <button
-                            type="submit"
-                            className="inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                        >
-                            <CheckIcon aria-hidden="true" className="-ml-0.5 mr-1.5 h-5 w-5" />
-                            Guardar
-                        </button>
-
-                        <button
-                            type="button"
-                            onClick={eliminarCliente}
-                            className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
-                            Eliminar
-                        </button>
-                    </div>
+                            <button
+                                type="button"
+                                onClick={eliminarCliente}
+                                className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+                                Eliminar
+                            </button>
+                        </div>
 
 
-                </form>
+                    </form>
 
+                </div>
+                {alerta.alertVisible && (
+                    <DismissibleAlert
+                        message={alerta.message}
+                        type={alerta.type}
+                        onClose={closeAlertaDismiss}
+                    />
+                )}
             </div>
-            {alerta.alertVisible && (
-                <DismissibleAlert
-                    message={alerta.message}
-                    type={alerta.type}
-                    onClose={closeAlertaDismiss}
-                />
-            )}
-        </div>
+        </Suspense>
     )
 }

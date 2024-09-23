@@ -1,12 +1,11 @@
 "use client"
 
 import DismissibleAlert from "@/app/ui/DismissAlerta"
-import ButtonCommon from "@/app/ui/erp/ButtonCommon"
 import Cabecera from "@/app/ui/erp/comprobantes/Cabecera"
 import TablaComprobantes from "@/app/ui/erp/comprobantes/TablaComprobantes"
 import { ClipboardIcon, CurrencyDollarIcon } from "@heroicons/react/24/outline"
 import { Tab, Tabs } from "@nextui-org/react"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 
 
 export default function Comprobantes() {

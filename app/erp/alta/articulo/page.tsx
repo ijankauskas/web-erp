@@ -1,5 +1,5 @@
 "use client"
-import { useEffect, useRef, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { articuloSchema } from '../../../validaciones/articulo';
@@ -8,11 +8,8 @@ import FichaArticulo from '@/app/ui/erp/alta_articulo/FichaArticulo';
 import PreciosArticulo from '@/app/ui/erp/alta_articulo/PreciosArticulo';
 import CheckArticulo from '@/app/ui/erp/alta_articulo/CheckArticulo';
 import Componentes from '@/app/ui/erp/alta_articulo/Componentes';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { DbBorrarArticulo, DbConsultarArticulo, DbGrabartarArticulo } from '@/app/lib/data';
 import Alerta from '@/app/ui/erp/alerta';
-import ButtonCommon from '@/app/ui/erp/ButtonCommon';
-import LoadingBar, { LoadingBarRef } from 'react-top-loading-bar';
 import DismissibleAlert from '@/app/ui/DismissAlerta';
 import HeaderArticulo from '@/app/ui/erp/alta_articulo/HeaderArticulo';
 import { CheckIcon } from '@heroicons/react/24/outline';
@@ -48,21 +45,13 @@ type Inputs = {
 }
 
 
-
 const tabs = [
   { name: 'Ficha', id: '0', current: true },
   { name: 'Componentes', id: '1', current: false },
 ];
 
-export default function alta_articulo() {
+export default function Alta_articulo() {
   const [cargando, setCargando] = useState(false);
-  const ref = useRef<LoadingBarRef | null>(null);
-
-  useEffect(() => {
-    if (ref.current) {
-      ref.current.complete();
-    }
-  }, []);
 
   const [alerta, setAlerta] = useState({
     message: "",
@@ -104,9 +93,6 @@ export default function alta_articulo() {
     }
   };
 
-  const searchParams = useSearchParams();
-  const pathname = usePathname();
-  const { replace } = useRouter();
 
   const [tab, setTab] = useState(0)
 
@@ -178,18 +164,13 @@ export default function alta_articulo() {
     }
 
     data.activo = data.activo || data.activo == 'S' ? 'S' : 'N';
-
     data.usa_compo = data.usa_compo || data.usa_compo == 'S' ? 'S' : 'N';
-
     data.sin_stock = data.sin_stock || data.sin_stock == 'S' ? 'S' : 'N';
 
     setCargando(true);
-    ref.current?.continuousStart();
-
     const response = await DbGrabartarArticulo(data)
 
     if (response.ok) {
-      ref.current?.complete();
       setCargando(false);
       setAlerta({
         message: 'Se guardo correctamente el articulo',
@@ -198,7 +179,6 @@ export default function alta_articulo() {
       });
     } else {
       const errorMessage = await response.json();
-      ref.current?.complete();
       setCargando(false);
       setAlerta({
         message: errorMessage.message,
@@ -239,26 +219,12 @@ export default function alta_articulo() {
   }, [errors]);
 
   const consultarArticulo = async () => {
-    const params = new URLSearchParams(searchParams);
     let codigo: string | null = getValues('codigo');
-    if (codigo) {
-      params.set('codigo', codigo);
-      replace(`${pathname}?${params.toString()}`);
-      clearErrors()
-    } else {
-      params.delete('codigo');
-      replace(`${pathname}?${params.toString()}`);
-      clearErrors();
-      limpiar();
-
-      return
-    }
 
     if (cargando) {
       return
     }
     setCargando(true);
-    ref.current?.continuousStart();
 
     const respuesta = await DbConsultarArticulo(codigo);
     const data = await respuesta.json();
@@ -280,7 +246,6 @@ export default function alta_articulo() {
       data.activo == 'S' ? setValue('activo', true) : setValue('activo', false);
       setArticulosCompo(data.componentes)
       setCargando(false);
-      ref.current?.complete();
 
       data.usa_compo == 'S' ? setValue('usa_compo', true) : setValue('usa_compo', false);
       data.sin_stock == 'S' ? setValue('sin_stock', true) : setValue('sin_stock', false);
@@ -293,7 +258,6 @@ export default function alta_articulo() {
       limpiar()
       setCargando(false);
 
-      ref.current?.complete();
       setAlerta({
         message: data.message,
         type: "error",
@@ -333,104 +297,93 @@ export default function alta_articulo() {
   }
 
 
-  useEffect(() => {
-    const params = new URLSearchParams(searchParams);
-    let codigo: string | null = params.get('codigo');
-    if (codigo != '' && codigo != null) {
-      setValue('codigo', codigo);
-      consultarArticulo();
-    }
-  }, []);
-
-
   return (
-    <div className="max-w-7xl mx-auto py-0 px-4 sm:px-6 lg:px-8 bg-white">
-      <div>
-        <LoadingBar color='rgb(99 102 241)' ref={ref} />
-      </div>
-      <HeaderArticulo />
-      <div className='relative '>
-        <TabsArticulo tabs={tabs} seleccionarTab={seleccionarTab} tab={tab} />
-        <form action="#" method="POST" onSubmit={handleSubmit(data => enviarForm(data))}>
-          {tab == 0 ?
-            <>
-              <FichaArticulo
-                register={register}
-                setValue={setValue}
-                errors={errors}
-                clearErrors={clearErrors}
-                consultarArticulo={consultarArticulo}
-                getValues={getValues}
-              />
-              <PreciosArticulo
-                register={register}
-                setValue={setValue}
-                errors={errors}
-                clearErrors={clearErrors}
-                getValues={getValues}
-              />
-              <CheckArticulo
-                register={register}
-                setValue={setValue}
-                errors={errors}
-                clearErrors={clearErrors}
-                getValues={getValues}
-                watch={watch}
-              />
-            </> :
-            tab == 1 ?
+    <Suspense fallback={<div>Loading...</div>}>
+      <div className="max-w-7xl mx-auto py-0 px-4 sm:px-6 lg:px-8 bg-white">
+        <HeaderArticulo />
+        <div className='relative '>
+          <TabsArticulo tabs={tabs} seleccionarTab={seleccionarTab} tab={tab} />
+          <form action="#" method="POST" onSubmit={handleSubmit(data => enviarForm(data))}>
+            {tab == 0 ?
               <>
-                <Componentes
+                <FichaArticulo
                   register={register}
                   setValue={setValue}
                   errors={errors}
                   clearErrors={clearErrors}
-                  articulosCompo={articulosCompo}
-                  setArticulosCompo={setArticulosCompo}
+                  consultarArticulo={consultarArticulo}
                   getValues={getValues}
                 />
+                <PreciosArticulo
+                  register={register}
+                  setValue={setValue}
+                  errors={errors}
+                  clearErrors={clearErrors}
+                  getValues={getValues}
+                />
+                <CheckArticulo
+                  register={register}
+                  setValue={setValue}
+                  errors={errors}
+                  clearErrors={clearErrors}
+                  getValues={getValues}
+                  watch={watch}
+                />
               </> :
-              'Posición no definida.'}
-          <div className="flex items-center justify-end px-4 py-3 bg-gray-50 text-right sm:px-6 space-x-4">
-            <button
-              type="button"
-              onClick={btnLimpiar}
-              className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-gray-600 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
-              Limpiar
-            </button>
+              tab == 1 ?
+                <>
+                  <Componentes
+                    register={register}
+                    setValue={setValue}
+                    errors={errors}
+                    clearErrors={clearErrors}
+                    articulosCompo={articulosCompo}
+                    setArticulosCompo={setArticulosCompo}
+                    getValues={getValues}
+                  />
+                </> :
+                'Posición no definida.'}
+            <div className="flex items-center justify-end px-4 py-3 bg-gray-50 text-right sm:px-6 space-x-4">
+              <button
+                type="button"
+                onClick={btnLimpiar}
+                className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-gray-600 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
+                Limpiar
+              </button>
 
-            <button
-              type="submit"
-              className="inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-            >
-              <CheckIcon aria-hidden="true" className="-ml-0.5 mr-1.5 h-5 w-5" />
-              Guardar
-            </button>
+              <button
+                type="submit"
+                className="inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+              >
+                <CheckIcon aria-hidden="true" className="-ml-0.5 mr-1.5 h-5 w-5" />
+                Guardar
+              </button>
 
-            <button
-              type="button"
-              onClick={eliminarArticulo}
-              className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
-              Eliminar
-            </button>
-          </div>
+              <button
+                type="button"
+                onClick={eliminarArticulo}
+                className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+                Eliminar
+              </button>
+            </div>
 
-        </form>
-        <Alerta
-          abrir={error.mostrar}
-          cerrar={cerrarAlerta}
-          titulo={error.titulo}
-          texto={error.mensaje}
-        />
-
-        {alerta.alertVisible && (
-          <DismissibleAlert
-            message={alerta.message}
-            type={alerta.type}
-            onClose={closeAlertaDismiss}
+          </form>
+          <Alerta
+            abrir={error.mostrar}
+            cerrar={cerrarAlerta}
+            titulo={error.titulo}
+            texto={error.mensaje}
           />
-        )}
+
+          {alerta.alertVisible && (
+            <DismissibleAlert
+              message={alerta.message}
+              type={alerta.type}
+              onClose={closeAlertaDismiss}
+            />
+          )}
+        </div>
       </div>
-    </div>
+    </Suspense>
   )
 }

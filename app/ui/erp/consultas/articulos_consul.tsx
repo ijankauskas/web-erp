@@ -220,7 +220,7 @@ export default function ArticulosConsul({ setArticulo, open, setOpen }: any) {
                                         </thead>
                                         <tbody className="bg-white divide-y divide-gray-200">
                                             {articulos?.map((articulo: any, index: number) => (
-                                                <tr onClick={() => agregarArticulo({ articulo })} className="border-b text-gray-900 hover:text-gray-100 hover:bg-indigo-500 hover:cursor-pointer ">
+                                                <tr key={index} onClick={() => agregarArticulo({ articulo })} className="border-b text-gray-900 hover:text-gray-100 hover:bg-indigo-500 hover:cursor-pointer ">
                                                     <td className="px-4 py-2 whitespace-nowrap text-sm border border-gray-200">
                                                         {articulo.codigo}
                                                     </td>

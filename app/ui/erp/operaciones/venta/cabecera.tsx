@@ -9,7 +9,7 @@ import ClientesConsul from '@/app/ui/erp/consultas/Clientes_consul';
 
 
 
-export default function Cabecera({ register, setValue, clearErrors, errors, mostrarErrorAlerta, getValues }: any) {
+export default function Cabecera({ register, setValue, clearErrors, errors, mostrarErrorAlerta, getValues, setMensaje }: any) {
     const [num_cliente, setNum_cliente] = useState();
     const [clientes, setClientes] = useState<{}>([]);
     const [monedas, setMonedas] = useState([]);
@@ -44,7 +44,7 @@ export default function Cabecera({ register, setValue, clearErrors, errors, most
     }
 
     const seleccionarCompSelec = (compSelect: any) => {
-        const prox_num: any = comp.filter((comp: any) => comp.id == compSelect);        
+        const prox_num: any = comp.filter((comp: any) => comp.id == compSelect);
         if (prox_num.length > 0) {
             setValue('numero', prox_num[0].prox_num);
         }
@@ -52,12 +52,18 @@ export default function Cabecera({ register, setValue, clearErrors, errors, most
         clearErrors('tipo');
     }
 
-
     const consultarClientesPorCodigo = async (cliente: any) => {
         const respuesta = await DbConsultarCliente(cliente.target.value);
         const data = await respuesta.json();
         if (respuesta.ok) {
             setClientes([{ id: data.codigo, name: data.razon }])
+        } else {
+            setMensaje({
+                mostrar: true,
+                mensaje: data.message,
+                titulo: 'Oops...',
+                tipo_aletar: 'error',
+            });
         }
         setNum_cliente(cliente.target.value)
         setValue('num_cliente', cliente.target.value);
@@ -105,12 +111,11 @@ export default function Cabecera({ register, setValue, clearErrors, errors, most
         setAbrirClientesConsul(!abrirClientesConsul)
     }
 
-    const setCliente = (cliente: any) => {        
+    const setCliente = (cliente: any) => {
         setClientes([{ id: cliente.codigo, name: cliente.razon }])
         setNum_cliente(cliente.codigo);
         setValue('num_cliente', cliente.codigo);
     }
-
 
     return (
         <>
@@ -205,7 +210,7 @@ export default function Cabecera({ register, setValue, clearErrors, errors, most
                     </div>
                 </div>
             </div>
-            
+
             <ClientesConsul
                 setCliente={setCliente}
                 open={abrirClientesConsul}

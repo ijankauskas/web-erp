@@ -32,7 +32,7 @@ export default function ClientesConsul({ setCliente, open, setOpen }: any) {
     }
 
     const [clientes, setClientes] = useState<[]>([]);
-    const [numCliente, setNumCliente] = useState(null);
+    const [numCliente, setNumCliente] = useState<any>(null);
 
     useEffect(() => {
         cargarComponente();
@@ -245,7 +245,7 @@ export default function ClientesConsul({ setCliente, open, setOpen }: any) {
                                         </thead>
                                         <tbody className="bg-white divide-y divide-gray-200">
                                             {clientes?.map((cliente: any, index: number) => (
-                                                <tr onClick={() => seleccionarCliente(cliente)} className="border-b text-gray-900 hover:text-gray-100 hover:bg-indigo-500 hover:cursor-pointer ">
+                                                <tr key={index} onClick={() => seleccionarCliente(cliente)} className="border-b text-gray-900 hover:text-gray-100 hover:bg-indigo-500 hover:cursor-pointer ">
                                                     <td className="px-4 py-2 whitespace-nowrap text-sm border border-gray-200">
                                                         {cliente.codigo}
                                                     </td>

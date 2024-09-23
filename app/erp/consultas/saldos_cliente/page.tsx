@@ -10,7 +10,7 @@ import React, { useState, useRef, Suspense } from 'react';
 const ConsultaSaldos = () => {
     const [dividerPosition, setDividerPosition] = useState(25);
     const [isLeftPanelVisible, setIsLeftPanelVisible] = useState(true);
-    const [clienteSeleccionado, setClienteSeleccionado] = useState('');
+    const [clienteSeleccionado, setClienteSeleccionado] = useState<any>('');
     const [busqueda, setBusqueda] = useState('');
     const [pagina, setPagina] = useState(1);
     const [paginaComps, setPaginaComps] = useState(1);

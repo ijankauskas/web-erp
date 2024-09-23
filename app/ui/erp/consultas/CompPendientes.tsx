@@ -190,7 +190,7 @@ export default function CompPendiente({ cliente, setComprobante, open, setOpen }
                                         </thead>
                                         <tbody className="bg-white divide-y divide-gray-200">
                                             {compEmitidos?.map((comp: any, index: number) => (
-                                                <tr className="border-b text-gray-900 hover:text-gray-100 hover:bg-indigo-500 hover:cursor-pointer ">
+                                                <tr key={index} className="border-b text-gray-900 hover:text-gray-100 hover:bg-indigo-500 hover:cursor-pointer ">
                                                     <td className="px-4 py-2 whitespace-nowrap text-sm border-r border-gray-200">
                                                         {comp.num}
                                                     </td>
