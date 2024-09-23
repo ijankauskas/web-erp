@@ -8,7 +8,7 @@ import InputCommon from '../../inputCommon';
 import CheckComp from './CheckComp';
 import ButtonCommon from '../ButtonCommon';
 import { PlusCircleIcon, TrashIcon } from '@heroicons/react/24/outline'; // Importamos el icono de eliminar
-import { DbGrabarComp } from '@/app/lib/data';
+import { DbBorrarComp, DbGrabarComp } from '@/app/lib/data';
 
 type Inputs = {
     tipo: string,
@@ -20,7 +20,7 @@ type Inputs = {
     activo: any,
 }
 
-const Cabecera = ({ compSelect }: any) => {
+const Cabecera = ({ compSelect, setAlerta }: any) => {
     const { register, handleSubmit, formState: { errors }, setValue, clearErrors, getValues, watch } = useForm<Inputs>({
         defaultValues: {
             tipo: '',
@@ -69,7 +69,24 @@ const Cabecera = ({ compSelect }: any) => {
             console.error('Error al guardar:', errorMessage.message);
         }
     };
+    const eliminarComp = async () => {
 
+        const response = await DbBorrarComp(compSelect);
+        const mensaje = await response.json();
+        if (response.ok) {
+            setAlerta({
+                message: mensaje.message,
+                type: "success",
+                alertVisible: true
+            });
+        } else {
+            setAlerta({
+                message: mensaje.message,
+                type: "error",
+                alertVisible: true
+            });
+        }
+    };
 
     return (
         <div className="md:grid md:grid-cols-3 md:gap-6 pt-4">
@@ -176,7 +193,7 @@ const Cabecera = ({ compSelect }: any) => {
                         <div className="w-[150]">
                             <ButtonCommon
                                 type="button"
-                                //onClick={eliminarComp}
+                                onClick={eliminarComp}
                                 texto={<><TrashIcon aria-hidden="true" className="mr-1.5 h-5 w-5" />Eliminar</>}
                             />
                         </div>

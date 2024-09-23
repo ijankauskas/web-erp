@@ -138,7 +138,7 @@ export default function TablaComprobantes({setCompSelect}:any) {
                                     />
                                 </th>
                                 <th style={{ width: columnWidths[5] }} scope="col" className="relative w-[125px] px-3 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider border-r border-gray-200 text-ellipsis overflow-hidden">
-                                    Prefjio
+                                    Prefijo
                                     <div
                                         className="absolute right-0 top-0 w-1 h-full cursor-col-resize hover:bg-gray-300"
                                         onMouseDown={(e) => handleMouseDown(5, e)}

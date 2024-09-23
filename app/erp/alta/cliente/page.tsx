@@ -10,10 +10,10 @@ import Tabla from '@/app/ui/erp/alta_cliente/Tabla';
 import HeaderCliente from '@/app/ui/erp/alta_cliente/HeaderCliente';
 import CheckCliente from '@/app/ui/erp/alta_cliente/CheckCliente';
 import { usePathname, useSearchParams, useRouter } from 'next/navigation';
-import { DbConsultarCliente, DbGrabartarCliente } from '@/app/lib/data';
+import { DbBorrarCliente, DbConsultarCliente, DbGrabartarCliente } from '@/app/lib/data';
 import DismissibleAlert from '@/app/ui/DismissAlerta';
 import { Tabs, Tab, Chip } from "@nextui-org/react";
-import { ClipboardDocumentCheckIcon, ClipboardIcon, CurrencyDollarIcon } from '@heroicons/react/24/outline';
+import { CheckIcon, ClipboardDocumentCheckIcon, ClipboardIcon, CurrencyDollarIcon } from '@heroicons/react/24/outline';
 
 type Inputs = {
     codigo: number,
@@ -38,6 +38,25 @@ export default function alta_cliente() {
     const searchParams = useSearchParams();
     const pathname = usePathname();
     const { replace } = useRouter();
+
+    const eliminarCliente = async () => {
+        let cliente = { codigo: getValues("codigo") }
+        const response = await DbBorrarCliente(cliente);
+        const mensaje = await response.json();
+        if (response.ok) {
+          setAlerta({
+            message: mensaje.message,
+            type: "success",
+            alertVisible: true
+          });
+        } else {
+          setAlerta({
+            message: mensaje.message,
+            type: "error",
+            alertVisible: true
+          });
+        }
+      };
 
     const [alerta, setAlerta] = useState({
         message: "",
@@ -162,7 +181,7 @@ export default function alta_cliente() {
 
     const limpiar = () => {
 
-        setValue('codigo', 0);
+       
         setValue('cuit', '');
         setValue('cate_iva', '');
         setValue('razon', '');
@@ -178,6 +197,12 @@ export default function alta_cliente() {
         setValue('observaciones', '');
         setValue('activo', true);
     }
+
+    const btnLimpiar = () => {
+
+        setValue('codigo', 0);
+        limpiar()
+      }
 
 
     return (
@@ -201,7 +226,7 @@ export default function alta_cliente() {
                                 key="photos"
                                 title={
                                     <div className="flex items-center space-x-2">
-                                        <ClipboardIcon className="h-6 w-6"/>
+                                        <ClipboardIcon className="h-6 w-6" />
                                         <span>Principal</span>
                                     </div>
                                 }
@@ -231,7 +256,7 @@ export default function alta_cliente() {
                                 key="music"
                                 title={
                                     <div className="flex items-center space-x-2">
-                                        <CurrencyDollarIcon className="h-6 w-6"/>
+                                        <CurrencyDollarIcon className="h-6 w-6" />
                                         <span>Comprobantes</span>
                                         <Chip size="sm" variant="faded">230</Chip>
                                     </div>
@@ -242,19 +267,30 @@ export default function alta_cliente() {
                         </Tabs>
                     </div>
 
-                    <div className="px-4 py-3 bg-white text-right sm:px-6">
+                    <div className="flex items-center justify-end px-4 py-3 bg-gray-50 text-right sm:px-6 space-x-4">
                         <button
                             type="button"
-                            onClick={limpiar}
-                            className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-gray-600 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 mr-2">
+                            onClick={btnLimpiar}
+                            className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-gray-600 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
                             Limpiar
                         </button>
+
                         <button
                             type="submit"
-                            className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" >
+                            className="inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                        >
+                            <CheckIcon aria-hidden="true" className="-ml-0.5 mr-1.5 h-5 w-5" />
                             Guardar
                         </button>
+
+                        <button
+                            type="button"
+                            onClick={eliminarCliente}
+                            className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+                            Eliminar
+                        </button>
                     </div>
+
 
                 </form>
 
