@@ -23,7 +23,7 @@ type Inputs = {
     razonProveedor: string,
 }
 
-export default function alta_articulo() {
+export default function Alta_articulo() {
     const [cargando, setCargando] = useState(false);
     const [isInitialMount, setIsInitialMount] = useState(true);
     const [abrirCabecera, setAbrirCabecera] = useState(false);
@@ -68,13 +68,6 @@ export default function alta_articulo() {
                 icono: 'error-icon',
             });
     }
-
-    useEffect(() => {
-        if (isInitialMount) {
-            setIsInitialMount(false);
-            return;
-        }
-    });
 
     const cerrarAlerta = () => {
         setError({

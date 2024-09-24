@@ -219,7 +219,7 @@ export default function TablaArticulos({ register, articulos, setAlerta, setArti
                                 </tr>
                             ))}
                             <tr className="border-b">
-                                <td className="px-2 py-1 whitespace-nowrap text-sm font-medium text-gray-900 border-r border-gray-200">
+                                <td className="px-2 py-1 whitespace-nowrap text-sm font-medium text-gray-900 border border-gray-200">
                                     <InputCommon
                                         tipo={'text'}
                                         id="codigo"
@@ -229,10 +229,10 @@ export default function TablaArticulos({ register, articulos, setAlerta, setArti
                                         paddingY={'py-0.5'}
                                     />
                                 </td>
-                                <td className="px-2 py-1 whitespace-nowrap text-sm text-gray-500 border-r border-gray-200">
+                                <td className="px-2 py-1 whitespace-nowrap text-sm text-gray-500 border border-gray-200">
 
                                 </td>
-                                <td className="px-2 py-1 whitespace-nowrap text-sm text-gray-500 border-r border-gray-200">
+                                <td className="px-2 py-1 whitespace-nowrap text-sm text-gray-500 border border-gray-200">
                                     <InputCommon
                                         tipo={'number'}
                                         id="cantidad"
@@ -242,7 +242,7 @@ export default function TablaArticulos({ register, articulos, setAlerta, setArti
                                     // onChange={(e: React.ChangeEvent<HTMLInputElement>) => manejarCambioNuevoArticulo(e)}
                                     />
                                 </td>
-                                <td className="px-2 py-1 whitespace-nowrap text-sm text-gray-500 border-r border-gray-200">
+                                <td className="px-2 py-1 whitespace-nowrap text-sm text-gray-500 border border-gray-200">
                                     <InputCommon
                                         tipo={'number'}
                                         id="cantidad"
@@ -252,7 +252,7 @@ export default function TablaArticulos({ register, articulos, setAlerta, setArti
                                     // onChange={(e: React.ChangeEvent<HTMLInputElement>) => manejarCambioNuevoArticulo(e)}
                                     />
                                 </td>
-                                <td className="px-2 py-1 whitespace-nowrap text-sm text-gray-500 border-r border-gray-200">
+                                <td className="px-2 py-1 whitespace-nowrap text-sm text-gray-500 border border-gray-200">
 
                                 </td>
                                 <td className="w-12 px-6 py-2 whitespace-nowrap text-right text-sm font-medium">

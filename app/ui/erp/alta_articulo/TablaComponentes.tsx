@@ -4,8 +4,8 @@ import Alerta from '../alerta';
 import { DbConsultarArticulo } from '@/app/lib/data';
 import DismissibleAlert from '../../DismissAlerta';
 
-const TablaComponentes = ({ register, setValue, clearErrors, errors, articulosCompo, setArticulosCompo,getValues }: any) => {
-    const [nuevoArticuloCompo, setNuevoArticuloCompo] = useState({ cod_articulo:'',cod_articulo_compo: '', descripcion: '', unidad: '', cantidad: 0 });
+const TablaComponentes = ({ register, setValue, clearErrors, errors, articulosCompo, setArticulosCompo, getValues }: any) => {
+    const [nuevoArticuloCompo, setNuevoArticuloCompo] = useState({ cod_articulo: '', cod_articulo_compo: '', descripcion: '', unidad: '', cantidad: 0 });
 
     const [error, setError] = useState({
         mostrar: false,
@@ -24,11 +24,18 @@ const TablaComponentes = ({ register, setValue, clearErrors, errors, articulosCo
     });
 
     const closeAlertaDismiss = () => {
-        setAlerta({
-            message: '',
-            type: "",
-            alertVisible: false
-        });
+        setAlerta((prev) => ({
+            ...prev,
+            alertVisible: false,
+        }));
+
+        setTimeout(() => {
+            setAlerta({
+                message: '',
+                type: "",
+                alertVisible: false
+            });
+        }, 300);
     };
 
     const borrarArticulo = (articulo: any) => {
@@ -98,7 +105,7 @@ const TablaComponentes = ({ register, setValue, clearErrors, errors, articulosCo
                 alertVisible: true
             });
         }
-        setNuevoArticuloCompo({cod_articulo:'', cod_articulo_compo: '', descripcion: '', unidad: '', cantidad: cantidad });
+        setNuevoArticuloCompo({ cod_articulo: '', cod_articulo_compo: '', descripcion: '', unidad: '', cantidad: cantidad });
     }
 
     return (
@@ -202,13 +209,12 @@ const TablaComponentes = ({ register, setValue, clearErrors, errors, articulosCo
                 funcionExtra={error.funcionExtra}
             />
 
-            {alerta.alertVisible && (
-                <DismissibleAlert
-                    message={alerta.message}
-                    type={alerta.type}
-                    onClose={closeAlertaDismiss}
-                />
-            )}
+            <DismissibleAlert
+                message={alerta.message}
+                type={alerta.type}
+                onClose={closeAlertaDismiss}
+                showPanel={alerta.alertVisible}
+            />
         </div>
     );
 };

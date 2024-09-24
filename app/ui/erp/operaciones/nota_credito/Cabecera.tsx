@@ -65,7 +65,7 @@ export default function Cabecera({ register, setValue, clearErrors, errors, setM
 
     const consutlarClientes = async (param?: any) => {
 
-        const respuesta = await DbConsultarCliente(null, 'S', param, 'razon', 'asc', '1', '50', 'S');
+        const respuesta = await DbConsultarCliente(null, 'S', param, 'razon', 'asc', 1, '50', 'S');
         const data = await respuesta.json();
         if (respuesta.ok) {
             const clientesMapeados = data.map((cliente: any) => ({

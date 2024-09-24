@@ -1,10 +1,9 @@
-import React, { useState } from 'react';
+"use client"
 
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
+import React, { Suspense, useEffect, useState } from 'react';
 import ComboBoxSelect from '@/app/ui/ComboBoxSelect';
-import { proveedorSchema } from '@/app/validaciones/proveedor';
 import InputCommon from '../../inputCommon';
+import { usePathname, useSearchParams, useRouter } from 'next/navigation';
 
 
 type Inputs = {
@@ -40,6 +39,10 @@ function classNames(...classes: any[]) {
 
 const Principal = ({ register, setValue, clearErrors, errors, consultarProve, getValues }: any) => {
 
+    const searchParams = useSearchParams();
+    const pathname = usePathname();
+    const { replace } = useRouter();
+
     const seleccionarCate_ivaSelec = (cate_iva: any) => {
         setValue('cate_iva', cate_iva);
         clearErrors('cate_iva');
@@ -59,7 +62,36 @@ const Principal = ({ register, setValue, clearErrors, errors, consultarProve, ge
     }
 
 
+    useEffect(() => {
+        const params = new URLSearchParams(searchParams);
+        let codigo: string | null = params.get('codigo');
+        if (codigo != '' && codigo != null) {
+            setValue('codigo', parseFloat(codigo));
+            consultarProve();
+        }
+    }, [searchParams]);
+
+    const consultar = () => {
+        const params = new URLSearchParams(searchParams);
+        let codigo: number | null = getValues('codigo');
+        //para que no consuma al limpiar la pantalla        
+        if (codigo && codigo != 0) {
+            params.set('codigo', codigo.toString());
+            replace(`${pathname}?${params.toString()}`);
+            clearErrors()
+        } else {
+            params.delete('codigo');
+            replace(`${pathname}?${params.toString()}`);
+            clearErrors();
+            return
+        }
+
+        consultarProve();
+    }
+
+
     return (
+
         <div className="md:grid md:grid-cols-3 md:gap-6 pt-4 border-b">
             <div className="md:col-span-1">
                 <div className="px-4 sm:px-0">
@@ -80,10 +112,10 @@ const Principal = ({ register, setValue, clearErrors, errors, consultarProve, ge
                                     error={errors.codigo?.message}
                                     step={"0.01"}
                                     id="codigo"
-                                    useForm={register("codigo", { onBlur: consultarProve })}
+                                    useForm={register("codigo", { onBlur: consultar })}
                                 />
                             </div>
-                            
+
 
                             <div className="hidden sm:flex sm:col-span-2">
                             </div>
@@ -122,7 +154,7 @@ const Principal = ({ register, setValue, clearErrors, errors, consultarProve, ge
                                     data={iva}
                                     setearCodigo={seleccionarCate_ivaSelec}
                                     error={errors.cate_iva?.message}
-                                    seleccionado={getValues ('cate_iva')}
+                                    seleccionado={getValues('cate_iva')}
                                 />
                             </div>
 

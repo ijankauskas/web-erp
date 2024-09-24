@@ -1,16 +1,14 @@
-import React, { useState } from 'react';
-
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
+'use client'
+import React, { useEffect, useState } from 'react';
 import ComboBoxSelect from '@/app/ui/ComboBoxSelect';
-import { clienteSchema } from '@/app/validaciones/cliente';
 import InputCommon from '../../inputCommon';
+import { usePathname, useSearchParams, useRouter } from 'next/navigation';
 
 
 type Inputs = {
     codigo: string,
     cuit: string,
-    cate_iva:string,
+    cate_iva: string,
     razon: string,
     nombre_fantasia: string,
     mail: string,
@@ -41,6 +39,10 @@ function classNames(...classes: any[]) {
 }
 
 const Principal = ({ register, setValue, clearErrors, errors, consultarCliente, getValues }: any) => {
+    const searchParams = useSearchParams();
+    const pathname = usePathname();
+    const { replace } = useRouter();
+
     const seleccionarCate_ivaSelec = (cate_iva: any) => {
         setValue('cate_iva', cate_iva);
         clearErrors('cate_iva');
@@ -57,7 +59,30 @@ const Principal = ({ register, setValue, clearErrors, errors, consultarCliente, 
         setValue('agru_3', agru_3);
         clearErrors('agru_3');
     }
-
+    const consultar = () => {
+        const params = new URLSearchParams(searchParams);
+        let codigo: number | null = getValues('codigo');
+        //para que no consuma al limpiar la pantalla        
+        if (codigo && codigo != 0) {
+            params.set('codigo', codigo.toString());
+            replace(`${pathname}?${params.toString()}`);
+            clearErrors()
+        } else {
+            params.delete('codigo');
+            replace(`${pathname}?${params.toString()}`);
+            clearErrors();
+            return
+        }
+        consultarCliente()
+    }
+    useEffect(() => {
+        const params = new URLSearchParams(searchParams);
+        let codigo: string | null = params.get('codigo');
+        if (codigo != '' && codigo != null) {
+            setValue('codigo', parseFloat(codigo));
+            consultarCliente();
+        }
+    }, [searchParams]);
 
     return (
         <div className="md:grid md:grid-cols-3 md:gap-6 pt-4 border-b">
@@ -79,11 +104,11 @@ const Principal = ({ register, setValue, clearErrors, errors, consultarCliente, 
                                     tipo={"text"}
                                     error={errors.codigo?.message}
                                     id="codigo"
-                                    useForm={register("codigo", { onBlur: consultarCliente })}
+                                    useForm={register("codigo", { onBlur: consultar })}
                                 />
                             </div>
 
-                           
+
 
                             <div className="hidden sm:flex sm:col-span-4">
                             </div>
@@ -124,7 +149,7 @@ const Principal = ({ register, setValue, clearErrors, errors, consultarCliente, 
                                     data={iva}
                                     setearCodigo={seleccionarCate_ivaSelec}
                                     error={errors.cate_iva?.message}
-                                    seleccionado={getValues ('cate_iva')}
+                                    seleccionado={getValues('cate_iva')}
                                 />
                             </div>
 
@@ -144,7 +169,7 @@ const Principal = ({ register, setValue, clearErrors, errors, consultarCliente, 
                                     data={people}
                                     setearCodigo={seleccionarAgru1Selec}
                                     error={errors.agru_1?.message}
-                                    seleccionado={getValues ('agru_1')}
+                                    seleccionado={getValues('agru_1')}
                                 />
                             </div>
 
@@ -154,7 +179,7 @@ const Principal = ({ register, setValue, clearErrors, errors, consultarCliente, 
                                     data={people}
                                     setearCodigo={seleccionarAgru2Selec}
                                     error={errors.agru_2?.message}
-                                    seleccionado={getValues ('agru_2')}
+                                    seleccionado={getValues('agru_2')}
                                 />
                             </div>
 
@@ -164,7 +189,7 @@ const Principal = ({ register, setValue, clearErrors, errors, consultarCliente, 
                                     data={people}
                                     setearCodigo={seleccionarAgru3Selec}
                                     error={errors.agru_3?.message}
-                                    seleccionado={getValues ('agru_3')}
+                                    seleccionado={getValues('agru_3')}
                                 />
                             </div>
 

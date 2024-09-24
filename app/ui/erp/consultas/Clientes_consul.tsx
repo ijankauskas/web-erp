@@ -3,15 +3,18 @@
 import { Dialog, DialogBackdrop, DialogPanel, DialogTitle } from "@headlessui/react";
 import InputCommon from "../../inputCommon";
 import ButtonCommon from "../ButtonCommon";
-import { DbConsultarArticulo, DbConsultarCliente } from "@/app/lib/data";
-import { SetStateAction, useEffect, useState } from "react";
+import { DbConsultarCliente, DbSaldosClientes } from "@/app/lib/data";
+import { useEffect, useState } from "react";
 import Alerta from "../alerta";
 import { ChevronDownIcon, ChevronUpIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import { Pagination } from "@nextui-org/react";
 
-export default function ClientesConsul({ setArticulo, open, setOpen }: any) {
+export default function ClientesConsul({ setCliente, open, setOpen }: any) {
     const [columnWidths, setColumnWidths] = useState([100, 500, 500]);
     const [pagina, setPagina] = useState(1);
+    const [totalPages, setTotalPages] = useState(0);
+    const [totalxPagina, setTotalxPagina] = useState(50);
+
     const [ordenarConfig, setOrdenarConfig] = useState({ key: 'razon', direction: 'asc' });
     const [error, setError] = useState({
         mostrar: false,
@@ -29,14 +32,37 @@ export default function ClientesConsul({ setArticulo, open, setOpen }: any) {
     }
 
     const [clientes, setClientes] = useState<[]>([]);
-    const [numCliente, setNumCliente] = useState(null);
+    const [numCliente, setNumCliente] = useState<any>(null);
+
+    useEffect(() => {
+        cargarComponente();
+    }, []);
+
+    async function cargarComponente() {
+        const respuesta = await DbSaldosClientes('total_clientes');
+        const data = await respuesta.json();
+        if (!respuesta.ok) {
+            throw new Error('Error al cargar los clientes');
+        }
+
+        let total = data.total
+        setTotalPages(Math.ceil(total / totalxPagina));
+    }
+
     const settearNumCliente = (e: React.ChangeEvent<HTMLInputElement>) => {
         setNumCliente(e.target.value);
     }
+
     const [razon, setRazon] = useState('');
     const settearRazon = (e: React.ChangeEvent<HTMLInputElement>) => {
         setRazon(e.target.value);
     }
+
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === "Enter") {
+            consultar();
+        }
+    };
 
     const consultar = async () => {
         const respuesta = await DbConsultarCliente(numCliente, 'S', razon, ordenarConfig.key, ordenarConfig.direction, pagina, '50', 'S');
@@ -52,18 +78,6 @@ export default function ClientesConsul({ setArticulo, open, setOpen }: any) {
                 icono: 'error-icon',
             });
         }
-    }
-
-    const agregarArticulo = ({ articulo }: any) => {
-        const nuevo = {
-            codigo: articulo.codigo,
-            descripcion: articulo.descripcion,
-            unidad: articulo.unidad,
-            cantidad: articulo.cant_default || 0,
-            precio_vta: articulo.precio_vta || 0,
-            costo_uni: articulo.costo || 0
-        };
-        setArticulo((prev: any) => [...prev, nuevo]);
     }
 
     const handleMouseDown = (index: any, event: any) => {
@@ -102,6 +116,11 @@ export default function ClientesConsul({ setArticulo, open, setOpen }: any) {
         consultar();
     }, [pagina]);
 
+    const seleccionarCliente = (cliente: any) => {
+        setCliente(cliente)
+        setOpen(false)
+    }
+
     return (
         <>
             <Dialog open={open} onClose={setOpen} className="relative z-10">
@@ -137,6 +156,7 @@ export default function ClientesConsul({ setArticulo, open, setOpen }: any) {
                                             <InputCommon
                                                 titulo={'Codigo'}
                                                 onChange={settearNumCliente}
+                                                onKeyDown={handleKeyDown}
                                             />
                                         </div>
                                     </div>
@@ -145,12 +165,18 @@ export default function ClientesConsul({ setArticulo, open, setOpen }: any) {
                                             <InputCommon
                                                 titulo={'Razon'}
                                                 onChange={settearRazon}
+                                                onKeyDown={handleKeyDown}
                                             />
                                         </div>
                                     </div>
                                     <div className="sm:col-span-2 col-span-2 flex items-end">
-                                        <div className='w-full mr-2'>
-                                            <ButtonCommon texto={'Buscar'} onClick={consultar} type={'button'} />
+                                        <div className='w-full mr-2 max-w-[150px]'>
+                                            <ButtonCommon
+                                                texto={'Buscar'}
+                                                onClick={consultar}
+                                                type={'submmit'}
+                                                tooltip={"Consultar Clientes"}
+                                            />
                                         </div>
                                     </div>
                                 </div>
@@ -219,7 +245,7 @@ export default function ClientesConsul({ setArticulo, open, setOpen }: any) {
                                         </thead>
                                         <tbody className="bg-white divide-y divide-gray-200">
                                             {clientes?.map((cliente: any, index: number) => (
-                                                <tr onClick={() => agregarArticulo({ cliente })} className="border-b text-gray-900 hover:text-gray-100 hover:bg-indigo-500 hover:cursor-pointer ">
+                                                <tr key={index} onClick={() => seleccionarCliente(cliente)} className="border-b text-gray-900 hover:text-gray-100 hover:bg-indigo-500 hover:cursor-pointer ">
                                                     <td className="px-4 py-2 whitespace-nowrap text-sm border border-gray-200">
                                                         {cliente.codigo}
                                                     </td>
@@ -236,7 +262,14 @@ export default function ClientesConsul({ setArticulo, open, setOpen }: any) {
                                 </div>
                             </div>
                             <div className="flex w-full items-center justify-center mb-4">
-                                <Pagination color="primary" isCompact showControls total={50} initialPage={1} />
+                                <Pagination
+                                    color="primary"
+                                    isCompact
+                                    showControls
+                                    total={totalPages}
+                                    page={pagina}
+                                    onChange={setPagina}
+                                />
                             </div>
                         </DialogPanel>
                     </div>

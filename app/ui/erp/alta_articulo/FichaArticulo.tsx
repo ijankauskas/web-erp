@@ -1,8 +1,11 @@
-import React, { useState } from 'react';
+"use client"
+
+import React, { useEffect, useState } from 'react';
 
 import ComboBoxSelect from '@/app/ui/ComboBoxSelect';
 import InputCommon from '../../inputCommon'
 import TextAreaCommon from '../../TextAreaCommon';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 function classNames(...classes: any[]) {
     return classes.filter(Boolean).join(' ');
@@ -18,6 +21,9 @@ const people = [
 ];
 
 const FichaArticulo = ({ register, setValue, clearErrors, errors, consultarArticulo, getValues }: any) => {
+    const searchParams = useSearchParams();
+    const pathname = usePathname();
+    const { replace } = useRouter();
 
     const seleccionarAgru1Selec = (agru_1: any) => {
         setValue('agru_1', agru_1);
@@ -31,6 +37,33 @@ const FichaArticulo = ({ register, setValue, clearErrors, errors, consultarArtic
         setValue('agru_3', agru_3);
         clearErrors('agru_3');
     }
+
+    const consultar = () => {
+        const params = new URLSearchParams(searchParams);
+        let codigo: string | null = getValues('codigo');
+        if (codigo) {
+            params.set('codigo', codigo);
+            replace(`${pathname}?${params.toString()}`);
+            clearErrors()
+        } else {
+            params.delete('codigo');
+            replace(`${pathname}?${params.toString()}`);
+            clearErrors();
+
+            return
+        }
+
+        consultarArticulo()
+    }
+    useEffect(() => {
+        const params = new URLSearchParams(searchParams);
+        let codigo: string | null = params.get('codigo');
+        if (codigo != '' && codigo != null) {
+            setValue('codigo', codigo);
+            consultarArticulo();
+        }
+    }, [searchParams]);
+
 
     return (
         <div className="md:grid md:grid-cols-3 md:gap-6 pt-4 border-b">
@@ -52,7 +85,7 @@ const FichaArticulo = ({ register, setValue, clearErrors, errors, consultarArtic
                                     tipo={"text"}
                                     error={errors.codigo?.message}
                                     id="codigo"
-                                    useForm={register("codigo", { onBlur: consultarArticulo })}
+                                    useForm={register("codigo", { onBlur: consultar })}
                                 />
                             </div>
                             <div className="col-span-6">

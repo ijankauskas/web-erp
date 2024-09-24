@@ -1,12 +1,11 @@
 "use client"
 
 import DismissibleAlert from "@/app/ui/DismissAlerta"
-import ButtonCommon from "@/app/ui/erp/ButtonCommon"
 import Cabecera from "@/app/ui/erp/comprobantes/Cabecera"
 import TablaComprobantes from "@/app/ui/erp/comprobantes/TablaComprobantes"
 import { ClipboardIcon, CurrencyDollarIcon } from "@heroicons/react/24/outline"
 import { Tab, Tabs } from "@nextui-org/react"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 
 
 export default function Comprobantes() {
@@ -19,11 +18,18 @@ export default function Comprobantes() {
     });
 
     const closeAlertaDismiss = () => {
-        setAlerta({
-            message: '',
-            type: "",
-            alertVisible: false
-        });
+        setAlerta((prev) => ({
+            ...prev,
+            alertVisible: false,
+        }));
+
+        setTimeout(() => {
+            setAlerta({
+                message: '',
+                type: "",
+                alertVisible: false
+            });
+        }, 300);
     };
 
     return (
@@ -76,13 +82,12 @@ export default function Comprobantes() {
                     />
                 </Tab>
             </Tabs>
-            {alerta.alertVisible && (
-                <DismissibleAlert
-                    message={alerta.message}
-                    type={alerta.type}
-                    onClose={closeAlertaDismiss}
-                />
-            )}
+            <DismissibleAlert
+                message={alerta.message}
+                type={alerta.type}
+                onClose={closeAlertaDismiss}
+                showPanel={alerta.alertVisible}
+            />
         </div>
     )
 }

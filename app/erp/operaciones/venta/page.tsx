@@ -12,10 +12,8 @@ import { VentaSchema } from '@/app/validaciones/venta';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import LoadingBar, { LoadingBarRef } from 'react-top-loading-bar';
 import { PlusCircleIcon } from '@heroicons/react/24/outline';
-import ClientesConsul from '@/app/ui/erp/consultas/Clientes_consul';
-
+import Loading from '@/app/ui/Loading';
 
 type Inputs = {
     tipo: string,
@@ -41,18 +39,10 @@ type Inputs = {
 
 const fecha_hoy = new Date().toISOString().split('T')[0];
 
-export default function alta_articulo() {
+export default function Factura() {
     const [cargando, setCargando] = useState(false);
-    const ref = useRef<LoadingBarRef | null>(null);
-    const [isInitialMount, setIsInitialMount] = useState(true);
+    const [respuesta, setRespuesta] = useState(false);
     const [abrirArticulosConsul, setAbrirArticulosConsul] = useState(false);
-    const [abrirClientesConsul, setAbrirClientesConsul] = useState(false);
-
-    useEffect(() => {
-        if (ref.current) {
-            ref.current.complete();
-        }
-    }, []);
 
     const [mensaje, setMensaje] = useState({
         mostrar: false,
@@ -77,7 +67,7 @@ export default function alta_articulo() {
             }],
         },
         resolver: zodResolver(VentaSchema)
-    }) 
+    })
     const [articulos, setArticulos] = useState<{
         error: boolean; codigo: string, descripcion: string, unidad: string, cantidad: number, precio_vta: number, costo_uni: number
     }[]>([]);
@@ -111,11 +101,18 @@ export default function alta_articulo() {
     });
 
     const closeAlertaDismiss = () => {
-        setAlerta({
-            message: '',
-            type: "",
-            alertVisible: false
-        });
+        setAlerta((prev) => ({
+            ...prev,
+            alertVisible: false,
+        }));
+
+        setTimeout(() => {
+            setAlerta({
+                message: '',
+                type: "",
+                alertVisible: false
+            });
+        }, 300); 
     };
 
 
@@ -145,35 +142,11 @@ export default function alta_articulo() {
         prevArticulosRef.current = articulos;
     }, [articulos.length]);
 
-    const mostrarErrorAlerta = () => {
-        if (!isInitialMount)
-            setMensaje({
-                mostrar: true,
-                mensaje: 'Error: No se encontró ningun cliente con ese codigo.',
-                titulo: 'Oops...',
-                tipo_aletar: 'error',
-            });
-    }
-
-    useEffect(() => {
-        if (isInitialMount) {
-            setIsInitialMount(false);
-            return;
-        }
-    });
-
     const toggleAbrirArticulosConsul = () => {
         setAbrirArticulosConsul(!abrirArticulosConsul)
     }
-    const toggleAbrirClientesConsul = () => {
-        console.log('aca');
-        
-        setAbrirClientesConsul(!abrirClientesConsul)
-    }
-
     const enviarForm = async (data?: any) => {
-        console.log('entra');
-        
+        setCargando(true)
         if (articulos.length <= 0) {
             setMensaje({
                 mostrar: true,
@@ -202,8 +175,8 @@ export default function alta_articulo() {
         const mensaje = await response.json();
 
         if (response.ok) {
-            ref.current?.complete();
             setCargando(false);
+            setRespuesta(true);
             setMensaje({
                 mostrar: true,
                 mensaje: mensaje.message,
@@ -212,8 +185,8 @@ export default function alta_articulo() {
             });
             return
         } else {
-            ref.current?.complete();
             setCargando(false);
+            setRespuesta(false);
             setMensaje({
                 mostrar: true,
                 mensaje: mensaje.message,
@@ -256,22 +229,17 @@ export default function alta_articulo() {
 
     }, [errors]);
 
-
     return (
         <div className='mx-auto max-w-screen-2xl bg-white'>
-            <div>
-                <LoadingBar color='rgb(99 102 241)' ref={ref} />
-            </div>
             <form ref={formRef} className="space-y-7" method="POST" onSubmit={handleSubmit(data => enviarForm(data))}>
                 <div className="w-full flex flex-col px-8 pt-2">
                     <Cabecera
                         register={register}
                         setValue={setValue}
                         errors={errors}
-                        mostrarErrorAlerta={mostrarErrorAlerta}
+                        setMensaje={setMensaje}
                         clearErrors={clearErrors}
                         getValues={getValues}
-                        AbrirClientesConsul={toggleAbrirClientesConsul}
                     />
                     <div className="w-full flex justify-between my-2">
                         <div>
@@ -322,19 +290,15 @@ export default function alta_articulo() {
                 setOpen={setAbrirArticulosConsul}
             />
 
-            <ClientesConsul
-                setArticulo={setArticulos}
-                open={abrirClientesConsul}
-                setOpen={setAbrirClientesConsul}
+            <DismissibleAlert
+                message={alerta.message}
+                type={alerta.type}
+                onClose={closeAlertaDismiss}
+                showPanel={alerta.alertVisible}
             />
 
-            {alerta.alertVisible && (
-                <DismissibleAlert
-                    message={alerta.message}
-                    type={alerta.type}
-                    onClose={closeAlertaDismiss}
-                />
-            )}
+
+            <Loading cargando={cargando} respuesta={respuesta} />
 
         </div>
     );

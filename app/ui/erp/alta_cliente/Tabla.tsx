@@ -151,8 +151,8 @@ export default function Tabla({ cliente }: any) {
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
                         {comprobantes.length > 0 ? (
-                            comprobantes.map((comprobante) => (
-                                <tr>
+                            comprobantes.map((comprobante,index) => (
+                                <tr key={index}>
                                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                                         19
                                     </td>
