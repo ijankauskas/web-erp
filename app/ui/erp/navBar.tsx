@@ -86,7 +86,7 @@ const menus = [
                     },
                     {
                         nombre: "Lista de Precios",
-                        href: '/erp/alta/cliente',
+                        href: '/erp/alta/listadeprecios',
                         current: false,
                         icon: UserPlusIcon,
                     },
