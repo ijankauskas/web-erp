@@ -12,9 +12,8 @@ import { VentaSchema } from '@/app/validaciones/venta';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import LoadingBar, { LoadingBarRef } from 'react-top-loading-bar';
 import { PlusCircleIcon } from '@heroicons/react/24/outline';
-
+import Loading from '@/app/ui/Loading';
 
 type Inputs = {
     tipo: string,
@@ -42,6 +41,7 @@ const fecha_hoy = new Date().toISOString().split('T')[0];
 
 export default function Factura() {
     const [cargando, setCargando] = useState(false);
+    const [respuesta, setRespuesta] = useState(false);
     const [abrirArticulosConsul, setAbrirArticulosConsul] = useState(false);
 
     const [mensaje, setMensaje] = useState({
@@ -101,11 +101,18 @@ export default function Factura() {
     });
 
     const closeAlertaDismiss = () => {
-        setAlerta({
-            message: '',
-            type: "",
-            alertVisible: false
-        });
+        setAlerta((prev) => ({
+            ...prev,
+            alertVisible: false,
+        }));
+
+        setTimeout(() => {
+            setAlerta({
+                message: '',
+                type: "",
+                alertVisible: false
+            });
+        }, 300); 
     };
 
 
@@ -139,6 +146,7 @@ export default function Factura() {
         setAbrirArticulosConsul(!abrirArticulosConsul)
     }
     const enviarForm = async (data?: any) => {
+        setCargando(true)
         if (articulos.length <= 0) {
             setMensaje({
                 mostrar: true,
@@ -168,6 +176,7 @@ export default function Factura() {
 
         if (response.ok) {
             setCargando(false);
+            setRespuesta(true);
             setMensaje({
                 mostrar: true,
                 mensaje: mensaje.message,
@@ -177,6 +186,7 @@ export default function Factura() {
             return
         } else {
             setCargando(false);
+            setRespuesta(false);
             setMensaje({
                 mostrar: true,
                 mensaje: mensaje.message,
@@ -280,13 +290,15 @@ export default function Factura() {
                 setOpen={setAbrirArticulosConsul}
             />
 
-            {alerta.alertVisible && (
-                <DismissibleAlert
-                    message={alerta.message}
-                    type={alerta.type}
-                    onClose={closeAlertaDismiss}
-                />
-            )}
+            <DismissibleAlert
+                message={alerta.message}
+                type={alerta.type}
+                onClose={closeAlertaDismiss}
+                showPanel={alerta.alertVisible}
+            />
+
+
+            <Loading cargando={cargando} respuesta={respuesta} />
 
         </div>
     );

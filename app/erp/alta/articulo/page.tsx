@@ -60,11 +60,18 @@ export default function Alta_articulo() {
   });
 
   const closeAlertaDismiss = () => {
-    setAlerta({
-      message: '',
-      type: "",
-      alertVisible: false
-    });
+    setAlerta((prev) => ({
+      ...prev,
+      alertVisible: false,
+    }));
+
+    setTimeout(() => {
+      setAlerta({
+        message: '',
+        type: "",
+        alertVisible: false
+      });
+    }, 300);
   };
 
   const [error, setError] = useState({
@@ -375,13 +382,12 @@ export default function Alta_articulo() {
             texto={error.mensaje}
           />
 
-          {alerta.alertVisible && (
-            <DismissibleAlert
-              message={alerta.message}
-              type={alerta.type}
-              onClose={closeAlertaDismiss}
-            />
-          )}
+          <DismissibleAlert
+            message={alerta.message}
+            type={alerta.type}
+            onClose={closeAlertaDismiss}
+            showPanel={alerta.alertVisible}
+          />
         </div>
       </div>
     </Suspense>

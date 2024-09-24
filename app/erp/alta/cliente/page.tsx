@@ -61,11 +61,18 @@ export default function Alta_cliente() {
     });
 
     const closeAlertaDismiss = () => {
-        setAlerta({
-            message: '',
-            type: "",
-            alertVisible: false
-        });
+        setAlerta((prev) => ({
+            ...prev,
+            alertVisible: false,
+        }));
+
+        setTimeout(() => {
+            setAlerta({
+                message: '',
+                type: "",
+                alertVisible: false
+            });
+        }, 300);
     };
     const { register, handleSubmit, formState: { errors }, setValue, clearErrors, getValues, watch } = useForm<Inputs>({
         defaultValues: {
@@ -270,13 +277,12 @@ export default function Alta_cliente() {
                     </form>
 
                 </div>
-                {alerta.alertVisible && (
-                    <DismissibleAlert
-                        message={alerta.message}
-                        type={alerta.type}
-                        onClose={closeAlertaDismiss}
-                    />
-                )}
+                <DismissibleAlert
+                    message={alerta.message}
+                    type={alerta.type}
+                    onClose={closeAlertaDismiss}
+                    showPanel={alerta.alertVisible}
+                />
             </div>
         </Suspense>
     )

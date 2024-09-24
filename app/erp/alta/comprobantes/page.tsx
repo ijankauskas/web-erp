@@ -18,11 +18,18 @@ export default function Comprobantes() {
     });
 
     const closeAlertaDismiss = () => {
-        setAlerta({
-            message: '',
-            type: "",
-            alertVisible: false
-        });
+        setAlerta((prev) => ({
+            ...prev,
+            alertVisible: false,
+        }));
+
+        setTimeout(() => {
+            setAlerta({
+                message: '',
+                type: "",
+                alertVisible: false
+            });
+        }, 300);
     };
 
     return (
@@ -75,13 +82,12 @@ export default function Comprobantes() {
                     />
                 </Tab>
             </Tabs>
-            {alerta.alertVisible && (
-                <DismissibleAlert
-                    message={alerta.message}
-                    type={alerta.type}
-                    onClose={closeAlertaDismiss}
-                />
-            )}
+            <DismissibleAlert
+                message={alerta.message}
+                type={alerta.type}
+                onClose={closeAlertaDismiss}
+                showPanel={alerta.alertVisible}
+            />
         </div>
     )
 }
