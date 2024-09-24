@@ -39,6 +39,8 @@ export default function alta_cliente() {
     const pathname = usePathname();
     const { replace } = useRouter();
 
+
+    
     const eliminarCliente = async () => {
         let cliente = { codigo: getValues("codigo") }
         const response = await DbBorrarCliente(cliente);
@@ -57,6 +59,8 @@ export default function alta_cliente() {
           });
         }
       };
+
+      
 
     const [alerta, setAlerta] = useState({
         message: "",

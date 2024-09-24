@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { PhotoIcon } from '@heroicons/react/24/outline';
+import { CheckIcon, PhotoIcon } from '@heroicons/react/24/outline';
 import InputCommon from '@/app/ui/inputCommon';
 import { proveedorSchema } from '@/app/validaciones/proveedor';
 import Tabs from '@/app/ui/erp/alta_proveedor/tabs';
@@ -11,7 +11,7 @@ import Principal from '@/app/ui/erp/alta_proveedor/principal';
 import DatosContacto from '@/app/ui/erp/alta_proveedor/datosContacto';
 import LoadingBar, { LoadingBarRef } from 'react-top-loading-bar';
 import CheckProve from '@/app/ui/erp/alta_proveedor/CheckProve';
-import { DbConsultarProveedor, DbGrabartarProveedor } from '@/app/lib/data';
+import { DbBorrarProveedor, DbConsultarProveedor, DbGrabartarProveedor } from '@/app/lib/data';
 import DismissibleAlert from '@/app/ui/DismissAlerta';
 import { usePathname, useSearchParams, useRouter } from 'next/navigation';
 import ButtonCommon from '@/app/ui/erp/ButtonCommon';
@@ -60,6 +60,25 @@ export default function alta_proveedor() {
         }
     }, []);
 
+    const eliminarProveedor = async () => {
+        let cliente = { codigo: getValues("codigo") }
+        const response = await DbBorrarProveedor(cliente);
+        const mensaje = await response.json();
+        if (response.ok) {
+            setAlerta({
+                message: mensaje.message,
+                type: "success",
+                alertVisible: true
+            });
+        } else {
+            setAlerta({
+                message: mensaje.message,
+                type: "error",
+                alertVisible: true
+            });
+        }
+    };
+
     const [alerta, setAlerta] = useState({
         message: "",
         type: "",
@@ -82,7 +101,7 @@ export default function alta_proveedor() {
         defaultValues: {
             codigo: 0,
             cuit: '',
-            cate_iva:'',
+            cate_iva: '',
             razon: '',
             nombre_fantasia: '',
             mail: '',
@@ -93,8 +112,8 @@ export default function alta_proveedor() {
             celular: '',
             domicilio: '',
             activo: true,
-            localidad:'',
-            observaciones:''
+            localidad: '',
+            observaciones: ''
         },
         resolver: zodResolver(proveedorSchema)
     })
@@ -188,7 +207,6 @@ export default function alta_proveedor() {
 
     const limpiar = () => {
 
-        setValue('codigo', 0);
         setValue('cuit', '');
         setValue('cate_iva', '');
         setValue('razon', '');
@@ -203,6 +221,13 @@ export default function alta_proveedor() {
         setValue('activo', true);
         setValue('localidad', '');
         setValue('observaciones', '');
+    }
+
+
+    const btnLimpiar = () => {
+
+        setValue('codigo', 0);
+        limpiar()
     }
 
     useEffect(() => {
@@ -250,17 +275,27 @@ export default function alta_proveedor() {
                         </> :
                         tab == 1 ? <DatosContacto register={register} setValue={setValue} errors={errors} clearErrors={clearErrors} /> :
                             'Posición no definida.'}
-                   <div className="px-4 py-3 bg-white text-right sm:px-6">
+                    <div className="flex items-center justify-end px-4 py-3 bg-gray-50 text-right sm:px-6 space-x-4">
                         <button
                             type="button"
-                            onClick={limpiar}  
-                            className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-gray-600 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 mr-2">
+                            onClick={btnLimpiar}
+                            className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-gray-600 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
                             Limpiar
                         </button>
+
                         <button
                             type="submit"
-                            className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" >
+                            className="inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                        >
+                            <CheckIcon aria-hidden="true" className="-ml-0.5 mr-1.5 h-5 w-5" />
                             Guardar
+                        </button>
+
+                        <button
+                            type="button"
+                            onClick={eliminarProveedor}
+                            className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+                            Eliminar
                         </button>
                     </div>
                 </form>

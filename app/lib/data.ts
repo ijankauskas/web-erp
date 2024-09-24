@@ -333,3 +333,20 @@ export async function DbBorrarCliente(data: any | null) {
         throw new Error('Failed to fetch card data.');
     }
 }
+
+
+export async function DbBorrarProveedor(data: any | null) {
+    try {
+        const response = await fetch('http://localhost:8080/proveedores', {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        });
+
+        return response;
+    } catch (error) {
+        throw new Error('Failed to fetch card data.');
+    }
+}
