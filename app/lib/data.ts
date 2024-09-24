@@ -359,3 +359,50 @@ export async function DbBorrarProveedor(data: any | null) {
         throw new Error('Failed to fetch card data.');
     }
 }
+export async function DbConsultarListasCabe(
+    lista_codi: string | null,
+    multiple?: string | null,
+    lista_descrip?: string | null,
+    columnaOrden?: string | null,
+    dir?: string | null,
+    page?: number | null,
+    limit?: string | null,
+    activos?: string | null,
+) {
+    try {
+        const response = await fetch(url + '/listas_cabe?lista_codi=' + lista_codi + '&multiple=' + multiple + '&lista_descrip=' + lista_descrip + '&orden=' + columnaOrden + '&dir=' + dir + '&page=' + page + '&limit=' + limit + '&activos=' + activos, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
+
+        return response;
+    } catch (error) {
+        console.error('Database Error:', error);
+        throw new Error('Failed to fetch card data.');
+    }
+}
+
+export async function DbListasItems(
+    servicio: string | null,
+    pagina?: string | null,
+    parametro?: string | null,
+    columnaOrden?: string | null,
+    dir?: string | null,
+    lista_codi?: string | null,
+) {
+    try {
+        const response = await fetch(url + '/lista_precios?servicio=' + servicio + '&pagina=' + pagina + '&parametro=' + parametro + '&orden=' + columnaOrden + '&dir=' + dir + '&lista_codi=' + lista_codi, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
+
+        return response;
+    } catch (error) {
+        console.error('Database Error:', error);
+        throw new Error('Failed to fetch card data.');
+    }
+}

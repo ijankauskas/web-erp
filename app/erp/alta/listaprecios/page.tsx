@@ -1,8 +1,7 @@
 'use client'
+import TablaListas from '@/app/ui/erp/lista_precios/TablaListas';
 import Paginado from '@/app/ui/erp/saldos_cliente/Paginado';
 import PaginadoComp from '@/app/ui/erp/saldos_cliente/PaginadoComp';
-import TablaClientes from '@/app/ui/erp/saldos_cliente/TablaClientes';
-import TablaClientesSkeleton from '@/app/ui/erp/saldos_cliente/TablaClientesSkeleton';
 import TablaComprobantes from '@/app/ui/erp/saldos_cliente/TablaComprobantes';
 import InputCommon from '@/app/ui/inputCommon';
 import React, { useState, useRef, Suspense } from 'react';
@@ -10,16 +9,16 @@ import React, { useState, useRef, Suspense } from 'react';
 const ConsultaSaldos = () => {
     const [dividerPosition, setDividerPosition] = useState(25);
     const [isLeftPanelVisible, setIsLeftPanelVisible] = useState(true);
-    const [ListaSeleccionado, setListaSeleccionado] = useState<any>('');
+    const [listaSeleccionado, setListaSeleccionado] = useState<any>('');
     const [busqueda, setBusqueda] = useState('');
     const [pagina, setPagina] = useState(1);
     const [paginaComps, setPaginaComps] = useState(1);
 
-    const handleMouseDown = (event:any) => {
+    const handleMouseDown = (event: any) => {
         const startX = event.clientX;
         const startDividerPosition = dividerPosition;
 
-        const onMouseMove = (e:any) => {
+        const onMouseMove = (e: any) => {
             const newDividerPosition = startDividerPosition + ((e.clientX - startX) / window.innerWidth) * 100;
             setDividerPosition(Math.min(Math.max(newDividerPosition, 10), 90));
         };
@@ -54,7 +53,7 @@ const ConsultaSaldos = () => {
             <div className="lg:flex lg:items-center lg:justify-between border-b py-2">
                 <div className="min-w-0 flex-1">
                     <h2 className="text-2xl font-bold leading-7 text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight">
-                       Listas de Precios
+                        Listas de Precios
                     </h2>
 
                 </div>
@@ -111,10 +110,10 @@ const ConsultaSaldos = () => {
                         )}
                     </div>
                     <div className="w-full h-full bg-white overflow-y-auto overflow-x-auto flex-grow">
-                        <TablaComprobantes cliente={clienteSeleccionado} pagina={paginaComps} setPagina={setPaginaComps}/>
+                        {/* <TablaComprobantes cliente={clienteSeleccionado} pagina={paginaComps} setPagina={setPaginaComps} /> */}
                     </div>
                     <div className="bg-gray-100 w-full p-0"> {/* Contenedor para el paginado que siempre estará al final */}
-                        <PaginadoComp pagina={paginaComps} cambiarPagina={cambiarPaginaComp} cliente={clienteSeleccionado}/>
+                        {/* <PaginadoComp pagina={paginaComps} cambiarPagina={cambiarPaginaComp} cliente={clienteSeleccionado} /> */}
                     </div>
                 </div>
             </div>
