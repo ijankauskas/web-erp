@@ -35,6 +35,8 @@ type Inputs = {
 export default function Alta_cliente() {
     const [cargando, setCargando] = useState(false)
 
+
+    
     const eliminarCliente = async () => {
         let cliente = { codigo: getValues("codigo") }
         const response = await DbBorrarCliente(cliente);
@@ -53,6 +55,8 @@ export default function Alta_cliente() {
             });
         }
     };
+
+      
 
     const [alerta, setAlerta] = useState({
         message: "",
