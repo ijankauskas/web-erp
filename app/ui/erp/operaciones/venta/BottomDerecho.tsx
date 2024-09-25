@@ -112,9 +112,57 @@ export default function BottomDerecho({ register, articulos, setAlerta, pagos, s
 
             <div className="flex w-full flex-col">
                 <Tabs color={"primary"} aria-label="Pagos">
+                    <Tab key="music" title="Totales">
+                        <div className="p-4 h-[25vh] w-full overflow-y-auto overflow-x-auto shadow-md sm:rounded-lg max-h-[400px] bg-white border-gray-200 border">
+                            <div className="text-black flex justify-between items-center">
+                                <label htmlFor="">Sub total Gravado</label>
+                                <div className="w-[200px]">
+                                    <InputCommon
+                                        tipo={'text'}
+                                        texto={articulos?.reduce((acc: number, articulo: any) => {
+                                            const calculo = (79 * articulo.precio_vta * articulo.cantidad) / 100;
+                                            return acc + parseFloat(calculo.toFixed(2));
+                                        }, 0).toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                        id={'subtotal'}
+                                        textAlign={'text-end'}
+                                        desactivado={true}
+                                    />
+                                </div>
+                            </div>
+                            <div className="text-black flex justify-between items-center">
+                                <label htmlFor="">Total IVA</label>
+                                <div className="w-[200px] mt-1">
+                                    <InputCommon
+                                        tipo={'text'}
+                                        texto={articulos?.reduce((acc: number, articulo: any) => {
+                                            const calculo = (21 * articulo.precio_vta * articulo.cantidad) / 100;
+                                            return acc + parseFloat(calculo.toFixed(2));
+                                        }, 0).toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                        id={'subtotal'}
+                                        textAlign={'text-end'}
+                                        desactivado={true}
+                                    />
+                                </div>
+                            </div>
+                            <div className="text-black flex justify-between items-center">
+                                <label htmlFor="">Total Facturado</label>
+                                <div className="w-[200px] mt-1">
+                                    <InputCommon
+                                        tipo={'text'}
+                                        texto={articulos?.reduce((acc: number, articulo: any) => {
+                                            const calculo = (articulo.precio_vta * articulo.cantidad);
+                                            return acc + parseFloat(calculo.toFixed(2));
+                                        }, 0).toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                        id={'subtotal'}
+                                        textAlign={'text-end'}
+                                        desactivado={true}
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                    </Tab>
                     <Tab key="photos" title="Pagos">
-                        <div className="flex ">
-
+                        <div className="flex">
                             <div className="mr-2 h-[25vh] overflow-y-auto overflow-x-auto shadow-md sm:rounded-lg max-h-[400px] bg-white border-gray-200 border">
                                 <table className="min-w-full w-full table-fixed relative">
                                     <thead className="bg-gray-100 sticky top-0 z-10">
@@ -142,7 +190,7 @@ export default function BottomDerecho({ register, articulos, setAlerta, pagos, s
                                     <tbody className="bg-white divide-y divide-gray-200">
                                         {pagos?.map((pago: any, index: number) => (
                                             <tr key={index} className={`${pago.error ? 'bg-red-300' : ''}`}>
-                                                <td className="px-2 py-1 whitespace-nowrap text-sm font-medium text-gray-900 border-r border-gray-200 text-ellipsis overflow-hidden">
+                                                <td className="px-2 py-1 whitespace-nowrap text-sm font-medium text-gray-900 border border-gray-200 text-ellipsis overflow-hidden">
                                                     <InputCommon
                                                         tipo={'text'}
                                                         id={pago.importe}
@@ -154,7 +202,7 @@ export default function BottomDerecho({ register, articulos, setAlerta, pagos, s
                                                         textAlign={'text-end'}
                                                     />
                                                 </td>
-                                                <td className="relateive px-2 py-1 z-50 whitespace-nowrap text-sm text-gray-500 border-r border-gray-200">
+                                                <td className="relateive px-2 py-1 z-50 whitespace-nowrap text-sm text-gray-500 border border-gray-200">
                                                     <ComboBoxSelect
                                                         data={valores}
                                                         setearCodigo={seleccionarValor}
@@ -164,7 +212,7 @@ export default function BottomDerecho({ register, articulos, setAlerta, pagos, s
                                                         index={index}
                                                     />
                                                 </td>
-                                                <td className="w-12 px-6 py-1 whitespace-nowrap text-right text-sm font-medium">
+                                                <td className="w-12 px-6 py-1 whitespace-nowrap text-right text-sm font-medium border-b border-gray-200">
                                                     <a href="#" className="text-indigo-600 hover:text-indigo-900"
                                                         onClick={(e) => {
                                                             e.preventDefault();
@@ -183,64 +231,11 @@ export default function BottomDerecho({ register, articulos, setAlerta, pagos, s
                             </div>
                         </div>
                     </Tab>
-                    <Tab key="music" title="Totales">
-                        <Card className="h-[25vh]">
-                            <CardBody>
-                                <div className="text-black flex justify-between items-center">
-                                    <label htmlFor="">Sub total Gravado</label>
-                                    <div className="w-[200px]">
-                                        <InputCommon
-                                            tipo={'text'}
-                                            texto={articulos?.reduce((acc: number, articulo: any) => {
-                                                const calculo = (79 * articulo.precio_vta * articulo.cantidad) / 100;
-                                                return acc + parseFloat(calculo.toFixed(2));
-                                            }, 0).toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                                            id={'subtotal'}
-                                            textAlign={'text-end'}
-                                            desactivado={true}
-                                        />
-
-                                    </div>
-                                </div>
-                                <div className="text-black flex justify-between items-center">
-                                    <label htmlFor="">Total IVA</label>
-                                    <div className="w-[200px] mt-1">
-                                        <InputCommon
-                                            tipo={'text'}
-                                            texto={articulos?.reduce((acc: number, articulo: any) => {
-                                                const calculo = (21 * articulo.precio_vta * articulo.cantidad) / 100;
-                                                return acc + parseFloat(calculo.toFixed(2));
-                                            }, 0).toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                                            id={'subtotal'}
-                                            textAlign={'text-end'}
-                                            desactivado={true}
-                                        />
-                                    </div>
-                                </div>
-                                <div className="text-black flex justify-between items-center">
-                                    <label htmlFor="">Total Facturado</label>
-                                    <div className="w-[200px]  mt-1">
-                                        <InputCommon
-                                            tipo={'text'}
-                                            texto={articulos?.reduce((acc: number, articulo: any) => {
-                                                const calculo = (articulo.precio_vta * articulo.cantidad);
-                                                return acc + parseFloat(calculo.toFixed(2));
-                                            }, 0).toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                                            id={'subtotal'}
-                                            textAlign={'text-end'}
-                                            desactivado={true}
-                                        />
-                                    </div>
-                                </div>
-                            </CardBody>
-                        </Card>
-                    </Tab>
                 </Tabs>
 
                 <div className="pt-2 grid gap-x-2 gap-y-0 grid-cols-6 sm:grid-cols-12" >
                     <div className="col-span-4 sm:col-span-4 md:col-span-4 flex items-center">
-                        <div className="w-full mr-2 h-20"> {/* Cambié w-full a w-1/2 para ocupar la mitad del ancho */}
-
+                        <div className="w-full mr-2 h-20">
                             {/* <ComboBoxSelect
                                 titulo={"Recibo"}
                                 data={comp}

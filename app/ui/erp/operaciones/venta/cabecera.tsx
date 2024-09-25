@@ -6,11 +6,13 @@ import { DbCompConsul, DbConsultarCliente, DbMonedasConsul } from "@/app/lib/dat
 import ButtonCommon from "../../ButtonCommon";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import ClientesConsul from '@/app/ui/erp/consultas/Clientes_consul';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 
-
-export default function Cabecera({ register, setValue, clearErrors, errors, mostrarErrorAlerta, getValues, setMensaje }: any) {
-    const [num_cliente, setNum_cliente] = useState();
+export default function Cabecera({ register, setValue, clearErrors, errors, mostrarErrorAlerta, getValues, consultarComprobante, setAlerta, num_cliente, setNum_cliente, bloquear }: any) {
+    const searchParams = useSearchParams();
+    const pathname = usePathname();
+    const { replace } = useRouter();
     const [clientes, setClientes] = useState<{}>([]);
     const [monedas, setMonedas] = useState([]);
     const [moneDefault, setMoneDefault] = useState('PES');
@@ -44,6 +46,22 @@ export default function Cabecera({ register, setValue, clearErrors, errors, most
     }
 
     const seleccionarCompSelec = (compSelect: any) => {
+        const params = new URLSearchParams(searchParams);
+        let tipo: string | null = compSelect;
+        if (tipo) {
+            params.set('tipo', tipo);
+            replace(`${pathname}?${params.toString()}`);
+            //elimina el num para que no consulte de mas
+            params.delete('num');
+            replace(`${pathname}?${params.toString()}`);
+            clearErrors()
+        } else {
+            params.delete('tipo');
+            replace(`${pathname}?${params.toString()}`);
+            clearErrors();
+            return
+        }
+
         const prox_num: any = comp.filter((comp: any) => comp.id == compSelect);
         if (prox_num.length > 0) {
             setValue('numero', prox_num[0].prox_num);
@@ -53,16 +71,17 @@ export default function Cabecera({ register, setValue, clearErrors, errors, most
     }
 
     const consultarClientesPorCodigo = async (cliente: any) => {
+        if (cliente.target.value == '') return
+
         const respuesta = await DbConsultarCliente(cliente.target.value);
         const data = await respuesta.json();
         if (respuesta.ok) {
             setClientes([{ id: data.codigo, name: data.razon }])
         } else {
-            setMensaje({
-                mostrar: true,
-                mensaje: data.message,
-                titulo: 'Oops...',
-                tipo_aletar: 'error',
+            setAlerta({
+                message: data.message,
+                type: "error",
+                alertVisible: true,
             });
         }
         setNum_cliente(cliente.target.value)
@@ -117,6 +136,37 @@ export default function Cabecera({ register, setValue, clearErrors, errors, most
         setValue('num_cliente', cliente.codigo);
     }
 
+    useEffect(() => {
+        const params = new URLSearchParams(searchParams);
+        let tipo: string | null = params.get('tipo');
+        let num: string | null = params.get('num');
+        if ((tipo != '' && tipo != null) && (num != '' && num != null)) {
+            consultarComprobante(tipo, num);
+        }
+    }, [searchParams]);
+
+    const consultar = () => {
+        const params = new URLSearchParams(searchParams);
+        let numero: string | null = getValues('numero');
+        if (numero) {
+            params.set('num', numero);
+            replace(`${pathname}?${params.toString()}`);
+            clearErrors()
+        } else {
+            params.delete('num');
+            replace(`${pathname}?${params.toString()}`);
+            clearErrors();
+            return
+        }
+        let tipo: string | null = params.get('tipo')
+
+        if (tipo) {
+            let compFilter: any = comp.filter((comp: any) => comp.id == tipo)
+            if (compFilter[0].prox_num != numero)
+                consultarComprobante(tipo, numero);
+        }
+    }
+
     return (
         <>
             <div className="pt-2 grid gap-x-2 gap-y-0 grid-cols-10">
@@ -128,6 +178,7 @@ export default function Cabecera({ register, setValue, clearErrors, errors, most
                             seleccionado={getValues('tipo')}
                             setearCodigo={seleccionarCompSelec}
                             error={errors.tipo?.message}
+                            desactivado={bloquear}
                         />
                     </div>
                 </div>
@@ -139,7 +190,9 @@ export default function Cabecera({ register, setValue, clearErrors, errors, most
                             tipo={'number'}
                             error={errors.numero?.message}
                             placeholder={"Numero de la factura"}
-                            useForm={register("numero")} />
+                            useForm={register("numero", { onBlur: consultar })}
+                            desactivado={bloquear}
+                        />
                     </div>
                 </div>
                 <div className="col-span-6 sm:col-span-6 md:col-span-2 flex items-center">
@@ -149,7 +202,9 @@ export default function Cabecera({ register, setValue, clearErrors, errors, most
                             tipo={'date'}
                             error={errors.fecha?.message}
                             placeholder={""}
-                            useForm={register("fecha")} />
+                            useForm={register("fecha")}
+                            desactivado={bloquear}
+                        />
                     </div>
                 </div>
                 <div className="col-span-6 sm:col-span-6 md:col-span-2 flex items-center">
@@ -157,10 +212,11 @@ export default function Cabecera({ register, setValue, clearErrors, errors, most
                         <ComboBoxSelect
                             titulo={"Moneda"}
                             data={monedas}
-                            seleccionado={moneDefault}
+                            seleccionado={getValues('mone') ? getValues('mone') : moneDefault}
                             setearCodigo={seleccionarMoneSelec}
                             error={errors.mone?.message}
                             mostrarError={mostrarErrorAlerta}
+                            desactivado={bloquear}
                         />
                     </div>
                 </div>
@@ -171,7 +227,7 @@ export default function Cabecera({ register, setValue, clearErrors, errors, most
                             tipo={'number'}
                             useForm={register("mone_coti")}
                             error={errors.mone_coti?.message}
-                            desactivado={getValues('mone') == 'PES'}
+                            desactivado={(getValues('mone') == 'PES' || bloquear)}
                         />
                     </div>
                 </div>
@@ -183,6 +239,7 @@ export default function Cabecera({ register, setValue, clearErrors, errors, most
                             error={errors.num_cliente?.message}
                             placeholder={""}
                             useForm={register("num_cliente", { onBlur: consultarClientesPorCodigo })}
+                            desactivado={bloquear}
                         />
                     </div>
                 </div>
@@ -196,6 +253,7 @@ export default function Cabecera({ register, setValue, clearErrors, errors, most
                             setearCodigo={seleccionarClienteSelec}
                             mostrarError={mostrarErrorAlerta}
                             llenarData={consutlarClientes}
+                            desactivado={bloquear}
                         />
                     </div>
                     <div>
@@ -206,6 +264,7 @@ export default function Cabecera({ register, setValue, clearErrors, errors, most
                             py={"py-1"}
                             tooltip="Buscar Clientes"
                             onClick={toggleAbrirClientesConsul}
+                            desactivado={bloquear}
                         />
                     </div>
                 </div>

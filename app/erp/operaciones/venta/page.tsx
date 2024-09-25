@@ -1,6 +1,6 @@
 "use client"
 
-import { DbGrabartarFactura } from '@/app/lib/data';
+import { DbConsultarFactura, DbGrabartarFactura } from '@/app/lib/data';
 import DismissibleAlert from '@/app/ui/DismissAlerta';
 import ButtonCommon from '@/app/ui/erp/ButtonCommon';
 import Alerta from '@/app/ui/erp/alerta';
@@ -20,6 +20,7 @@ type Inputs = {
     numero: string,
     fecha: string,
     mone: string,
+    mone_coti: number,
     num_cliente: string,
     razon_cliente: string,
     articulos: {
@@ -42,6 +43,7 @@ const fecha_hoy = new Date().toISOString().split('T')[0];
 export default function Factura() {
     const [cargando, setCargando] = useState(false);
     const [respuesta, setRespuesta] = useState(false);
+    const [bloquear, setBloquear] = useState(false); //para bloquear los inputs cuando consultas el comprobante
     const [abrirArticulosConsul, setAbrirArticulosConsul] = useState(false);
 
     const [mensaje, setMensaje] = useState({
@@ -56,6 +58,7 @@ export default function Factura() {
             numero: '',
             fecha: fecha_hoy,
             mone: 'PES',
+            mone_coti: 1,
             num_cliente: '',
             razon_cliente: '',
             articulos: [{
@@ -68,6 +71,7 @@ export default function Factura() {
         },
         resolver: zodResolver(VentaSchema)
     })
+    const [num_cliente, setNum_cliente] = useState<any>();
     const [articulos, setArticulos] = useState<{
         error: boolean; codigo: string, descripcion: string, unidad: string, cantidad: number, precio_vta: number, costo_uni: number
     }[]>([]);
@@ -112,39 +116,13 @@ export default function Factura() {
                 type: "",
                 alertVisible: false
             });
-        }, 300); 
+        }, 300);
     };
-
-
-    const prevArticulosRef = useRef(articulos);
-    useEffect(() => {
-        const prevArticulos = prevArticulosRef.current;
-        if (articulos.length > prevArticulos.length) {
-            const articuloAgregado: any = articulos.filter((articulo: any, index: number, self: any[]) =>
-                index === self.findIndex((t) => t.codigo === articulo.codigo)
-            );
-            setAlerta({
-                message: `Se agregó el artículo: ${articuloAgregado[0].descripcion}`,
-                type: "success",
-                alertVisible: true
-            });
-        } else if (articulos.length < prevArticulos.length) {
-            // Se eliminó un artículo
-            const articuloEliminado: any = articulos.filter((articulo: any, index: number, self: any[]) =>
-                index === self.findIndex((t) => t.codigo === articulo.codigo)
-            );
-            setAlerta({
-                message: `Se eliminó el artículo: ${articuloEliminado[0].descripcion}`,
-                type: "warning",
-                alertVisible: true
-            });
-        }
-        prevArticulosRef.current = articulos;
-    }, [articulos.length]);
 
     const toggleAbrirArticulosConsul = () => {
         setAbrirArticulosConsul(!abrirArticulosConsul)
     }
+
     const enviarForm = async (data?: any) => {
         setCargando(true)
         if (articulos.length <= 0) {
@@ -183,6 +161,7 @@ export default function Factura() {
                 titulo: 'Operacion Exitosa!',
                 tipo_aletar: 'exitoso',
             });
+            setBloquear(true);
             return
         } else {
             setCargando(false);
@@ -197,23 +176,72 @@ export default function Factura() {
         }
     }
 
+    const consultarComprobante = async (tipo: string, num: number) => {
+        setCargando(true)
+        try {
+            const response = await DbConsultarFactura(tipo, num)
+            const data = await response.json();
+
+            if (response.ok) {
+                setBloquear(true)
+                setValue('tipo', data.tipo)
+                setValue('numero', data.num)
+                // setValue('fecha', data.fecha.toISOString().split('T')[0])
+                setValue('mone', data.mone)
+                setValue('mone_coti', data.mone_coti)
+                setNum_cliente(data.cliente)
+                setValue('num_cliente', data.cliente)
+                setValue('razon_cliente', data.clientes.razon)
+                setArticulos([])
+                data.articulos.map((articulo: any) => {
+                    const articulos = [{
+                        codigo: articulo.articulo,
+                        descripcion: articulo.articuloDatos.descripcion,
+                        unidad: articulo.unidad,
+                        cantidad: parseFloat(articulo.cant) * -1 || 0,
+                        precio_vta: parseFloat(articulo.precio) || 0,
+                        costo_uni: articulo.costo || 0
+                    }];
+                    setArticulos((prev: any) => [...prev, ...articulos]);
+                })
+                setCargando(false);
+                setRespuesta(true);
+            } else {
+                setCargando(false);
+                setRespuesta(false);
+                setBloquear(false)
+                limpiar();
+                setAlerta({
+                    message: data.message,
+                    type: "error",
+                    alertVisible: true
+                });
+            }
+        } catch (error: any) {
+            setCargando(false);
+            setRespuesta(false);
+            setAlerta({
+                message: error.Error,
+                type: "error",
+                alertVisible: true
+            });
+        }
+    }
+
     useEffect(() => {
         if (!errors || !errors.articulos || !Array.isArray(errors.articulos)) {
             return; // No hay errores que mostrar
         }
         const errorIndices = new Set(errors.articulos.map((e, index) => index));
-
         setArticulos((prevObjetos) =>
             prevObjetos.map((obj, index) => ({
                 ...obj,
                 error: errorIndices.has(index),
             }))
         );
-
         let mensaje: string = '';
 
         if (errors.articulos.length > 0) {
-
             errors.articulos.map((error, index) => {
                 mensaje += error.cantidad.message + '\n\n'
             });
@@ -221,13 +249,31 @@ export default function Factura() {
         setMensaje({
             mostrar: true,
             mensaje: mensaje,
-            titulo: 'O  ops...',
+            titulo: 'Oops...',
             tipo_aletar: 'error',
         });
-
         clearErrors();
-
     }, [errors]);
+
+    const clickLimpiar = async () => {
+        setValue('tipo', '')
+        setValue('numero', '')
+        limpiar()
+    }
+
+    const limpiar = async () => {
+        setBloquear(false)
+        setValue('fecha', fecha_hoy)
+        setValue('mone', '')
+        setValue('mone_coti', 0)
+        setNum_cliente('')
+        setValue('num_cliente', '')
+        setValue('razon_cliente', '')
+        setArticulos([])
+        setPagos([])
+    }
+
+
 
     return (
         <div className='mx-auto max-w-screen-2xl bg-white'>
@@ -237,20 +283,21 @@ export default function Factura() {
                         register={register}
                         setValue={setValue}
                         errors={errors}
-                        setMensaje={setMensaje}
                         clearErrors={clearErrors}
                         getValues={getValues}
+                        consultarComprobante={consultarComprobante}
+                        setAlerta={setAlerta}
+                        num_cliente={num_cliente}
+                        setNum_cliente={setNum_cliente}
+                        bloquear={bloquear}
                     />
                     <div className="w-full flex justify-between my-2">
                         <div>
                             <h2 className='text-xl font-medium leading-7 text-gray-900 sm:truncate sm:text-xl sm:tracking-tight'>Articulos</h2>
                         </div>
                         <div className='flex'>
-                            <div className='w-[150px] sm:mr-4'>
-                                <ButtonCommon type="button" texto={"Buscar Articulos"} onClick={toggleAbrirArticulosConsul} />
-                            </div>
                             <div className='w-[150px]'>
-                                <ButtonCommon type="submit" texto={<><PlusCircleIcon aria-hidden="true" className="mr-1.5 h-5 w-5" />Guardar</>} />
+                                <ButtonCommon type="button" texto={"Buscar Articulos"} onClick={toggleAbrirArticulosConsul} />
                             </div>
                         </div>
                     </div>
@@ -260,6 +307,7 @@ export default function Factura() {
                             articulos={articulos}
                             setAlerta={setAlerta}
                             setArticulos={setArticulos}
+                            bloquear={bloquear}
                         />
                     </div>
                 </div>
@@ -271,6 +319,8 @@ export default function Factura() {
                         setArticulos={setArticulos}
                         pagos={pagos}
                         setPagos={setPagos}
+                        clickLimpiar={clickLimpiar}
+                        bloquear={bloquear}
                     />
                 </div>
             </form>
@@ -296,7 +346,6 @@ export default function Factura() {
                 onClose={closeAlertaDismiss}
                 showPanel={alerta.alertVisible}
             />
-
 
             <Loading cargando={cargando} respuesta={respuesta} />
 

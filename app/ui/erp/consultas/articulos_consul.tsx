@@ -60,9 +60,8 @@ export default function ArticulosConsul({ setArticulo, open, setOpen }: any) {
     const consultar = async () => {
         const respuesta = await DbConsultarArticulo(sCodarticulos, 'S', sDescrip, ordenarConfig.key, ordenarConfig.direction, pagina, 50, 'S', 'N');
         const data = await respuesta.json();
+        
         if (respuesta.ok) {
-            console.log(data);
-
             setArticulos(data.articulos);
         } else {
             setError({

@@ -5,7 +5,7 @@ import InputCommon from "../../../inputCommon";
 import { DbConsultarArticulo } from "@/app/lib/data";
 import Alerta from "../../alerta";
 
-export default function TablaArticulos({ register, articulos, setAlerta, setArticulos }: any) {
+export default function TablaArticulos({ register, articulos, setAlerta, setArticulos, bloquear }: any) {
     const [columnWidths, setColumnWidths] = useState([150, 400, 100, 125, 125, 100]);
     const [error, setError] = useState({
         mostrar: false,
@@ -37,7 +37,7 @@ export default function TablaArticulos({ register, articulos, setAlerta, setArti
     };
 
     const [nuevoArticulo, setNuevoArticulo] = useState<any>({});
-    
+
     const manejarCambioNuevoArticulo = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { id, value } = e.target;
         setNuevoArticulo((prev: any) => ({ ...prev, [id]: value }));
@@ -56,10 +56,16 @@ export default function TablaArticulos({ register, articulos, setAlerta, setArti
                 codigo: data.codigo,
                 descripcion: data.descripcion,
                 unidad: data.unidad,
-                cantidad: parseFloat(data.cant_default ) || 0,
+                cantidad: parseFloat(data.cant_default) || 0,
                 precio_vta: parseFloat(data.precio_vta) || 0,
                 costo_uni: data.costo || 0
             }];
+
+            setAlerta({
+                message: `Se agregó el artículo: ${articulos[0].descripcion}`,
+                type: "success",
+                alertVisible: true
+            });
 
             setArticulos((prev: any) => [...prev, ...articulos]);
 
@@ -88,7 +94,7 @@ export default function TablaArticulos({ register, articulos, setAlerta, setArti
     const borrarArticulo = (articulo: any, index: any) => {
         setError({
             mostrar: true,
-            mensaje: 'Se eliminara como el articulo: ' + articulo.descripcion + 'inx:' + index,
+            mensaje: 'Se eliminara como el articulo: ' + articulo.descripcion,
             titulo: 'Estas seguro?',
             icono: 'error-icon',
             botonExtra: true,
@@ -96,24 +102,38 @@ export default function TablaArticulos({ register, articulos, setAlerta, setArti
             funcionExtra: () => eliminar(index),
         });
     }
-    
+
     const eliminar = (index: any) => {
         const nuevosArticulos = articulos.filter((_: any, idx: any) => idx !== index);
+        const articulosEliminado = articulos.filter((_: any, idx: any) => idx == index);
+
+        setAlerta({
+            message: `Se eliminó el artículo: ${articulosEliminado[0].descripcion}`,
+            type: "warning",
+            alertVisible: true
+        });
 
         setArticulos(nuevosArticulos);
         cerrarAlerta();
     }
 
     const cerrarAlerta = () => {
-        setError({
+        setError((prev) => ({
+            ...prev,
             mostrar: false,
-            mensaje: '',
-            titulo: '',
-            icono: '',
-            botonExtra: false,
-            textoExtra: '',
-            funcionExtra: () => { }
-        });
+        }));
+
+        setTimeout(() => {
+            setError({
+                mostrar: false,
+                mensaje: '',
+                titulo: '',
+                icono: '',
+                botonExtra: false,
+                textoExtra: '',
+                funcionExtra: () => { }
+            });
+        }, 300);
     }
 
     return (
@@ -165,8 +185,8 @@ export default function TablaArticulos({ register, articulos, setAlerta, setArti
                         </thead>
                         <tbody className="bg-white divide-y divide-gray-200">
                             {articulos?.map((articulo: any, index: number) => (
-                                <tr key={index} className={`${articulo.error ? 'bg-red-300' : ''}`}>
-                                    <td className="px-2 py-1 whitespace-nowrap text-sm font-medium text-gray-900 border-r border-gray-200 text-ellipsis overflow-hidden">
+                                <tr key={index} className={`${articulo.error ? 'bg-red-300' : ''} ${bloquear ? 'bg-yellow-100' : ''}`}>
+                                    <td className="px-2 py-1 whitespace-nowrap text-sm font-medium text-gray-900 border border-gray-200 text-ellipsis overflow-hidden">
                                         <InputCommon
                                             tipo={'text'}
                                             id={articulo.codigo}
@@ -174,12 +194,13 @@ export default function TablaArticulos({ register, articulos, setAlerta, setArti
                                             // useForm={register(articulo.cod_articulo_compo + '-' + index)}
                                             onChange={manejarCambioNuevoArticulo}
                                             paddingY={'py-0.5'}
+                                            desactivado={bloquear}
                                         />
                                     </td>
-                                    <td className="px-2 py-1 whitespace-nowrap text-sm text-gray-500 border-r border-gray-200 text-ellipsis overflow-hidden">
+                                    <td className="px-2 py-1 whitespace-nowrap text-sm text-gray-900 border border-gray-200 text-ellipsis overflow-hidden">
                                         {articulo.descripcion}
                                     </td>
-                                    <td className="px-2 py-1 whitespace-nowrap text-sm text-gray-500 border-r border-gray-200 text-ellipsis overflow-hidden">
+                                    <td className="px-2 py-1 whitespace-nowrap text-sm text-gray-900 border border-gray-200 text-ellipsis overflow-hidden">
                                         <InputCommon
                                             tipo={'text'}
                                             texto={articulo.cantidad.toLocaleString('es-AR')}
@@ -189,9 +210,10 @@ export default function TablaArticulos({ register, articulos, setAlerta, setArti
                                             })}
                                             textAlign={'text-end'}
                                             paddingY={'py-0.5'}
+                                            desactivado={bloquear}
                                         />
                                     </td>
-                                    <td className="px-2 py-1 whitespace-nowrap text-sm text-gray-500 border-r border-gray-200 text-ellipsis overflow-hidden">
+                                    <td className="px-2 py-1 whitespace-nowrap text-sm text-gray-900 border border-gray-200 text-ellipsis overflow-hidden">
                                         <InputCommon
                                             tipo={'text'}
                                             texto={articulo.precio_vta.toLocaleString('es-AR')}
@@ -201,13 +223,14 @@ export default function TablaArticulos({ register, articulos, setAlerta, setArti
                                             })}
                                             textAlign={'text-end'}
                                             paddingY={'py-0.5'}
+                                            desactivado={bloquear}
                                         />
                                     </td>
 
-                                    <td className="text-end px-3 py-1 whitespace-nowrap text-sm text-gray-500 border-r border-gray-200 text-ellipsis overflow-hidden">
+                                    <td className="text-end px-3 py-1 whitespace-nowrap text-sm text-gray-900 border border-gray-200 text-ellipsis overflow-hidden">
                                         {(articulo.cantidad * articulo.precio_vta).toLocaleString('es-AR')}
                                     </td>
-                                    <td className="w-12 px-6 py-1 whitespace-nowrap text-right text-sm font-medium">
+                                    <td className="w-12 px-6 py-1 whitespace-nowrap text-right text-sm font-medium border-b border-gray-200">
                                         <a href="#" className="text-indigo-600 hover:text-indigo-900"
                                             onClick={(e) => {
                                                 e.preventDefault();
@@ -218,49 +241,52 @@ export default function TablaArticulos({ register, articulos, setAlerta, setArti
                                     </td>
                                 </tr>
                             ))}
-                            <tr className="border-b">
-                                <td className="px-2 py-1 whitespace-nowrap text-sm font-medium text-gray-900 border border-gray-200">
-                                    <InputCommon
-                                        tipo={'text'}
-                                        id="codigo"
-                                        texto={nuevoArticulo.codigo}
-                                        onChange={manejarCambioNuevoArticulo}
-                                        funcionOnblur={(e: any) => consultarArticulo(e)}
-                                        paddingY={'py-0.5'}
-                                    />
-                                </td>
-                                <td className="px-2 py-1 whitespace-nowrap text-sm text-gray-500 border border-gray-200">
+                            {!bloquear ? (
+                                <tr className="border-b">
+                                    <td className="px-2 py-1 whitespace-nowrap text-sm font-medium text-gray-900 border border-gray-200">
+                                        <InputCommon
+                                            tipo={'text'}
+                                            id="codigo"
+                                            texto={nuevoArticulo.codigo}
+                                            onChange={manejarCambioNuevoArticulo}
+                                            funcionOnblur={(e: any) => consultarArticulo(e)}
+                                            paddingY={'py-0.5'}
+                                        />
+                                    </td>
+                                    <td className="px-2 py-1 whitespace-nowrap text-sm text-gray-500 border border-gray-200">
 
-                                </td>
-                                <td className="px-2 py-1 whitespace-nowrap text-sm text-gray-500 border border-gray-200">
-                                    <InputCommon
-                                        tipo={'number'}
-                                        id="cantidad"
-                                        textAlign={'text-end'}
-                                        paddingY={'py-0.5'}
-                                    // texto={nuevoArticuloCompo.cantidad}
-                                    // onChange={(e: React.ChangeEvent<HTMLInputElement>) => manejarCambioNuevoArticulo(e)}
-                                    />
-                                </td>
-                                <td className="px-2 py-1 whitespace-nowrap text-sm text-gray-500 border border-gray-200">
-                                    <InputCommon
-                                        tipo={'number'}
-                                        id="cantidad"
-                                        textAlign={'text-end'}
-                                        paddingY={'py-0.5'}
-                                    // texto={nuevoArticuloCompo.cantidad}
-                                    // onChange={(e: React.ChangeEvent<HTMLInputElement>) => manejarCambioNuevoArticulo(e)}
-                                    />
-                                </td>
-                                <td className="px-2 py-1 whitespace-nowrap text-sm text-gray-500 border border-gray-200">
+                                    </td>
+                                    <td className="px-2 py-1 whitespace-nowrap text-sm text-gray-500 border border-gray-200">
+                                        <InputCommon
+                                            tipo={'number'}
+                                            id="cantidad"
+                                            textAlign={'text-end'}
+                                            paddingY={'py-0.5'}
+                                        // texto={nuevoArticuloCompo.cantidad}
+                                        // onChange={(e: React.ChangeEvent<HTMLInputElement>) => manejarCambioNuevoArticulo(e)}
+                                        />
+                                    </td>
+                                    <td className="px-2 py-1 whitespace-nowrap text-sm text-gray-500 border border-gray-200">
+                                        <InputCommon
+                                            tipo={'number'}
+                                            id="cantidad"
+                                            textAlign={'text-end'}
+                                            paddingY={'py-0.5'}
+                                        // texto={nuevoArticuloCompo.cantidad}
+                                        // onChange={(e: React.ChangeEvent<HTMLInputElement>) => manejarCambioNuevoArticulo(e)}
+                                        />
+                                    </td>
+                                    <td className="px-2 py-1 whitespace-nowrap text-sm text-gray-500 border border-gray-200">
 
-                                </td>
-                                <td className="w-12 px-6 py-2 whitespace-nowrap text-right text-sm font-medium">
-                                    <a href="#" className="text-indigo-600 hover:text-indigo-900">
-                                        Eliminar
-                                    </a>
-                                </td>
-                            </tr>
+                                    </td>
+                                    <td className="w-12 px-6 py-2 whitespace-nowrap text-right text-sm font-medium border-b border-gray-200">
+                                        <a href="#" className="text-indigo-600 hover:text-indigo-900">
+                                            Eliminar
+                                        </a>
+                                    </td>
+                                </tr>
+                            ) : (<></>)
+                            }
                         </tbody>
                     </table>
                 </div>

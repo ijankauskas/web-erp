@@ -1,7 +1,7 @@
 import { Popover, PopoverContent, PopoverTrigger } from '@nextui-org/react';
 
 
-const PopOverComp = ({ isPopoverOpen, closePopover, popoverPosition, comprobante,imprimirComprobante }: any) => {
+const PopOverComp = ({ isPopoverOpen, closePopover, popoverPosition, comprobante, imprimirComprobante, consutlarComprobante }: any) => {
 
     return (
         <>
@@ -21,14 +21,14 @@ const PopOverComp = ({ isPopoverOpen, closePopover, popoverPosition, comprobante
                 <PopoverContent>
                     <div className="w-full px-3 py-2 text-start border-b">
                         <p className="font-semibold text-start block rounded-lg transition">
-                            Factura - {comprobante?.num}
+                            {comprobante?.comp.descrip} - {comprobante?.num}
                         </p>
                     </div>
                     <div className="px-1 py-2">
-                        <a className="block rounded-lg py-2 px-3 transition hover:bg-gray-300" onClick={()=>imprimirComprobante(comprobante)}>
+                        <a className="block rounded-lg py-2 px-3 transition hover:bg-gray-300" onClick={() => imprimirComprobante(comprobante)}>
                             <p className="">Imprimir</p>
                         </a>
-                        <a className="block rounded-lg py-2 px-3 transition hover:bg-gray-300" >
+                        <a className="block rounded-lg py-2 px-3 transition hover:bg-gray-300" onClick={() => consutlarComprobante(comprobante)}>
                             <p className="">Consultar Comprobante</p>
                         </a>
                         <a className="block rounded-lg py-2 px-3 transition hover:bg-gray-300" >

@@ -91,7 +91,6 @@ const TablaComprobantes = ({ cliente, pagina, setPagina }: any) => {
     };
 
     const imprimirComprobante = async (comp: any) => {
-
         const response = await imprimirPDF('FAC', comp.tipo, comp.num);
 
         // Convertir la respuesta en un Blob de tipo PDF
@@ -109,11 +108,12 @@ const TablaComprobantes = ({ cliente, pagina, setPagina }: any) => {
         iframe.onload = () => {
             iframe.contentWindow?.print(); // Abrir el cuadro de impresión nativo de Chrome
         };
-
         // Añadir el iframe al documento
         document.body.appendChild(iframe);
+    }
 
-
+    const consutlarComprobante = async (comp: any) => {
+        window.open('/erp/operaciones/venta?tipo=' + comp.tipo + '&num=' + comp.num, '_blank');
     }
 
 
@@ -231,7 +231,7 @@ const TablaComprobantes = ({ cliente, pagina, setPagina }: any) => {
                                         {comprobante.tipo}
                                     </td>
                                     <td className="text-start text-ellipsis truncate px-2 py-1 whitespace-nowrap text-sm border border-gray-200">
-                                        {comprobante.descripcion}
+                                        {comprobante.comp.descrip}
                                     </td>
                                     <td className="text-end text-ellipsis truncate px-2 py-1 whitespace-nowrap text-sm border border-gray-200">
                                         {comprobante.num}
@@ -243,7 +243,7 @@ const TablaComprobantes = ({ cliente, pagina, setPagina }: any) => {
                                         {comprobante.estado}
                                     </td>
                                     <td className="text-center text-ellipsis truncate px-2 py-1 whitespace-nowrap text-sm border border-gray-200">
-                                        {comprobante.moneda}
+                                        {comprobante.mone}
                                     </td>
                                     <td className="text-ellipsis trunatce text-end px-2 py-1 whitespace-nowrap text-sm border border-gray-200">
                                         {comprobante.total.toLocaleString('es-AR')}
@@ -281,6 +281,7 @@ const TablaComprobantes = ({ cliente, pagina, setPagina }: any) => {
                 closePopover={closePopover}
                 comprobante={comprobante}
                 imprimirComprobante={imprimirComprobante}
+                consutlarComprobante={consutlarComprobante}
             />
 
         </div>

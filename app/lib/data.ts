@@ -1,7 +1,7 @@
 let produccion = false;
 let url = '';
 if (produccion) {
-    url = ''
+    url = 'api.ecomsolver.com.ar'
 } else {
     url = 'http://localhost:8080'
 }
@@ -19,7 +19,7 @@ export async function DbConsultarArticulo(
 ) {
 
     try {
-        const response = await fetch(url + '/articulos?codigo=' + cod_articulo + '&multiple=' + multiple + '&descripcion=' + descripcion + '&columnaOrden=' + columnaOrden + '&dir=' + dir + '&page=' + page + '&limit=' + limit + '&activos=' + activos+ '&total=' + total, {
+        const response = await fetch(url + '/articulos?codigo=' + cod_articulo + '&multiple=' + multiple + '&descripcion=' + descripcion + '&columnaOrden=' + columnaOrden + '&dir=' + dir + '&page=' + page + '&limit=' + limit + '&activos=' + activos + '&total=' + total, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -339,6 +339,22 @@ export async function DbBorrarCliente(data: any | null) {
 
         return response;
     } catch (error) {
+        throw new Error('Failed to fetch card data.');
+    }
+}
+
+export async function DbConsultarFactura(tipo: string, num: number) {
+    try {
+        const response = await fetch(url + '/facturas?tipo=' + tipo + '&num=' + num, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
+
+        return response;
+    } catch (error) {
+        console.error('Database Error:', error);
         throw new Error('Failed to fetch card data.');
     }
 }

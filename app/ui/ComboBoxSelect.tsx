@@ -7,7 +7,7 @@ function classNames(...classes: any[]) {
   return classes.filter(Boolean).join(' ');
 }
 
-export default function ComboBoxSelect({ titulo='', data, seleccionado, setearCodigo, mostrarError, useForm, error, llenarData, paddingY = 'py-1.5', index }: any) {
+export default function ComboBoxSelect({ titulo='', data, seleccionado, setearCodigo, mostrarError, useForm, error, llenarData, paddingY = 'py-1.5', index, desactivado }: any) {
   const [selectedPerson, setSelectedPerson] = useState<{ id: any; name: string } | null>(null);
   const [query, setQuery] = useState('');
 
@@ -54,7 +54,7 @@ export default function ComboBoxSelect({ titulo='', data, seleccionado, setearCo
 
   return (
     <>
-      <Combobox as="div" value={selectedPerson} onChange={seleccionarOpcion} {...useForm}>
+      <Combobox as="div" value={selectedPerson} onChange={seleccionarOpcion} {...useForm} disabled={desactivado}>
         <Combobox.Label className="block text-sm font-medium text-gray-700">{titulo}</Combobox.Label>
         <div className={`relative ${titulo == ''? 'mt-0': 'mt-1'}`}>
           <Combobox.Input
