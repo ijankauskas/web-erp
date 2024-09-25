@@ -7,13 +7,6 @@ import {
     ChevronUpIcon
 } from '@heroicons/react/24/outline'
 
-export async function getServerSideProps() {
-    const respuesta = await DbConsultarListasCabe(null, 'S', '');
-    const data = await respuesta.json();
-    return { props: { data } };
-}
-
-
 const TablaListas = ({ busqueda, seleccionarListas, pagina, setPagina }: any) => {
     const [columnWidths, setColumnWidths] = useState([50, 125, 50]);
     const [listas, setListas] = useState([]);
@@ -27,7 +20,7 @@ const TablaListas = ({ busqueda, seleccionarListas, pagina, setPagina }: any) =>
     async function cargarComponente() {
         setLoading(true);
         try {
-            const respuesta = await DbListasItems('lista_codi', pagina, busqueda, ordenarConfig.key, ordenarConfig.direction);
+            const respuesta = await DbConsultarListasCabe(null, pagina, busqueda, ordenarConfig.key, ordenarConfig.direction);
             const data = await respuesta.json();
             if (!respuesta.ok) {
                 throw new Error('Error al cargar las listas');
@@ -182,7 +175,7 @@ const TablaListas = ({ busqueda, seleccionarListas, pagina, setPagina }: any) =>
                                         className="flex items-center"
                                         alt="Screenshots of the dashboard project showing desktop version"
                                     />
-                                    Ups!... No se encontraron clientes.
+                                    Ups!... No se encontraron listas.
                                 </div>
                             </td>
                         </tr>

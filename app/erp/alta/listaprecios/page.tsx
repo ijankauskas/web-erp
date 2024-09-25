@@ -1,5 +1,6 @@
 'use client'
 import TablaListas from '@/app/ui/erp/lista_precios/TablaListas';
+import TablaListasItems from '@/app/ui/erp/lista_precios/TablaListasItems';
 import Paginado from '@/app/ui/erp/saldos_cliente/Paginado';
 import PaginadoComp from '@/app/ui/erp/saldos_cliente/PaginadoComp';
 import TablaComprobantes from '@/app/ui/erp/saldos_cliente/TablaComprobantes';
@@ -63,9 +64,7 @@ const ConsultaSaldos = () => {
                     <div style={{ width: `${dividerPosition}%` }}>
                         <div className="flex flex-col h-full"> {/* Contenedor principal que ocupa toda la altura disponible */}
                             <div className="flex flex-col items-start justify-start bg-gray-100 flex-grow"> {/* Flex-grow para que este div crezca y ocupe el espacio disponible */}
-                                <div className="px-2 w-full bg-gray-200 flex justify-between items-center border-b border-gray-300">
-                                    <h1 className="text-lg">Listado de articulos</h1>
-                                </div>
+                               
                                 <div className="p-2 w-full items-center bg-gray-200 flex justify-start border-gray-300">
                                     <label className='mr-4' htmlFor="">Filtrar Listas:</label>
                                     <InputCommon
@@ -104,16 +103,16 @@ const ConsultaSaldos = () => {
 
                         ) : (
                             <h1 className="text-lg">
-                                Seleccionar cliente de la lista
+                                Seleccionar items de la lista
                             </h1>
 
                         )}
                     </div>
                     <div className="w-full h-full bg-white overflow-y-auto overflow-x-auto flex-grow">
-                        {/* <TablaComprobantes cliente={clienteSeleccionado} pagina={paginaComps} setPagina={setPaginaComps} /> */}
+                        { <TablaListasItems listas={listaSeleccionado} pagina={paginaComps} setPagina={setPaginaComps} /> }
                     </div>
                     <div className="bg-gray-100 w-full p-0"> {/* Contenedor para el paginado que siempre estará al final */}
-                        {/* <PaginadoComp pagina={paginaComps} cambiarPagina={cambiarPaginaComp} cliente={clienteSeleccionado} /> */}
+                        { /*<PaginadoComp pagina={paginaComps} cambiarPagina={cambiarPaginaComp} lista={listaSeleccionado} />*/ }
                     </div>
                 </div>
             </div>
