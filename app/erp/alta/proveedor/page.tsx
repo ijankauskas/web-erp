@@ -50,12 +50,6 @@ const tabs = [
 export default function Alta_proveedor() {
     const [cargando, setCargando] = useState(false)
     const [tab, setTab] = useState(0)
-    const ref = useRef<LoadingBarRef | null>(null);
-    useEffect(() => {
-        if (ref.current) {
-            ref.current.complete();
-        }
-    }, []);
 
     const [alerta, setAlerta] = useState({
         message: "",
@@ -185,20 +179,8 @@ export default function Alta_proveedor() {
         setValue('observaciones', '');
     }
 
-    useEffect(() => {
-        const params = new URLSearchParams(searchParams);
-        let codigo: string | null = params.get('codigo');
-        if (codigo != '' && codigo != null) {
-            setValue('codigo', parseFloat(codigo));
-            consultarProve();
-        }
-    }, []);
-
     return (
         <div className="max-w-7xl mx-auto py-0 px-4 sm:px-6 lg:px-8 bg-white">
-            <div>
-                <LoadingBar color='rgb(99 102 241)' ref={ref} />
-            </div>
             <HeaderProveedor />
             <Tabs tabs={tabs} seleccionarTab={seleccionarTab} tab={tab} />
             <div className='relative '>
@@ -230,10 +212,10 @@ export default function Alta_proveedor() {
                         </> :
                         tab == 1 ? <DatosContacto register={register} setValue={setValue} errors={errors} clearErrors={clearErrors} /> :
                             'Posición no definida.'}
-                   <div className="px-4 py-3 bg-white text-right sm:px-6">
+                    <div className="px-4 py-3 bg-white text-right sm:px-6">
                         <button
                             type="button"
-                            onClick={limpiar}  
+                            onClick={limpiar}
                             className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-gray-600 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 mr-2">
                             Limpiar
                         </button>
@@ -245,14 +227,13 @@ export default function Alta_proveedor() {
                     </div>
                 </form>
 
-                </div>
-                <DismissibleAlert
-                    message={alerta.message}
-                    type={alerta.type}
-                    onClose={closeAlertaDismiss}
-                    showPanel={alerta.alertVisible}
-                />
             </div>
-        </Suspense>
+            <DismissibleAlert
+                message={alerta.message}
+                type={alerta.type}
+                onClose={closeAlertaDismiss}
+                showPanel={alerta.alertVisible}
+            />
+        </div>
     )
 }

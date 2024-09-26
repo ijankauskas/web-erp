@@ -13,7 +13,11 @@ export default middleware((req) => {
 
     if (!publicRoutes.includes(nextUrl.pathname) && !isLogged) {
         return NextResponse.redirect(new URL("/login", nextUrl))
-   }
+    }
+
+    if (nextUrl.pathname == "/login" && isLogged) {
+        return NextResponse.redirect(new URL("/erp", nextUrl))
+    }
 
     return NextResponse.next();
 })

@@ -18,14 +18,14 @@ const DismissibleAlert = ({ showPanel, message, type = 'success', onClose, durat
     <Transition
       show={showPanel}
       enter="transform transition duration-500"
-      enterFrom="translate-y-[-100%]"
+      enterFrom="translate-y-[-200%]"
       enterTo="translate-y-0"
       leave="transform transition duration-500"
       leaveFrom="translate-y-0"
-      leaveTo="translate-y-[-100%]"
+      leaveTo="translate-y-[-200%]"
     >
       <div
-        className={`z-9999 fixed top-20 right-8 transform p-3 mb-4 text-sm rounded-lg w-full lg:w-2/6 ${typeClasses[type]}`}
+        className={`z-9999 fixed top-10 right-8 transform p-3 mb-4 text-sm rounded-lg w-full lg:w-2/6 ${typeClasses[type]}`}
         role="alert"
         style={{ zIndex: 10000 }}
       >

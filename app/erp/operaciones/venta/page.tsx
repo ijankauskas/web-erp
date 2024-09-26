@@ -12,7 +12,6 @@ import { VentaSchema } from '@/app/validaciones/venta';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { PlusCircleIcon } from '@heroicons/react/24/outline';
 import Loading from '@/app/ui/Loading';
 
 type Inputs = {
@@ -272,7 +271,6 @@ export default function Factura() {
         setArticulos([])
         setPagos([])
     }
-
 
 
     return (

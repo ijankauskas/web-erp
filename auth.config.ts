@@ -12,19 +12,19 @@ export default {
                 if (!success) {
                     throw new Error("Credenciales invalidas.")
                 }
-                let respuesta:any = await DbSingIn(data);
-                let user=null
+                let respuesta: any = await DbSingIn(data);
+                let user = null
                 const rta = await respuesta.json();
                 if (respuesta.ok) {
-                    user={
-                        id:rta.id,
-                        name:rta.name,
-                        email:rta.email
+                    user = {
+                        id: rta.id,
+                        name: rta.username,
+                        email: rta.email,
                     }
-                }else{
+                } else {
                     throw new Error(rta.message)
                 }
-                
+
                 return user
             },
         }),],

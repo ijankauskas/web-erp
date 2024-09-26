@@ -23,8 +23,6 @@ export const loginAction = async (values: any) => {
 export const signOutAction = async () => {
     try {
         await signOut()
-        console.log('aca');
-        
         return {success : true};
     } catch (error) {
         if (error instanceof AuthError) {

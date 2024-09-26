@@ -1,12 +1,15 @@
 "use client"
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { signInSchema } from '../validaciones/signIn';
 import { useForm } from 'react-hook-form';
 import { useRouter } from "next/navigation";
 import { loginAction } from '../actions/auth-action';
 import LoadingBar, { LoadingBarRef } from 'react-top-loading-bar';
+import InputCommon from '../ui/inputCommon';
+import { Spinner } from '@nextui-org/react';
+import { useUser } from "@/app/hooks/UserContext";
 
 type Inputs = {
   email: string,
@@ -14,8 +17,11 @@ type Inputs = {
 }
 
 const FormLogin = () => {
+  const [cargando, setCargando] = useState(false);
+  const [error, setError] = useState(false);
   const ref = useRef<LoadingBarRef | null>(null);
   const router = useRouter();
+
   const { register, handleSubmit, formState: { errors }, setValue, clearErrors, getValues, watch } = useForm<Inputs>({
     resolver: zodResolver(signInSchema)
   })
@@ -28,13 +34,17 @@ const FormLogin = () => {
 
 
   const enviarForm = async (data: Inputs) => {
+    setError(false);
+    setCargando(true);
     ref.current?.continuousStart();
     const respuesta = await loginAction(data)
-    console.log(respuesta);
     if (respuesta.error) {
       ref.current?.complete();
-      // setError(response.error);
+      setCargando(false);
+      setError(true);
     } else {
+
+      setCargando(false);
       ref.current?.complete();
       router.push("/erp");
     }
@@ -50,68 +60,42 @@ const FormLogin = () => {
         <div className="mx-auto w-full max-w-lg lg:w-[28rem]">
           <div>
             <img className="h-11" src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600" alt="Logo" />
-            <h2 className="mt-16 text-2xl font-bold leading-9 tracking-tight text-gray-900">Sign in to your account</h2>
+            <h2 className="mt-16 text-2xl font-bold leading-9 tracking-tight text-gray-900">Inicia sesion en tu cuenta</h2>
           </div>
           <div className="mt-10">
+            {cargando && (
+              <span className='flex justify-center text-sm'>Cargando...<Spinner size="sm" /></span>
+            )}
+            {error && (
+              <span className='flex justify-center text-sm text-red-500'>Credenciales invalidas.</span>
+            )}
             <form className="space-y-7" onSubmit={handleSubmit(data => enviarForm(data))}>
-              <div>
-                <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900">
-                  Email address
-                </label>
-                <div className="mt-2">
-                  <input
-                    id="email"
-                    type="email"
-                    autoComplete="email"
-                    required
-                    {...register('email')}
-                    className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                  />
-                </div>
+              <div className='h-20'>
+                <InputCommon
+                  titulo={"Email"}
+                  tipo={"email"}
+                  error={errors.email?.message}
+                  id="email"
+                  useForm={register("email")}
+                />
               </div>
 
-              <div>
-                <label htmlFor="password" className="block text-sm font-medium leading-6 text-gray-900">
-                  Password
-                </label>
-                <div className="mt-2">
-                  <input
-                    id="password"
-                    type="password"
-                    {...register('password')}
-                    autoComplete="current-password"
-                    required
-                    className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                  />
-                </div>
-              </div>
-
-              <div className="flex items-center justify-between">
-                <div className="flex items-center">
-                  <input
-                    id="remember-me"
-                    name="remember-me"
-                    type="checkbox"
-                    className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600"
-                  />
-                  <label htmlFor="remember-me" className="ml-3 block text-sm leading-6 text-gray-900">
-                    Remember me
-                  </label>
-                </div>
-
-                <div className="text-sm leading-6">
-                  <a href="#" className="font-semibold text-indigo-600 hover:text-indigo-500">
-                    Forgot password?
-                  </a>
-                </div>
+              <div className='h-20'>
+                <InputCommon
+                  titulo={"Contraseña"}
+                  tipo={"password"}
+                  error={errors.password?.message}
+                  id="password"
+                  useForm={register("password")}
+                />
               </div>
 
               <div>
                 <button
                   type="submit"
-                  className="flex w-full justify-center rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                  className="flex w-full justify-center rounded-md bg-primary px-3.5 py-2.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                 >
-                  Sign in
+                  Iniciar Sesion
                 </button>
               </div>
             </form>
@@ -121,7 +105,7 @@ const FormLogin = () => {
                   <div className="w-full border-t border-gray-300"></div>
                 </div>
                 <div className="relative flex justify-center text-sm">
-                  <span className="bg-white px-2 text-gray-500">Or continue with</span>
+                  <span className="bg-white px-2 text-gray-500">O continua con</span>
                 </div>
               </div>
               <div className="mt-6">

@@ -8,7 +8,6 @@ import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import ClientesConsul from '@/app/ui/erp/consultas/Clientes_consul';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
-
 export default function Cabecera({ register, setValue, clearErrors, errors, mostrarErrorAlerta, getValues, consultarComprobante, setAlerta, num_cliente, setNum_cliente, bloquear }: any) {
     const searchParams = useSearchParams();
     const pathname = usePathname();
@@ -127,6 +126,7 @@ export default function Cabecera({ register, setValue, clearErrors, errors, most
     }
 
     const toggleAbrirClientesConsul = () => {
+
         setAbrirClientesConsul(!abrirClientesConsul)
     }
 

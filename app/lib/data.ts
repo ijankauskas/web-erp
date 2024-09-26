@@ -422,3 +422,21 @@ export async function DbConsultarFactura(tipo: string, num: number) {
         throw new Error('Failed to fetch card data.');
     }
 }
+
+export async function DbConsultarUsuario(
+    email?: string | null,
+) {
+    try {
+        const response = await fetch(url + '/usuarios?email=' + email, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
+        return response;
+    } catch (error) {
+        console.error('Database Error:', error);
+        throw new Error('Failed to fetch card data.');
+    }
+
+}

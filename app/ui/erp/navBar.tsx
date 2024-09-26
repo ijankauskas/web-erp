@@ -7,6 +7,7 @@ import { Transition } from '@headlessui/react';
 import { Popover, } from '@headlessui/react'
 import { ChevronRightIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
+import { SignOut } from './SingOut';
 
 
 const user = {
@@ -25,7 +26,6 @@ const navigation = [
 const userNavigation = [
     { name: 'Your Profile', href: '#' },
     { name: 'Settings', href: '#' },
-    { name: 'Sign out', href: '#' },
 ]
 
 function classNames(...classes: any[]) {
@@ -159,7 +159,7 @@ const menus = [
     }
 ]
 
-export default function NavBar({ children }: { children: React.ReactNode }) {
+export default function NavBar() {
     return (
         <>
             <div>
@@ -258,6 +258,9 @@ export default function NavBar({ children }: { children: React.ReactNode }) {
                                                     </a>
                                                 </MenuItem>
                                             ))}
+                                            <MenuItem>
+                                                <SignOut />
+                                            </MenuItem>
                                         </MenuItems>
                                     </Menu>
 
@@ -276,7 +279,7 @@ export default function NavBar({ children }: { children: React.ReactNode }) {
                         </div>
                     </div>
 
-                    <DisclosurePanel className="md:hidden">
+                    <DisclosurePanel transition className="md:hidden">
                         <div className="space-y-1 px-2 pb-3 pt-2 sm:px-3">
                             {navigation.map((item) => (
                                 <DisclosureButton
