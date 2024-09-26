@@ -54,8 +54,8 @@ export default function Loading({ cargando, respuesta }: { cargando: boolean, re
               leaveTo="opacity-0"
             >
               <div className="flex items-center text-sm">
+                <Spinner size="sm" color="primary" className='mr-2' />
                 <span>Cargando...</span>
-                <Spinner color="primary" />
               </div>
             </Transition>
 

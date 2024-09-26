@@ -367,9 +367,10 @@ export async function DbConsultarListasCabe(
     page?: number | null,
     limit?: string | null,
     activos?: string | null,
+    mostrar_total?: string | null
 ) {
     try {
-        const response = await fetch(url + '/listas_cabe?lista_codi=' + lista_codi + '&multiple=' + multiple + '&lista_descrip=' + lista_descrip + '&orden=' + columnaOrden + '&dir=' + dir + '&page=' + page + '&limit=' + limit + '&activos=' + activos, {
+        const response = await fetch(url + '/listas_cabe?lista_codi=' + lista_codi + '&multiple=' + multiple + '&lista_descrip=' + lista_descrip + '&orden=' + columnaOrden + '&dir=' + dir + '&page=' + page + '&limit=' + limit + '&activos=' + activos + '&mostrar_total=' + mostrar_total, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -392,7 +393,7 @@ export async function DbListasItems(
     lista_codi?: string | null,
 ) {
     try {
-        const response = await fetch(url + '/lista_precios?servicio=' + servicio + '&pagina=' + pagina + '&parametro=' + parametro + '&orden=' + columnaOrden + '&dir=' + dir + '&lista_codi=' + lista_codi, {
+        const response = await fetch(url + '/listas_items?servicio=' + servicio + '&pagina=' + pagina + '&parametro=' + parametro + '&orden=' + columnaOrden + '&dir=' + dir + '&lista_codi=' + lista_codi, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',

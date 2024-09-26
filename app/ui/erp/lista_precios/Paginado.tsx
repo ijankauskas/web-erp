@@ -27,7 +27,8 @@ export default function Paginado({ pagina, cambiarPagina }: any) {
         if (!respuesta.ok) {
             throw new Error('Error al cargar las listas');
         }
-
+        console.log(data);
+        
         setTotalClientes(data.total)
         let total = data.total
         const start = (pagina - 1) * totalxPagina + 1;

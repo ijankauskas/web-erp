@@ -59,7 +59,7 @@ export default function ComboBoxSelect({ titulo='', data, seleccionado, setearCo
         <div className={`relative ${titulo == ''? 'mt-0': 'mt-1'}`}>
           <Combobox.Input
             className={`relative z-0 block w-full rounded-md border-0 px-2.5 ${paddingY} text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6 
-            ${error ? 'focus:ring-red-600 ring-red-300' : 'focus:ring-primary'}`}
+            ${error ? 'focus:ring-red-600 ring-red-300' : 'focus:ring-primary'} ${desactivado ? 'bg-gray-100' : ''}`}
             onChange={(event) => consultar(event)}
             displayValue={(person: any) => (person ? person.name : '')}
           />
@@ -77,6 +77,7 @@ export default function ComboBoxSelect({ titulo='', data, seleccionado, setearCo
                     classNames(
                       'relative cursor-default select-none py-1.5 pl-3 pr-9',
                       active ? 'bg-indigo-600 text-white' : 'text-gray-900'
+                      
                     )
                   }
                 >

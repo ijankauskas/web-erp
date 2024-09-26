@@ -1,9 +1,7 @@
 'use client'
+import Paginado from '@/app/ui/erp/lista_precios/Paginado';
 import TablaListas from '@/app/ui/erp/lista_precios/TablaListas';
 import TablaListasItems from '@/app/ui/erp/lista_precios/TablaListasItems';
-import Paginado from '@/app/ui/erp/saldos_cliente/Paginado';
-import PaginadoComp from '@/app/ui/erp/saldos_cliente/PaginadoComp';
-import TablaComprobantes from '@/app/ui/erp/saldos_cliente/TablaComprobantes';
 import InputCommon from '@/app/ui/inputCommon';
 import React, { useState, useRef, Suspense } from 'react';
 
@@ -77,6 +75,7 @@ const ConsultaSaldos = () => {
                                         seleccionarLista={seleccionarLista}
                                         pagina={pagina}
                                         setPagina={setPagina}
+
                                     />
                                 </div>
                             </div>
@@ -109,7 +108,7 @@ const ConsultaSaldos = () => {
                         )}
                     </div>
                     <div className="w-full h-full bg-white overflow-y-auto overflow-x-auto flex-grow">
-                        { <TablaListasItems listas={listaSeleccionado} pagina={paginaComps} setPagina={setPaginaComps} /> }
+                        { <TablaListasItems listaSeleccionado={listaSeleccionado} pagina={paginaComps} setPagina={setPaginaComps} /> }
                     </div>
                     <div className="bg-gray-100 w-full p-0"> {/* Contenedor para el paginado que siempre estará al final */}
                         { /*<PaginadoComp pagina={paginaComps} cambiarPagina={cambiarPaginaComp} lista={listaSeleccionado} />*/ }

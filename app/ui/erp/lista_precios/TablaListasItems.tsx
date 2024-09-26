@@ -7,7 +7,7 @@ import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/24/outline';
 
 
 
-const TablaListasItems = ({ lista_codi, pagina, setPagina }: any) => {
+const TablaListasItems = ({ listaSeleccionado, pagina, setPagina }: any) => {
     const [columnWidths, setColumnWidths] = useState([25, 100, 25, 50, 25, 25, 50, 50]);
     const [ordenarConfig, setOrdenarConfig] = useState({ key: 'tipo', direction: 'asc' });
     const [loading, setLoading] = useState(false);
@@ -18,10 +18,10 @@ const TablaListasItems = ({ lista_codi, pagina, setPagina }: any) => {
     }, []);
 
     async function consultarItems() {
-        if (lista_codi == '' || lista_codi == undefined) return
+        if (listaSeleccionado == '' || listaSeleccionado == undefined) return
         setLoading(true);
         try {
-            const respuesta = await DbListasItems(lista_codi, pagina, ordenarConfig.key, ordenarConfig.direction);
+            const respuesta = await DbListasItems(listaSeleccionado, pagina, ordenarConfig.key, ordenarConfig.direction);
             const data = await respuesta.json();
             if (!respuesta.ok) {
                 throw new Error('Error al cargar los items');
@@ -37,7 +37,7 @@ const TablaListasItems = ({ lista_codi, pagina, setPagina }: any) => {
 
     useEffect(() => {
         consultarItems();
-    }, [lista_codi]);
+    }, [listaSeleccionado]);
 
     useEffect(() => {
         consultarItems();
@@ -233,10 +233,10 @@ const TablaListasItems = ({ lista_codi, pagina, setPagina }: any) => {
                                         {data.precio_vta}
                                     </td>
                                     <td className="text-ellipsis trunatce text-end px-2 py-1 whitespace-nowrap text-sm border border-gray-200">
-                                        {data.total.toLocaleString('es-AR')}
+                                        {/* {data.total.toLocaleString('es-AR')} */}
                                     </td>
                                     <td className="text-ellipsis trunatce text-end px-2 py-1 whitespace-nowrap text-sm border border-gray-200">
-                                        {data.precio_vta.toLocaleString('es-AR')}
+                                        {/* {data.precio_vta.toLocaleString('es-AR')} */}
                                     </td>
                                 </tr>
                             ))

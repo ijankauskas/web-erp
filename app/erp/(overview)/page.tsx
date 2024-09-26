@@ -1,90 +1,49 @@
 'use client'
-import { useState } from 'react';
-import { Transition } from '@headlessui/react';
-import { Spinner } from '@nextui-org/react';
-import { useSession } from 'next-auth/react';
 
-export default function LoadingButton() {
-  const [loading, setLoading] = useState(false);
-  const [completed, setCompleted] = useState(false);
-  const [showPanel, setShowPanel] = useState(false);
+import { useState } from 'react'
+import { Dialog, DialogBackdrop, DialogPanel, DialogTitle, TransitionChild } from '@headlessui/react'
+import { XMarkIcon } from '@heroicons/react/24/outline'
 
-
-  const handleClick = () => {
-    setShowPanel(true);
-    setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-      setCompleted(true);
-      setTimeout(() => {
-        setCompleted(false);
-        setShowPanel(false); // Ocultar el panel después de mostrar el check
-      }, 3000); // Mostrar el check durante 1 segundo
-    }, 3000); // 1 segundo para el "Cargando"
-  };
+export default function Example() {
+  const [open, setOpen] = useState(true)
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen">
-      <button
-        className="px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-700 focus:outline-none"
-        onClick={handleClick}
-        disabled={loading || completed} // Desactivar mientras está cargando o completado
-      >
-        Click me
-      </button>
+    <Dialog open={open} onClose={setOpen} className="relative z-10">
+      <DialogBackdrop
+        transition
+        className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity duration-500 ease-in-out data-[closed]:opacity-0"
+      />
 
-      {/* Animación del panel emergente */}
-      <Transition
-        show={showPanel}
-        enter="transform transition duration-500"
-        enterFrom="translate-y-[250%]" // Viene desde más abajo
-        enterTo="translate-y-0"
-        leave="transform transition duration-500"
-        leaveFrom="translate-y-0"
-        leaveTo="translate-y-[250%]" // Sale hacia más abajo
-      >
-        <div className="fixed bottom-12 left-1/2 transform -translate-x-1/2 flex items-center justify-center w-32 h-10">
-          {/* Explosión verde */}
-          {completed && (
-            <div className="absolute w-40 h-40 bg-green-500 rounded-full animate-ping"></div>
-          )}
-
-          {/* Contenedor negro del mensaje */}
-          <div className="relative flex items-center justify-center w-full h-full bg-black text-white rounded-lg">
-            <div className="relative flex items-center justify-center w-full h-full">
-              {/* Spinner */}
-              <Transition
-                show={loading}
-                enter="transition-opacity duration-500"
-                enterFrom="opacity-0"
-                enterTo="opacity-100"
-                leave="transition-opacity duration-500"
-                leaveFrom="opacity-100"
-                leaveTo="opacity-0"
-              >
-                <div className="flex items-center text-sm">
-                  <span>Cargando...</span>
-                  <Spinner color="primary" />
+      <div className="fixed inset-0 w-2/3 overflow-hidden">
+        <div className="absolute w-2/3 inset-0 overflow-hidden">
+          <div className="pointer-events-none w-2/3 fixed inset-y-0 right-0 flex max-w-full pl-10">
+            <DialogPanel
+              transition
+              className="pointer-events-auto relative w-full max-w-full transform transition duration-500 ease-in-out data-[closed]:translate-x-full sm:duration-700"
+            >
+              <TransitionChild>
+                <div className="absolute left-0 top-0 -ml-8 flex pr-2 pt-4 duration-500 ease-in-out data-[closed]:opacity-0 sm:-ml-10 sm:pr-4">
+                  <button
+                    type="button"
+                    onClick={() => setOpen(false)}
+                    className="relative rounded-md text-gray-300 hover:text-white focus:outline-none focus:ring-2 focus:ring-white"
+                  >
+                    <span className="absolute -inset-2.5" />
+                    <span className="sr-only">Close panel</span>
+                    <XMarkIcon aria-hidden="true" className="h-6 w-6" />
+                  </button>
                 </div>
-              </Transition>
-
-              {/* Check */}
-              <Transition
-                show={completed}
-                enter="transition-all duration-500 ease-in-out"
-                enterFrom="opacity-0 scale-50"
-                enterTo="opacity-100 scale-100"
-                leave="transition-all duration-500 ease-in-out"
-                leaveFrom="opacity-100 scale-100"
-                leaveTo="opacity-0 scale-50"
-                className="absolute"
-              >
-                <div className="text-3xl">✔</div>
-              </Transition>
-            </div>
+              </TransitionChild>
+              <div className="flex h-full flex-col overflow-y-scroll bg-white py-6 shadow-xl">
+                <div className="px-4 sm:px-6">
+                  <DialogTitle className="text-base font-semibold leading-6 text-gray-900">Panel title</DialogTitle>
+                </div>
+                <div className="relative mt-6 flex-1 px-4 sm:px-6">{/* Your content */}</div>
+              </div>
+            </DialogPanel>
           </div>
         </div>
-      </Transition>
-    </div>
-  );
+      </div>
+    </Dialog>
+  )
 }

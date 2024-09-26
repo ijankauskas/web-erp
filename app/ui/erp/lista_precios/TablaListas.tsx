@@ -7,7 +7,7 @@ import {
     ChevronUpIcon
 } from '@heroicons/react/24/outline'
 
-const TablaListas = ({ busqueda, seleccionarListas, pagina, setPagina }: any) => {
+const TablaListas = ({ busqueda, seleccionarLista, pagina, setPagina }: any) => {
     const [columnWidths, setColumnWidths] = useState([50, 125, 50]);
     const [listas, setListas] = useState([]);
     const [ordenarConfig, setOrdenarConfig] = useState({ key: 'razon', direction: 'asc' });
@@ -20,19 +20,13 @@ const TablaListas = ({ busqueda, seleccionarListas, pagina, setPagina }: any) =>
     async function cargarComponente() {
         setLoading(true);
         try {
-            const respuesta = await DbConsultarListasCabe(null, pagina, busqueda, ordenarConfig.key, ordenarConfig.direction);
+            const respuesta = await DbConsultarListasCabe('', 'S', busqueda, ordenarConfig.key, ordenarConfig.direction, pagina, '50', 'S');
             const data = await respuesta.json();
             if (!respuesta.ok) {
                 throw new Error('Error al cargar las listas');
             }
 
-            const ListasMapeados = data.listas_cabe.map((lista: any) => ({
-                lista_codi: lista.lista_codi || '',
-                listas_descrip: lista.lista_descrip || '',
-                porcen_ganan: lista.porcen_ganan,
-            }));
-
-            setListas(ListasMapeados);
+            setListas(data);
         } catch (error) {
             console.error('Error al cargar las listas:', error);
         } finally {
@@ -148,16 +142,16 @@ const TablaListas = ({ busqueda, seleccionarListas, pagina, setPagina }: any) =>
                     {listas.length > 0 ? (
                         listas?.map((lista: any, index: number) => (
                             <tr key={index}
-                                className="hover:bg-indigo-50 hover:!border-blue-500 border-gray-200 hover:!border-1"
-                                onClick={() => seleccionarListas(lista)}
+                                className="hover:bg-indigo-100 border-gray-200 hover:!border-1"
+                                onClick={() => seleccionarLista(lista)}
                             >
-                                <td className="text-ellipsis truncate px-2 py-1 whitespace-nowrap text-sm text-gray-900 border-r">
+                                <td className="text-ellipsis truncate px-2 py-1 whitespace-nowrap text-sm text-gray-900 border">
                                     {lista.lista_codi}
                                 </td>
-                                <td className="text-ellipsis truncate px-2 py-1 whitespace-nowrap text-sm text-gray-500 border-r">
+                                <td className="text-ellipsis truncate px-2 py-1 whitespace-nowrap text-sm text-gray-500 border">
                                     {lista.lista_descrip}
                                 </td>
-                                <td className="text-ellipsis truncate text-end px-2 py-1 whitespace-nowrap text-sm text-gray-500 border-r">
+                                <td className="text-ellipsis truncate text-end px-2 py-1 whitespace-nowrap text-sm text-gray-500 border-b">
                                     {lista.porcen_ganan.toLocaleString('es-AR')}
                                 </td>
                             </tr>
