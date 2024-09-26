@@ -37,7 +37,7 @@ const menus = [
                     },
                     {
                         nombre: "Depositos",
-                        href: '/erp/alta/articulo',
+                        href: '/erp/alta/depositos',
                         current: false,
                         icon: PlusCircleIcon,
                     },
@@ -62,6 +62,12 @@ const menus = [
                     {
                         nombre: "Lista de Precios",
                         href: '/erp/alta/listaprecios',
+                        current: false,
+                        icon: UserPlusIcon,
+                    },
+                    {
+                        nombre: "Vendedores",
+                        href: '/erp/alta/vendedores',
                         current: false,
                         icon: UserPlusIcon,
                     },

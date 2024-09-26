@@ -2,14 +2,15 @@
 import { useState } from 'react';
 import { Transition } from '@headlessui/react';
 import { Spinner } from '@nextui-org/react';
+import { useSession } from 'next-auth/react';
 
 export default function LoadingButton() {
-
   const [loading, setLoading] = useState(false);
   const [completed, setCompleted] = useState(false);
   const [showPanel, setShowPanel] = useState(false);
 
-  const handleClick = async () => {
+
+  const handleClick = () => {
     setShowPanel(true);
     setLoading(true);
     setTimeout(() => {
