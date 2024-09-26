@@ -9,7 +9,8 @@ import { loginAction } from '../actions/auth-action';
 import LoadingBar, { LoadingBarRef } from 'react-top-loading-bar';
 import InputCommon from '../ui/inputCommon';
 import { Spinner } from '@nextui-org/react';
-import { useUser } from "@/app/hooks/UserContext";
+import { getSession } from 'next-auth/react';
+import { dbConsultarToken } from '../lib/data';
 
 type Inputs = {
   email: string,
@@ -21,7 +22,6 @@ const FormLogin = () => {
   const [error, setError] = useState(false);
   const ref = useRef<LoadingBarRef | null>(null);
   const router = useRouter();
-
   const { register, handleSubmit, formState: { errors }, setValue, clearErrors, getValues, watch } = useForm<Inputs>({
     resolver: zodResolver(signInSchema)
   })
@@ -31,7 +31,6 @@ const FormLogin = () => {
       ref.current.complete();
     }
   }, []);
-
 
   const enviarForm = async (data: Inputs) => {
     setError(false);
@@ -43,7 +42,10 @@ const FormLogin = () => {
       setCargando(false);
       setError(true);
     } else {
-
+      const session = await getSession();
+      
+      const token = await dbConsultarToken(session.user)
+      
       setCargando(false);
       ref.current?.complete();
       router.push("/erp");
@@ -64,7 +66,7 @@ const FormLogin = () => {
           </div>
           <div className="mt-10">
             {cargando && (
-              <span className='flex justify-center text-sm'>Cargando...<Spinner size="sm" /></span>
+              <span className='flex justify-center text-sm'><Spinner size="sm" className='mr-1' />Cargando...</span>
             )}
             {error && (
               <span className='flex justify-center text-sm text-red-500'>Credenciales invalidas.</span>

@@ -9,7 +9,7 @@ export default function LoadingButton() {
   const [completed, setCompleted] = useState(false);
   const [showPanel, setShowPanel] = useState(false);
 
-  const handleClick = () => {
+  const handleClick = async () => {
     setShowPanel(true);
     setLoading(true);
     setTimeout(() => {
