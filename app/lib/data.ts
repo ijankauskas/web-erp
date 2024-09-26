@@ -440,3 +440,48 @@ export async function DbConsultarUsuario(
     }
 
 }
+export async function DbDepositosConsul(activo?: string, depo_codi?: string) {
+    try {
+        const response = await fetch(url + '/depositos?depo_codi=' + depo_codi + '&activo=' + activo, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
+
+        return response;
+    } catch (error) {
+        throw new Error('Failed to fetch card data.');
+    }
+}
+export async function DbGrabarDepositos(data: string | null) {
+    try {
+        const response = await fetch(url + '/depositos', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        });
+
+        return response;
+    } catch (error) {
+        console.error('Database Error:', error);
+        throw new Error('Failed to fetch card data.');
+    }
+}
+export async function DbBorrarDepositos(data: string | null) {
+    try {
+        const response = await fetch('http://localhost:8080/depositos', {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        });
+
+        return response;
+    } catch (error) {
+        throw new Error('Failed to fetch card data.');
+    }
+}
