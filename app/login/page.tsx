@@ -45,6 +45,7 @@ const FormLogin = () => {
       const session = await getSession();
       
       const token = await dbConsultarToken(session.user)
+      console.log(token);
       
       setCargando(false);
       ref.current?.complete();

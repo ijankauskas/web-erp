@@ -21,6 +21,7 @@ export async function DbConsultarArticulo(
     try {
         const response = await fetch(url + '/articulos?codigo=' + cod_articulo + '&multiple=' + multiple + '&descripcion=' + descripcion + '&columnaOrden=' + columnaOrden + '&dir=' + dir + '&page=' + page + '&limit=' + limit + '&activos=' + activos + '&total=' + total, {
             method: 'GET',
+            credentials: 'include',
             headers: {
                 'Content-Type': 'application/json',
             }
@@ -441,8 +442,9 @@ export async function DbConsultarUsuario(
 }
 export async function dbConsultarToken(data: any) {
     try {
-        const response = await fetch(url + '/token', {
+        const response = await fetch(url + '/signIn/token', {
             method: 'POST',
+            credentials: 'include',
             headers: {
                 'Content-Type': 'application/json',
             },
