@@ -58,19 +58,21 @@ export default function Loading({ cargando, respuesta }: { cargando: boolean, re
                 <span>Cargando...</span>
               </div>
             </Transition>
+            <div className="absolute">
+              <Transition
+                show={completed}
+                enter="transition-all duration-500 ease-in-out"
+                enterFrom="opacity-0 scale-50"
+                enterTo="opacity-100 scale-100"
+                leave="transition-all duration-500 ease-in-out"
+                leaveFrom="opacity-100 scale-100"
+                leaveTo="opacity-0 scale-50"
 
-            <Transition
-              show={completed}
-              enter="transition-all duration-500 ease-in-out"
-              enterFrom="opacity-0 scale-50"
-              enterTo="opacity-100 scale-100"
-              leave="transition-all duration-500 ease-in-out"
-              leaveFrom="opacity-100 scale-100"
-              leaveTo="opacity-0 scale-50"
-              className="absolute"
-            >
-              <div className="text-3xl">✔</div>
-            </Transition>
+              >
+                <div className="text-3xl">✔</div>
+              </Transition>
+
+            </div>
           </div>
         </div>
       </div>

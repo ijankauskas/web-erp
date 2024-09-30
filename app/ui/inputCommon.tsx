@@ -1,7 +1,7 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleExclamation } from '@fortawesome/free-solid-svg-icons';
 
-export default function InputCommon({ titulo = '', tipo, id, placeholder, texto, onChange, funcionOnblur, error, useForm, step, textAlign = 'text-start', desactivado, paddingY = 'py-1.5', onKeyDown }: any) {
+export default function InputCommon({ titulo = '', tipo, id, placeholder, texto, onChange, funcionOnblur, error, useForm, step, textAlign = 'text-start', desactivado, paddingY = 'py-1.5', onKeyDown, iconExtra = '' }: any) {
 
     return (
         <>
@@ -9,6 +9,9 @@ export default function InputCommon({ titulo = '', tipo, id, placeholder, texto,
                 {titulo}
             </label>
             <div className={`relative ${titulo == '' ? 'mt-0' : 'mt-1'} rounded-md shadow-sm z-0 `}>
+                <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-2">
+                    <span className="text-gray-500 sm:text-sm">{iconExtra}</span>
+                </div>
                 <input
                     id={id}
                     type={tipo}
@@ -20,8 +23,8 @@ export default function InputCommon({ titulo = '', tipo, id, placeholder, texto,
                     {...useForm}
                     disabled={desactivado}
                     onKeyDown={onKeyDown}
-                    className={`${textAlign} relative z-0 block w-full rounded-md border-0 px-2.5 ${paddingY} text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6 
-                        ${error ? 'focus:ring-red-600 ring-red-300' : 'focus:ring-primary'} ${desactivado ? 'bg-gray-100' : ''}`}
+                    className={`${textAlign} z-0 block w-full rounded-md border-0 px-2.5 ${paddingY} text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6 
+                        ${error ? 'focus:ring-red-600 ring-red-300' : 'focus:ring-primary'} ${desactivado ? 'bg-gray-100' : ''} ${iconExtra != '' ? 'pl-8' : ''}`}
                 />
                 {
                     error &&

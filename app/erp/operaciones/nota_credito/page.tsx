@@ -1,6 +1,6 @@
 "use client"
 
-import { DbGrabarNotaCredito } from '@/app/lib/data';
+import { DbConsultarNotaCredito, DbGrabarNotaCredito } from '@/app/lib/data';
 import DismissibleAlert from '@/app/ui/DismissAlerta';
 import ButtonCommon from '@/app/ui/erp/ButtonCommon';
 import Alerta from '@/app/ui/erp/alerta';
@@ -15,6 +15,7 @@ import TablaArticulos from '@/app/ui/erp/operaciones/nota_credito/TablaArticulos
 import Bottom from '@/app/ui/erp/operaciones/nota_credito/Bottom';
 import { NotaCreditoSchema } from '@/app/validaciones/NotaCredito';
 import CompPendiente from '@/app/ui/erp/consultas/CompPendientes';
+import Loading from '@/app/ui/Loading';
 
 
 type Inputs = {
@@ -22,6 +23,7 @@ type Inputs = {
     numero: string,
     fecha: string,
     mone: string,
+    mone_coti: number,
     num_cliente: string,
     razon_cliente: string,
     articulos: {
@@ -38,9 +40,13 @@ const fecha_hoy = new Date().toISOString().split('T')[0];
 
 export default function NotaCredito() {
     const [cargando, setCargando] = useState(false);
+    const [respuesta, setRespuesta] = useState(false);
+    const [bloquear, setBloquear] = useState(false); //para bloquear los inputs cuando consultas el comprobante
     const [abrirArticulosConsul, setAbrirArticulosConsul] = useState(false);
     const [abrirClientesConsul, setAbrirClientesConsul] = useState(false);
     const [abrirCompPend, setAbrirCompPend] = useState(false);
+    const [iva, setIva] = useState(0)
+    const [cliente, setCliente] = useState({})
 
     const [mensaje, setMensaje] = useState({
         mostrar: false,
@@ -105,33 +111,6 @@ export default function NotaCredito() {
         }, 300);
     };
 
-
-    const prevArticulosRef = useRef(articulos);
-    useEffect(() => {
-        const prevArticulos = prevArticulosRef.current;
-        if (articulos.length > prevArticulos.length) {
-            const articuloAgregado: any = articulos.filter((articulo: any, index: number, self: any[]) =>
-                index === self.findIndex((t) => t.codigo === articulo.codigo)
-            );
-            setAlerta({
-                message: `Se agregó el artículo: ${articuloAgregado[0].descripcion}`,
-                type: "success",
-                alertVisible: true
-            });
-        } else if (articulos.length < prevArticulos.length) {
-            // Se eliminó un artículo
-            const articuloEliminado: any = articulos.filter((articulo: any, index: number, self: any[]) =>
-                index === self.findIndex((t) => t.codigo === articulo.codigo)
-            );
-            setAlerta({
-                message: `Se eliminó el artículo: ${articuloEliminado[0].descripcion}`,
-                type: "warning",
-                alertVisible: true
-            });
-        }
-        prevArticulosRef.current = articulos;
-    }, [articulos.length]);
-
     const toggleAbrirArticulosConsul = () => {
         setAbrirArticulosConsul(!abrirArticulosConsul)
     }
@@ -143,7 +122,7 @@ export default function NotaCredito() {
     }
 
     const enviarForm = async (data?: any) => {
-
+        setCargando(true)
         if (articulos.length <= 0) {
             setMensaje({
                 mostrar: true,
@@ -173,15 +152,18 @@ export default function NotaCredito() {
 
         if (response.ok) {
             setCargando(false);
+            setRespuesta(true);
             setMensaje({
                 mostrar: true,
                 mensaje: mensaje.message,
                 titulo: 'Operacion Exitosa!',
                 tipo_aletar: 'exitoso',
             });
+            setBloquear(true);
             return
         } else {
             setCargando(false);
+            setRespuesta(false);
             setMensaje({
                 mostrar: true,
                 mensaje: mensaje.message,
@@ -189,6 +171,58 @@ export default function NotaCredito() {
                 tipo_aletar: 'error',
             });
             return
+        }
+    }
+
+    const consultarComprobante = async (tipo: string, num: number) => {
+        setCargando(true)
+        try {
+            const response = await DbConsultarNotaCredito(tipo, num)
+            const data = await response.json();
+
+            if (response.ok) {
+                setBloquear(true)
+                setValue('tipo', data.tipo)
+                setValue('numero', data.num)
+                // setValue('fecha', data.fecha.toISOString().split('T')[0])
+                setValue('mone', data.mone)
+                setValue('mone_coti', data.mone_coti)
+                setCliente({ id: data.cliente, cateIva: data.cate_iva })
+                setValue('num_cliente', data.cliente)
+                setValue('razon_cliente', data.clientes.razon)
+                setArticulos([])
+                data.articulos.map((articulo: any) => {
+                    const articulos = [{
+                        codigo: articulo.articulo,
+                        descripcion: articulo.articuloDatos.descripcion,
+                        unidad: articulo.unidad,
+                        cantidad: parseFloat(articulo.cant) || 0,
+                        precio_vta: parseFloat(articulo.precio) || 0,
+                        costo_uni: articulo.costo || 0
+                    }];
+                    setArticulos((prev: any) => [...prev, ...articulos]);
+                })
+                setCargando(false);
+                setRespuesta(true);
+            } else {
+                setCargando(false);
+                setRespuesta(false);
+                setBloquear(false)
+                limpiar();
+                setAlerta({
+                    message: data.message,
+                    type: "error",
+                    alertVisible: true
+                });
+            }
+        } catch (error: any) {
+            setCargando(false);
+            setRespuesta(false);
+            setAlerta({
+                message: error.Error,
+                type: "error",
+                alertVisible: true
+            });
         }
     }
 
@@ -224,6 +258,36 @@ export default function NotaCredito() {
 
     }, [errors]);
 
+    const agregarArticulos = (articulo: any) => {
+        const nuevo = {
+            codigo: articulo.codigo,
+            descripcion: articulo.descripcion,
+            unidad: articulo.unidad,
+            cantidad: articulo.cant_default || 0,
+            precio_vta: articulo.precio_vta || 0,
+            costo_uni: articulo.costo || 0
+        };
+        setArticulos((prev: any) => [...prev, nuevo]);
+    }
+
+    const clickLimpiar = async () => {
+        setValue('tipo', '')
+        setValue('numero', '')
+        limpiar()
+    }
+
+    const limpiar = async () => {
+
+        setBloquear(false)
+        setValue('fecha', fecha_hoy)
+        setValue('mone', '')
+        setValue('mone_coti', 0)
+        setCliente({})
+        setValue('num_cliente', '')
+        setValue('razon_cliente', '')
+        setArticulos([])
+
+    }
 
     return (
         <div className='mx-auto max-w-screen-2xl bg-white'>
@@ -236,7 +300,12 @@ export default function NotaCredito() {
                         setMensaje={setMensaje}
                         clearErrors={clearErrors}
                         getValues={getValues}
+                        consultarComprobante={consultarComprobante}
                         AbrirClientesConsul={toggleAbrirClientesConsul}
+                        bloquear={bloquear}
+                        setIva={setIva}
+                        setCliente={setCliente}
+                        cliente={cliente}
                     />
                     <div className="w-full flex justify-between my-2">
                         <div>
@@ -245,9 +314,6 @@ export default function NotaCredito() {
                         <div className='flex'>
                             <div className='w-[150px] sm:mr-4'>
                                 <ButtonCommon type="button" texto={"Buscar Articulos"} onClick={toggleAbrirArticulosConsul} />
-                            </div>
-                            <div className='w-[150px] sm:mr-4'>
-                                <ButtonCommon type="submit" texto={<><PlusCircleIcon aria-hidden="true" className="mr-1.5 h-5 w-5" />Guardar</>} />
                             </div>
                             <div className='w-[40px]'>
                                 <ButtonCommon type="button" tooltip="Facturas Pendientes" texto="FC" onClick={toggleAbrirCompPend} />
@@ -260,6 +326,9 @@ export default function NotaCredito() {
                             articulos={articulos}
                             setAlerta={setAlerta}
                             setArticulos={setArticulos}
+                            iva={iva}
+                            cliente={cliente}
+                            bloquear={bloquear}
                         />
                     </div>
                 </div>
@@ -269,6 +338,13 @@ export default function NotaCredito() {
                         articulos={articulos}
                         setAlerta={setAlerta}
                         setArticulos={setArticulos}
+                        clickLimpiar={clickLimpiar}
+                        bloquear={bloquear}
+                        iva={iva}
+                        errors={errors}
+                        setValue={setValue}
+                        clearErrors={clearErrors}
+                        cliente={cliente}
                     />
                 </div>
             </form>
@@ -283,15 +359,9 @@ export default function NotaCredito() {
             />
 
             <ArticulosConsul
-                setArticulo={setArticulos}
+                setArticulo={agregarArticulos}
                 open={abrirArticulosConsul}
                 setOpen={setAbrirArticulosConsul}
-            />
-
-            <ClientesConsul
-                setArticulo={setArticulos}
-                open={abrirClientesConsul}
-                setOpen={setAbrirClientesConsul}
             />
 
             <CompPendiente
@@ -305,6 +375,8 @@ export default function NotaCredito() {
                 onClose={closeAlertaDismiss}
                 showPanel={alerta.alertVisible}
             />
+
+            <Loading cargando={cargando} respuesta={respuesta} />
 
         </div>
     );

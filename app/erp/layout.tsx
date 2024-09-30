@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import SideNav from '../ui/erp/sidenav';
-import { CurrencyDollarIcon, PlusCircleIcon, ShoppingBagIcon, UserPlusIcon } from '@heroicons/react/24/outline'
+import { CurrencyDollarIcon, PlusCircleIcon, PlusIcon, ShoppingBagIcon, UserPlusIcon } from '@heroicons/react/24/outline'
 
 function classNames(...classes: any[]) {
     return classes.filter(Boolean).join(' ');
@@ -11,6 +11,7 @@ function classNames(...classes: any[]) {
 const menus = [
     {
         nombre: "Altas",
+        icon: PlusIcon,
         subMenu: [
 
             {
@@ -96,6 +97,7 @@ const menus = [
     },
     {
         nombre: "Operaciones",
+        icon: PlusIcon,
         subMenu: [
             {
                 nombre: "Ventas",
@@ -113,7 +115,7 @@ const menus = [
                         icon: ShoppingBagIcon,
                     },
                     {
-                        nombre: "Pedidos",
+                        nombre: "Nota de Credito",
                         href: '/erp/operaciones/nota_credito',
                         current: false,
                         icon: ShoppingBagIcon,
@@ -124,6 +126,7 @@ const menus = [
     },
     {
         nombre: "Consultas",
+        icon: PlusIcon,
         subMenu: [
             {
                 nombre: "Ventas",

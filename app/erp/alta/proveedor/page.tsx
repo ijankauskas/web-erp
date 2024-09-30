@@ -180,60 +180,62 @@ export default function Alta_proveedor() {
     }
 
     return (
-        <div className="max-w-7xl mx-auto py-0 px-4 sm:px-6 lg:px-8 bg-white">
-            <HeaderProveedor />
-            <Tabs tabs={tabs} seleccionarTab={seleccionarTab} tab={tab} />
-            <div className='relative '>
-                <form action="#" method="POST" onSubmit={handleSubmit(data => enviarForm(data))}>
-                    {tab == 0 ?
-                        <>
-                            <Principal
-                                register={register}
-                                setValue={setValue}
-                                errors={errors}
-                                clearErrors={clearErrors}
-                                consultarProve={consultarProve}
-                                getValues={getValues}
-                            />
-                            <DatosContacto
-                                register={register}
-                                setValue={setValue}
-                                errors={errors}
-                                clearErrors={clearErrors}
-                            />
-                            <CheckProve
-                                register={register}
-                                setValue={setValue}
-                                errors={errors}
-                                clearErrors={clearErrors}
-                                getValues={getValues}
-                                watch={watch}
-                            />
-                        </> :
-                        tab == 1 ? <DatosContacto register={register} setValue={setValue} errors={errors} clearErrors={clearErrors} /> :
-                            'Posición no definida.'}
-                    <div className="px-4 py-3 bg-white text-right sm:px-6">
-                        <button
-                            type="button"
-                            onClick={limpiar}
-                            className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-gray-600 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 mr-2">
-                            Limpiar
-                        </button>
-                        <button
-                            type="submit"
-                            className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" >
-                            Guardar
-                        </button>
-                    </div>
-                </form>
+        <Suspense fallback={<div>Loading...</div>}>
+            <div className="max-w-7xl mx-auto py-0 px-4 sm:px-6 lg:px-8 bg-white">
+                <HeaderProveedor />
+                <Tabs tabs={tabs} seleccionarTab={seleccionarTab} tab={tab} />
+                <div className='relative '>
+                    <form action="#" method="POST" onSubmit={handleSubmit(data => enviarForm(data))}>
+                        {tab == 0 ?
+                            <>
+                                <Principal
+                                    register={register}
+                                    setValue={setValue}
+                                    errors={errors}
+                                    clearErrors={clearErrors}
+                                    consultarProve={consultarProve}
+                                    getValues={getValues}
+                                />
+                                <DatosContacto
+                                    register={register}
+                                    setValue={setValue}
+                                    errors={errors}
+                                    clearErrors={clearErrors}
+                                />
+                                <CheckProve
+                                    register={register}
+                                    setValue={setValue}
+                                    errors={errors}
+                                    clearErrors={clearErrors}
+                                    getValues={getValues}
+                                    watch={watch}
+                                />
+                            </> :
+                            tab == 1 ? <DatosContacto register={register} setValue={setValue} errors={errors} clearErrors={clearErrors} /> :
+                                'Posición no definida.'}
+                        <div className="px-4 py-3 bg-white text-right sm:px-6">
+                            <button
+                                type="button"
+                                onClick={limpiar}
+                                className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-gray-600 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 mr-2">
+                                Limpiar
+                            </button>
+                            <button
+                                type="submit"
+                                className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" >
+                                Guardar
+                            </button>
+                        </div>
+                    </form>
 
+                </div>
+                <DismissibleAlert
+                    message={alerta.message}
+                    type={alerta.type}
+                    onClose={closeAlertaDismiss}
+                    showPanel={alerta.alertVisible}
+                />
             </div>
-            <DismissibleAlert
-                message={alerta.message}
-                type={alerta.type}
-                onClose={closeAlertaDismiss}
-                showPanel={alerta.alertVisible}
-            />
-        </div>
+        </Suspense>
     )
 }

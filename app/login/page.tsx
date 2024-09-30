@@ -42,11 +42,9 @@ const FormLogin = () => {
       setCargando(false);
       setError(true);
     } else {
-      const session = await getSession();
-      
+      const session: any = await getSession();
       const token = await dbConsultarToken(session.user)
-      console.log(token);
-      
+
       setCargando(false);
       ref.current?.complete();
       router.push("/erp");

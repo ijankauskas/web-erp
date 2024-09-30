@@ -503,3 +503,18 @@ export async function DbBorrarDepositos(data: string | null) {
         throw new Error('Failed to fetch card data.');
     }
 }
+export async function DbConsultarNotaCredito(tipo: string, num: number) {
+    try {
+        const response = await fetch(url + '/nota_credito?tipo=' + tipo + '&num=' + num, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
+
+        return response;
+    } catch (error) {
+        console.error('Database Error:', error);
+        throw new Error('Failed to fetch card data.');
+    }
+}

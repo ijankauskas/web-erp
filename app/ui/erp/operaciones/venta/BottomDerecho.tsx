@@ -8,10 +8,10 @@ import ButtonCommon from "../../ButtonCommon";
 
 
 
-export default function BottomDerecho({ register, articulos, setAlerta, pagos, setPagos }: any) {
+export default function BottomDerecho({ register, articulos, setAlerta, pagos, setPagos, iva, errors, bloquear, setValue, clearErrors, cliente }: any) {
     const [columnWidths, setColumnWidths] = useState([150, 400, 100, 125, 125, 100]);
     const [valores, setValores] = useState([]);
-    const [comp, setComp] = useState<{}>([]);
+    const [comp, setComp] = useState([]);
     useEffect(() => {
         cargarComponente()
     }, [])
@@ -28,14 +28,19 @@ export default function BottomDerecho({ register, articulos, setAlerta, pagos, s
             const CompMapeados = data.map((comp: any) => ({
                 id: comp.tipo || '',
                 name: comp.descrip || '',
+                prox_num: comp.prox_num.toString() || 1,
             }));
             setComp(CompMapeados);
         }
-
-
     }
 
-    const seleccionarCompSelec = (cliente: any) => {
+    const seleccionarCompSelec = (compSelect: any) => {
+        const prox_num: any = comp.filter((comp: any) => comp.id == compSelect);
+        if (prox_num.length > 0) {
+            setValue('num_reci', prox_num[0].prox_num);
+        }
+        setValue('tipo_reci', compSelect);
+        clearErrors('tipo_reci');
     }
 
     const handleMouseDown = (index: any, event: any) => {
@@ -120,7 +125,7 @@ export default function BottomDerecho({ register, articulos, setAlerta, pagos, s
                                     <InputCommon
                                         tipo={'text'}
                                         texto={articulos?.reduce((acc: number, articulo: any) => {
-                                            const calculo = (79 * articulo.precio_vta * articulo.cantidad) / 100;
+                                            const calculo = (articulo.precio_vta * articulo.cantidad);
                                             return acc + parseFloat(calculo.toFixed(2));
                                         }, 0).toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                                         id={'subtotal'}
@@ -135,7 +140,7 @@ export default function BottomDerecho({ register, articulos, setAlerta, pagos, s
                                     <InputCommon
                                         tipo={'text'}
                                         texto={articulos?.reduce((acc: number, articulo: any) => {
-                                            const calculo = (21 * articulo.precio_vta * articulo.cantidad) / 100;
+                                            const calculo = (iva * articulo.precio_vta * articulo.cantidad) / 100;
                                             return acc + parseFloat(calculo.toFixed(2));
                                         }, 0).toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                                         id={'subtotal'}
@@ -150,7 +155,7 @@ export default function BottomDerecho({ register, articulos, setAlerta, pagos, s
                                     <InputCommon
                                         tipo={'text'}
                                         texto={articulos?.reduce((acc: number, articulo: any) => {
-                                            const calculo = (articulo.precio_vta * articulo.cantidad);
+                                            const calculo = (articulo.precio_vta * articulo.cantidad) + (iva * articulo.precio_vta * articulo.cantidad) / 100;
                                             return acc + parseFloat(calculo.toFixed(2));
                                         }, 0).toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                                         id={'subtotal'}
@@ -230,31 +235,36 @@ export default function BottomDerecho({ register, articulos, setAlerta, pagos, s
                                 <ButtonCommon type={"button"} texto={"+"} onClick={agregarFilaPago} tooltip="Agregar Fila" />
                             </div>
                         </div>
+
+                        <div className="pt-2 grid gap-x-2 gap-y-0 grid-cols-6 sm:grid-cols-12" >
+                            <div className="col-span-4 sm:col-span-4 md:col-span-4 flex items-center">
+                                <div className="w-full mr-2 h-20">
+                                    <ComboBoxSelect
+                                        titulo={"Recibo"}
+                                        data={comp}
+                                        setearCodigo={seleccionarCompSelec}
+                                        error={errors.tipo_reci?.message}
+                                        desactivado={bloquear}
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="col-span-6 sm:col-span-6 md:col-span-3 flex items-center">
+                                <div className='w-full mr-2 h-20'>
+                                    <InputCommon
+                                        titulo={"Numero"}
+                                        tipo={'number'}
+                                        placeholder={"Numero del Recibo"}
+                                        useForm={register("num_reci")}
+                                        error={errors.num_reci?.message}
+                                    />
+                                </div>
+                            </div>
+
+                        </div>
                     </Tab>
                 </Tabs>
 
-                <div className="pt-2 grid gap-x-2 gap-y-0 grid-cols-6 sm:grid-cols-12" >
-                    <div className="col-span-4 sm:col-span-4 md:col-span-4 flex items-center">
-                        <div className="w-full mr-2 h-20">
-                            {/* <ComboBoxSelect
-                                titulo={"Recibo"}
-                                data={comp}
-                                setearCodigo={seleccionarCompSelec}
-                            /> */}
-                        </div>
-                    </div>
-
-                    <div className="col-span-6 sm:col-span-6 md:col-span-3 flex items-center">
-                        <div className='w-full mr-2 h-20'>
-                            {/* <InputCommon
-                                titulo={"Numero"}
-                                tipo={'number'}
-                                placeholder={"Numero del Recibo"}
-                                useForm={register("numero")} /> */}
-                        </div>
-                    </div>
-
-                </div>
 
 
             </div>

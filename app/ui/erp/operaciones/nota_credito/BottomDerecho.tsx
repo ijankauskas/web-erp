@@ -4,7 +4,7 @@ import { Tabs, Tab, Card, CardBody } from "@nextui-org/react";
 import InputCommon from "../../../inputCommon";
 
 
-export default function BottomDerecho({ register, articulos, setAlerta, pagos, setPagos }: any) {
+export default function BottomDerecho({ register, articulos, setAlerta, iva, cliente }: any) {
     const [columnWidths, setColumnWidths] = useState([150, 400, 100, 125, 125, 100]);
 
     useEffect(() => {
@@ -49,7 +49,7 @@ export default function BottomDerecho({ register, articulos, setAlerta, pagos, s
                                         <InputCommon
                                             tipo={'text'}
                                             texto={articulos?.reduce((acc: number, articulo: any) => {
-                                                const calculo = (79 * articulo.precio_vta * articulo.cantidad) / 100;
+                                                const calculo = (articulo.precio_vta * articulo.cantidad);
                                                 return acc + parseFloat(calculo.toFixed(2));
                                             }, 0).toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                                             id={'subtotal'}
@@ -65,7 +65,7 @@ export default function BottomDerecho({ register, articulos, setAlerta, pagos, s
                                         <InputCommon
                                             tipo={'text'}
                                             texto={articulos?.reduce((acc: number, articulo: any) => {
-                                                const calculo = (21 * articulo.precio_vta * articulo.cantidad) / 100;
+                                                const calculo = (iva * articulo.precio_vta * articulo.cantidad) / 100;
                                                 return acc + parseFloat(calculo.toFixed(2));
                                             }, 0).toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                                             id={'subtotal'}
@@ -80,7 +80,7 @@ export default function BottomDerecho({ register, articulos, setAlerta, pagos, s
                                         <InputCommon
                                             tipo={'text'}
                                             texto={articulos?.reduce((acc: number, articulo: any) => {
-                                                const calculo = (articulo.precio_vta * articulo.cantidad);
+                                                const calculo = (articulo.precio_vta * articulo.cantidad) + (iva * articulo.precio_vta * articulo.cantidad) / 100;
                                                 return acc + parseFloat(calculo.toFixed(2));
                                             }, 0).toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                                             id={'subtotal'}

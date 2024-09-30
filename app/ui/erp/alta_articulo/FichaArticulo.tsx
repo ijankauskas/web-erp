@@ -6,6 +6,9 @@ import ComboBoxSelect from '@/app/ui/ComboBoxSelect';
 import InputCommon from '../../inputCommon'
 import TextAreaCommon from '../../TextAreaCommon';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import ButtonCommon from '../ButtonCommon';
+import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
+import ArticulosConsul from '../consultas/articulos_consul';
 
 function classNames(...classes: any[]) {
     return classes.filter(Boolean).join(' ');
@@ -21,6 +24,8 @@ const people = [
 ];
 
 const FichaArticulo = ({ register, setValue, clearErrors, errors, consultarArticulo, getValues }: any) => {
+    const [articulo, setArticulo] = useState<any>({})
+    const [consulArticulos, setConsulArticulos] = useState(false)
     const searchParams = useSearchParams();
     const pathname = usePathname();
     const { replace } = useRouter();
@@ -55,6 +60,7 @@ const FichaArticulo = ({ register, setValue, clearErrors, errors, consultarArtic
 
         consultarArticulo()
     }
+
     useEffect(() => {
         const params = new URLSearchParams(searchParams);
         let codigo: string | null = params.get('codigo');
@@ -64,6 +70,11 @@ const FichaArticulo = ({ register, setValue, clearErrors, errors, consultarArtic
         }
     }, [searchParams]);
 
+    useEffect(()=>{
+        setConsulArticulos(false)
+        setValue('codigo', articulo.codigo);
+        consultar();
+    },[articulo])
 
     return (
         <div className="md:grid md:grid-cols-3 md:gap-6 pt-4 border-b">
@@ -79,14 +90,26 @@ const FichaArticulo = ({ register, setValue, clearErrors, errors, consultarArtic
                 <div className="">
                     <div className="px-4 py-5 sm:p-6">
                         <div className="grid grid-cols-6 gap-6 gap-y-4">
-                            <div className="col-span-6 sm:col-span-2">
-                                <InputCommon
-                                    titulo={"Codigo del Articulo"}
-                                    tipo={"text"}
-                                    error={errors.codigo?.message}
-                                    id="codigo"
-                                    useForm={register("codigo", { onBlur: consultar })}
-                                />
+                            <div className="col-span-6 sm:col-span-2 flex items-end">
+                                <div className='mr-4'>
+                                    <InputCommon
+                                        titulo={"Codigo del Articulo"}
+                                        tipo={"text"}
+                                        error={errors.codigo?.message}
+                                        id="codigo"
+                                        useForm={register("codigo", { onBlur: consultar })}
+                                    />
+                                </div>
+                                <div>
+                                    <ButtonCommon
+                                        type="button"
+                                        texto={<MagnifyingGlassIcon aria-hidden="true" className="h-7 w-7" />}
+                                        px={"px-1"}
+                                        py={"py-1"}
+                                        tooltip="Buscar Articulos"
+                                        onClick={() => setConsulArticulos(true)}
+                                    />
+                                </div>
                             </div>
                             <div className="col-span-6">
                                 <InputCommon
@@ -154,6 +177,7 @@ const FichaArticulo = ({ register, setValue, clearErrors, errors, consultarArtic
                     </div>
                 </div>
             </div>
+            <ArticulosConsul open={consulArticulos} setOpen={setConsulArticulos} setArticulo={setArticulo} />
         </div>
     );
 };

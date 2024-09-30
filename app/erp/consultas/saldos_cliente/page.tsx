@@ -1,10 +1,13 @@
 'use client'
+import ButtonCommon from '@/app/ui/erp/ButtonCommon';
+import DrawerFiltrosComp from '@/app/ui/erp/saldos_cliente/drawerFiltrosComp';
 import Paginado from '@/app/ui/erp/saldos_cliente/Paginado';
 import PaginadoComp from '@/app/ui/erp/saldos_cliente/PaginadoComp';
 import TablaClientes from '@/app/ui/erp/saldos_cliente/TablaClientes';
 import TablaClientesSkeleton from '@/app/ui/erp/saldos_cliente/TablaClientesSkeleton';
 import TablaComprobantes from '@/app/ui/erp/saldos_cliente/TablaComprobantes';
 import InputCommon from '@/app/ui/inputCommon';
+import { FunnelIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import React, { useState, useRef, Suspense } from 'react';
 
 const ConsultaSaldos = () => {
@@ -14,12 +17,13 @@ const ConsultaSaldos = () => {
     const [busqueda, setBusqueda] = useState('');
     const [pagina, setPagina] = useState(1);
     const [paginaComps, setPaginaComps] = useState(1);
+    const [filtrosComp, setFiltrosComp] = useState(false);
 
-    const handleMouseDown = (event:any) => {
+    const handleMouseDown = (event: any) => {
         const startX = event.clientX;
         const startDividerPosition = dividerPosition;
 
-        const onMouseMove = (e:any) => {
+        const onMouseMove = (e: any) => {
             const newDividerPosition = startDividerPosition + ((e.clientX - startX) / window.innerWidth) * 100;
             setDividerPosition(Math.min(Math.max(newDividerPosition, 10), 90));
         };
@@ -68,9 +72,10 @@ const ConsultaSaldos = () => {
                                     <h1 className="text-lg">Listado de clientes</h1>
                                 </div>
                                 <div className="p-2 w-full items-center bg-gray-200 flex justify-start border-gray-300">
-                                    <label className='mr-4' htmlFor="">Filtrar Clientes:</label>
                                     <InputCommon
                                         onChange={settearBusqueda}
+                                        placeholder={"Buscar Clientes"}
+                                        iconExtra={<MagnifyingGlassIcon aria-hidden="true" className="h-5 w-5" />}
                                     />
                                 </div>
                                 <div className="w-full h-full bg-white overflow-y-auto overflow-x-auto flex-grow"> {/* Flex-grow para que el contenedor de la tabla crezca */}
@@ -109,12 +114,23 @@ const ConsultaSaldos = () => {
                             </h1>
 
                         )}
+                        <div>
+                            <ButtonCommon
+                                type="button"
+                                texto={<FunnelIcon aria-hidden="true" className="h-4 w-4" />}
+                                px={"px-0.5"}
+                                py={"py-0.5"}
+                                tooltip="Filtros de comprobante"
+                                onClick={()=>setFiltrosComp(true)}
+                            />
+                        </div>
+                        <DrawerFiltrosComp abrir={filtrosComp} toggleAbrir={setFiltrosComp}/>
                     </div>
                     <div className="w-full h-full bg-white overflow-y-auto overflow-x-auto flex-grow">
-                        <TablaComprobantes cliente={clienteSeleccionado} pagina={paginaComps} setPagina={setPaginaComps}/>
+                        <TablaComprobantes cliente={clienteSeleccionado} pagina={paginaComps} setPagina={setPaginaComps} />
                     </div>
                     <div className="bg-gray-100 w-full p-0"> {/* Contenedor para el paginado que siempre estará al final */}
-                        <PaginadoComp pagina={paginaComps} cambiarPagina={cambiarPaginaComp} cliente={clienteSeleccionado}/>
+                        <PaginadoComp pagina={paginaComps} cambiarPagina={cambiarPaginaComp} cliente={clienteSeleccionado} />
                     </div>
                 </div>
             </div>

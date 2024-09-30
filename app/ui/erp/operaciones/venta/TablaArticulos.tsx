@@ -5,7 +5,7 @@ import InputCommon from "../../../inputCommon";
 import { DbConsultarArticulo } from "@/app/lib/data";
 import Alerta from "../../alerta";
 
-export default function TablaArticulos({ register, articulos, setAlerta, setArticulos, bloquear }: any) {
+export default function TablaArticulos({ register, articulos, setAlerta, setArticulos, bloquear, iva, cliente }: any) {
     const [columnWidths, setColumnWidths] = useState([150, 400, 100, 125, 125, 100]);
     const [error, setError] = useState({
         mostrar: false,
@@ -186,7 +186,7 @@ export default function TablaArticulos({ register, articulos, setAlerta, setArti
                         <tbody className="bg-white divide-y divide-gray-200">
                             {articulos?.map((articulo: any, index: number) => (
                                 <tr key={index} className={`${articulo.error ? 'bg-red-300' : ''} ${bloquear ? 'bg-yellow-100' : ''}`}>
-                                    <td className="px-2 py-1 whitespace-nowrap text-sm font-medium text-gray-900 border border-gray-200 text-ellipsis overflow-hidden">
+                                    <td className="px-2 py-1 whitespace-nowrap text-sm font-medium text-gray-900 border-b border-gray-200 text-ellipsis overflow-hidden">
                                         <InputCommon
                                             tipo={'text'}
                                             id={articulo.codigo}
@@ -216,7 +216,7 @@ export default function TablaArticulos({ register, articulos, setAlerta, setArti
                                     <td className="px-2 py-1 whitespace-nowrap text-sm text-gray-900 border border-gray-200 text-ellipsis overflow-hidden">
                                         <InputCommon
                                             tipo={'text'}
-                                            texto={articulo.precio_vta.toLocaleString('es-AR')}
+                                            texto={(articulo.precio_vta * (cliente.cateIva == '1' ? (1 + (iva / 100)) : 1)).toLocaleString('es-AR')} //si es consumidor final le suma el iva
                                             id={`precio_vta-${index}`}
                                             useForm={register(`precio_vta-${index}`, {
                                                 onChange: (e: React.ChangeEvent<HTMLInputElement>) => modificarArticulo(e, index, 'precio_vta'),
@@ -228,7 +228,7 @@ export default function TablaArticulos({ register, articulos, setAlerta, setArti
                                     </td>
 
                                     <td className="text-end px-3 py-1 whitespace-nowrap text-sm text-gray-900 border border-gray-200 text-ellipsis overflow-hidden">
-                                        {(articulo.cantidad * articulo.precio_vta).toLocaleString('es-AR')}
+                                        {(articulo.cantidad * articulo.precio_vta * (cliente.cateIva == '1' ? (1 + (iva / 100)) : 1)).toLocaleString('es-AR')}
                                     </td>
                                     <td className="w-12 px-6 py-1 whitespace-nowrap text-right text-sm font-medium border-b border-gray-200">
                                         <a href="#" className="text-indigo-600 hover:text-indigo-900"
@@ -243,7 +243,7 @@ export default function TablaArticulos({ register, articulos, setAlerta, setArti
                             ))}
                             {!bloquear ? (
                                 <tr className="border-b">
-                                    <td className="px-2 py-1 whitespace-nowrap text-sm font-medium text-gray-900 border border-gray-200">
+                                    <td className="px-2 py-1 whitespace-nowrap text-sm font-medium text-gray-900 border-b border-gray-200">
                                         <InputCommon
                                             tipo={'text'}
                                             id="codigo"

@@ -8,11 +8,11 @@ import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import ClientesConsul from '@/app/ui/erp/consultas/Clientes_consul';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
-export default function Cabecera({ register, setValue, clearErrors, errors, mostrarErrorAlerta, getValues, consultarComprobante, setAlerta, num_cliente, setNum_cliente, bloquear }: any) {
+export default function Cabecera({ register, setValue, clearErrors, errors, mostrarErrorAlerta, getValues, consultarComprobante, setAlerta, bloquear, setIva, cliente, setCliente }: any) {
     const searchParams = useSearchParams();
     const pathname = usePathname();
     const { replace } = useRouter();
-    const [clientes, setClientes] = useState<{}>([]);
+    const [clientes, setClientes] = useState<any>([]);
     const [monedas, setMonedas] = useState([]);
     const [moneDefault, setMoneDefault] = useState('PES');
     const [comp, setComp] = useState([]);
@@ -30,7 +30,8 @@ export default function Cabecera({ register, setValue, clearErrors, errors, most
     }
 
     const seleccionarClienteSelec = (cliente: any) => {
-        setNum_cliente(cliente);
+        let clienteSelect = clientes.filter((item: any) => item.id == cliente)
+        setCliente(clienteSelect)
         setValue('num_cliente', cliente);
         clearErrors('num_cliente');
     }
@@ -65,7 +66,9 @@ export default function Cabecera({ register, setValue, clearErrors, errors, most
         if (prox_num.length > 0) {
             setValue('numero', prox_num[0].prox_num);
         }
+        setIva(prox_num[0].porcentaje)
         setValue('tipo', compSelect);
+        setValue('cate_iva', prox_num[0].porcentaje);
         clearErrors('tipo');
     }
 
@@ -75,7 +78,8 @@ export default function Cabecera({ register, setValue, clearErrors, errors, most
         const respuesta = await DbConsultarCliente(cliente.target.value);
         const data = await respuesta.json();
         if (respuesta.ok) {
-            setClientes([{ id: data.codigo, name: data.razon }])
+            setClientes([{ id: data.codigo, name: data.razon, cateIva: data.cate_iva }])
+
         } else {
             setAlerta({
                 message: data.message,
@@ -83,7 +87,7 @@ export default function Cabecera({ register, setValue, clearErrors, errors, most
                 alertVisible: true,
             });
         }
-        setNum_cliente(cliente.target.value)
+        setCliente({ id: data.codigo, name: data.razon, cateIva: data.cate_iva })
         setValue('num_cliente', cliente.target.value);
     }
 
@@ -94,7 +98,9 @@ export default function Cabecera({ register, setValue, clearErrors, errors, most
             const clientesMapeados = data.map((cliente: any) => ({
                 id: cliente.codigo || '',
                 name: cliente.razon || '',
+                cateIva: cliente.cate_iva
             }));
+
             setClientes(clientesMapeados);
         }
     }
@@ -120,19 +126,20 @@ export default function Cabecera({ register, setValue, clearErrors, errors, most
                 id: comp.tipo || '',
                 name: comp.descrip || '',
                 prox_num: comp.prox_num.toString() || 1,
+                porcentaje: comp.porcentaje || 0,
             }));
             setComp(CompMapeados);
         }
     }
 
     const toggleAbrirClientesConsul = () => {
-
         setAbrirClientesConsul(!abrirClientesConsul)
     }
 
-    const setCliente = (cliente: any) => {
-        setClientes([{ id: cliente.codigo, name: cliente.razon }])
-        setNum_cliente(cliente.codigo);
+    const seleccionarCliente = (cliente: any) => {
+        setClientes([{ id: cliente.codigo, name: cliente.razon, cateIva: cliente.cateIva }])
+        setCliente({ id: cliente.codigo, name: cliente.razon, cateIva: cliente.cateIva })
+
         setValue('num_cliente', cliente.codigo);
     }
 
@@ -249,7 +256,7 @@ export default function Cabecera({ register, setValue, clearErrors, errors, most
                         <ComboBoxSelect
                             titulo={"Cliente"}
                             data={clientes}
-                            seleccionado={num_cliente}
+                            seleccionado={cliente.id}
                             setearCodigo={seleccionarClienteSelec}
                             mostrarError={mostrarErrorAlerta}
                             llenarData={consutlarClientes}
@@ -271,7 +278,7 @@ export default function Cabecera({ register, setValue, clearErrors, errors, most
             </div>
 
             <ClientesConsul
-                setCliente={setCliente}
+                setCliente={seleccionarCliente}
                 open={abrirClientesConsul}
                 setOpen={setAbrirClientesConsul}
             />

@@ -226,7 +226,7 @@ const TablaComprobantes = ({ cliente, pagina, setPagina }: any) => {
                     ) : (
                         compEmitidos.length > 0 ? (
                             compEmitidos?.map((comprobante: any, index: number) => (
-                                <tr key={index} className="border-b hover:bg-gray-400 hover:!text-white" onContextMenu={(e) => handleContextMenu(e, comprobante)} >
+                                <tr key={index} className="border-b hover:bg-indigo-500 hover:!text-white" onContextMenu={(e) => handleContextMenu(e, comprobante)} >
                                     <td className="text-center text-ellipsis truncate px-2 py-1 whitespace-nowrap text-sm border border-gray-200">
                                         {comprobante.tipo}
                                     </td>

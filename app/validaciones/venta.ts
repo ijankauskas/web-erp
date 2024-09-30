@@ -48,4 +48,34 @@ export const VentaSchema = z.object({
         }),
     articulos: z.array(articulos).optional(),
     pagos: z.array(pagos).optional(),
-})
+    tipo_reci: z.any().optional(),
+    num_reci: z.any().optional().transform(val => parseFloat(val)),
+    cate_iva: z.any().optional().transform(val => parseFloat(val)),
+
+}).refine(
+    (data) => {
+        // Si el array de pagos no está vacío, tipo_reci y num_reci deben estar completos
+        if (data.pagos && data.pagos.length > 0) {
+            return data.tipo_reci 
+        }
+        // Si no hay pagos o está vacío, no hay problema
+        return true;
+    },
+    {
+        message: 'Si hay pagos, tipo_reci son obligatorios',
+        path: ['tipo_reci'], // Indica en qué campos se genera el error
+    }
+).refine(
+    (data) => {
+        // Si el array de pagos no está vacío, tipo_reci y num_reci deben estar completos
+        if (data.pagos && data.pagos.length > 0) {
+            return data.num_reci 
+        }
+        // Si no hay pagos o está vacío, no hay problema
+        return true;
+    },
+    {
+        message: 'Si hay pagos, el numero es obligatorios',
+        path: ['num_reci'], // Indica en qué campos se genera el error
+    }
+);

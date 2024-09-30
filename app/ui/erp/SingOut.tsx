@@ -1,20 +1,24 @@
 "use client"
+import { PowerIcon } from "@heroicons/react/24/outline"
 import { signOut } from "next-auth/react"
 
-export function SignOut() {
+export function SignOut({ isOpen }: any) {
 
   const cerrar = (e: any) => {
     e.preventDefault()
     signOut()
   }
-  
+
   return (
-    <a
-      onClick={(e) => cerrar(e)}
-      className="block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100"
-    >
-      Sign Out
-    </a>
+    <div className="p-2">
+      <a
+        onClick={(e) => cerrar(e)}
+        className="group flex items-center px-2 py-2 text-sm font-medium rounded-md text-white hover:bg-gray-700 p-2 "
+      >
+        <PowerIcon className="h-6 w-6 mr-2 text-white" aria-hidden="true" />
+        {isOpen ? 'Sign Out' : ''}
+      </a>
+    </div>
 
   )
 

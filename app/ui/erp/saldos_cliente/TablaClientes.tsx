@@ -89,14 +89,14 @@ const TablaClientes = ({ busqueda, seleccionarCliente, pagina, setPagina }: any)
     };
 
     return (
-        <div className="overflow-x-auto overflow-y-auto max-h-[71vh] h-full">
+        <div className="overflow-x-auto overflow-y-auto max-h-[78vh] h-full">
             <table className="min-w-full w-full table-fixed">
                 <thead className="bg-gray-100 sticky top-0 z-10">
                     <tr className="border-b">
                         <th
                             style={{ width: columnWidths[0] }}
                             scope="col"
-                            className="relative text-left text-xs font-medium text-gray-500 uppercase tracking-wider border border-gray-200 text-ellipsis overflow-hidden hover:bg-indigo-50 hover:!border-blue-500"
+                            className="relative text-left text-xs font-medium text-gray-500 uppercase tracking-wider text-ellipsis overflow-hidden border-r hover:bg-indigo-200 hover:text-white"
                             onClick={() => orderClientes('codigo')}
                         >
                             <div className='flex px-2 py-2'>
@@ -115,7 +115,7 @@ const TablaClientes = ({ busqueda, seleccionarCliente, pagina, setPagina }: any)
                         <th
                             style={{ width: columnWidths[1] }}
                             scope="col"
-                            className="relative px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border border-gray-200 text-ellipsis overflow-hidden hover:bg-indigo-50 hover:!border-blue-500"
+                            className="relative px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider text-ellipsis overflow-hidden border-r hover:bg-indigo-200 hover:text-white"
                             onClick={() => orderClientes('razon')}
                         >
                             <div className='flex'>
@@ -134,7 +134,7 @@ const TablaClientes = ({ busqueda, seleccionarCliente, pagina, setPagina }: any)
                         <th
                             style={{ width: columnWidths[2] }}
                             scope="col"
-                            className="text-end relative w-[50px] px-2 py-2 text-xs font-medium text-gray-500 uppercase tracking-wider border border-gray-200 text-ellipsis overflow-hidden hover:bg-indigo-50 hover:!border-blue-500"
+                            className="text-end relative w-[50px] px-2 py-2 text-xs font-medium text-gray-500 uppercase tracking-wider text-ellipsis overflow-hidden border-r hover:bg-indigo-200 hover:text-white"
                             onClick={() => orderClientes('saldo')}
                         >
                             <div className='flex'>
@@ -159,16 +159,16 @@ const TablaClientes = ({ busqueda, seleccionarCliente, pagina, setPagina }: any)
                         clientes.length > 0 ? (
                             clientes?.map((cliente: any, index: number) => (
                                 <tr key={index}
-                                    className="hover:bg-indigo-50 hover:!border-blue-500 border-gray-200 hover:!border-1"
+                                    className="hover:bg-indigo-500 hover:text-white border-gray-200"
                                     onClick={() => seleccionarCliente(cliente)}
                                 >
-                                    <td className="text-ellipsis truncate px-2 py-1 whitespace-nowrap text-sm text-gray-900 border-r">
+                                    <td className="text-ellipsis truncate px-2 py-1 whitespace-nowrap text-sm border border-gray-200">
                                         {cliente.codigo}
                                     </td>
-                                    <td className="text-ellipsis truncate px-2 py-1 whitespace-nowrap text-sm text-gray-500 border-r">
+                                    <td className="text-ellipsis truncate px-2 py-1 whitespace-nowrap text-sm border border-gray-200">
                                         {cliente.razon}
                                     </td>
-                                    <td className="text-ellipsis truncate text-end px-2 py-1 whitespace-nowrap text-sm text-gray-500 border-r">
+                                    <td className="text-ellipsis truncate text-end px-2 py-1 whitespace-nowrap text-sm border border-gray-200">
                                         {cliente.saldo.toLocaleString('es-AR')}
                                     </td>
                                 </tr>

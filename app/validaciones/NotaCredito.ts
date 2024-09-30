@@ -40,4 +40,5 @@ export const NotaCreditoSchema = z.object({
             message: "Debe seleccionar un cliente.",
         }),
     articulos: z.array(articulos).optional(),
+    cate_iva: z.any().optional().transform(val => parseFloat(val)),
 })

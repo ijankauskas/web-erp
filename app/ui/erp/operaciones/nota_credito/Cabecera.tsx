@@ -2,19 +2,21 @@
 import { useEffect, useState } from "react";
 import ComboBoxSelect from "../../../ComboBoxSelect";
 import InputCommon from "../../../inputCommon";
-import { faPersonWalkingDashedLineArrowRight } from "@fortawesome/free-solid-svg-icons/faPersonWalkingDashedLineArrowRight";
 import { DbCompConsul, DbConsultarCliente, DbMonedasConsul } from "@/app/lib/data";
 import ButtonCommon from "../../ButtonCommon";
-import { MagnifyingGlassCircleIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
+import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
+import ClientesConsul from "../../consultas/Clientes_consul";
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
-
-
-export default function Cabecera({ register, setValue, clearErrors, errors, setMensaje, getValues, AbrirClientesConsul }: any) {
-    const [num_cliente, setNum_cliente] = useState();
-    const [clientes, setClientes] = useState<{}>([]);
-    const [monedas, setMonedas] = useState<{}>([]);
+export default function Cabecera({ register, setValue, clearErrors, errors, setMensaje, getValues, consultarComprobante, bloquear, setIva, cliente, setCliente }: any) {
+    const searchParams = useSearchParams();
+    const pathname = usePathname();
+    const { replace } = useRouter();
+    const [clientes, setClientes] = useState<any>([]);
+    const [monedas, setMonedas] = useState([]);
     const [moneDefault, setMoneDefault] = useState('PES');
-    const [comp, setComp] = useState<{}>([]);
+    const [comp, setComp] = useState([]);
+    const [abrirClientesConsul, setAbrirClientesConsul] = useState(false);
 
 
     useEffect(() => {
@@ -29,20 +31,47 @@ export default function Cabecera({ register, setValue, clearErrors, errors, setM
     }
 
     const seleccionarClienteSelec = (cliente: any) => {
-        setNum_cliente(cliente);
+        let clienteSelect = clientes.filter((item: any) => item.id == cliente)
+        setCliente(clienteSelect)
         setValue('num_cliente', cliente);
         clearErrors('num_cliente');
     }
 
     const seleccionarMoneSelec = (moneda: any) => {
+        const mone_coti: any = monedas.filter((mone: any) => mone.id == moneda);
+        if (mone_coti.length > 0) {
+            setValue('mone_coti', mone_coti[0].mone_coti);
+        }
         setValue('mone', moneda);
         clearErrors('mone');
     }
-    const seleccionarCompSelec = (comp: any) => {
-        setValue('tipo', comp);
+
+    const seleccionarCompSelec = (compSelect: any) => {
+        const params = new URLSearchParams(searchParams);
+        let tipo: string | null = compSelect;
+        if (tipo) {
+            params.set('tipo', tipo);
+            replace(`${pathname}?${params.toString()}`);
+            //elimina el num para que no consulte de mas
+            params.delete('num');
+            replace(`${pathname}?${params.toString()}`);
+            clearErrors()
+        } else {
+            params.delete('tipo');
+            replace(`${pathname}?${params.toString()}`);
+            clearErrors();
+            return
+        }
+
+        const prox_num: any = comp.filter((comp: any) => comp.id == compSelect);
+        if (prox_num.length > 0) {
+            setValue('numero', prox_num[0].prox_num);
+        }
+        setIva(prox_num[0].porcentaje)
+        setValue('tipo', compSelect);
+        setValue('cate_iva', prox_num[0].porcentaje);
         clearErrors('tipo');
     }
-
 
     const consultarClientesPorCodigo = async (cliente: any) => {
         if (cliente.target.value == '') return
@@ -50,7 +79,7 @@ export default function Cabecera({ register, setValue, clearErrors, errors, setM
         const data = await respuesta.json();
 
         if (respuesta.ok) {
-            setClientes([{ id: data.codigo, name: data.razon }])
+            setClientes([{ id: data.codigo, name: data.razon, cateIva: data.cate_iva }])
         } else {
             setMensaje({
                 mostrar: true,
@@ -59,7 +88,7 @@ export default function Cabecera({ register, setValue, clearErrors, errors, setM
                 tipo_aletar: 'error',
             });
         }
-        setNum_cliente(cliente.target.value)
+        setCliente({ id: data.codigo, name: data.razon, cateIva: data.cate_iva })
         setValue('num_cliente', cliente.target.value);
     }
 
@@ -77,18 +106,16 @@ export default function Cabecera({ register, setValue, clearErrors, errors, setM
     }
 
     const consultarMonedas = async () => {
-
         const respuesta = await DbMonedasConsul();
         const data = await respuesta.json();
         if (respuesta.ok) {
             const MonedasMapeados = data.map((mone: any) => ({
                 id: mone.mone || '',
                 name: mone.mone || '',
+                mone_coti: mone.mone_coti || 0,
             }));
             setMonedas(MonedasMapeados);
         }
-
-
     }
 
     const consultarComp = async () => {
@@ -98,12 +125,54 @@ export default function Cabecera({ register, setValue, clearErrors, errors, setM
             const CompMapeados = data.map((comp: any) => ({
                 id: comp.tipo || '',
                 name: comp.descrip || '',
+                prox_num: comp.prox_num.toString() || 1,
+                porcentaje: comp.porcentaje || 0,
             }));
             setComp(CompMapeados);
         }
     }
 
+    const toggleAbrirClientesConsul = () => {
+        setAbrirClientesConsul(!abrirClientesConsul)
+    }
 
+    const seleccionarCliente = (cliente: any) => {
+        setClientes([{ id: cliente.codigo, name: cliente.razon, cateIva: cliente.cateIva }])
+        setCliente({ id: cliente.codigo, name: cliente.razon, cateIva: cliente.cateIva })
+
+        setValue('num_cliente', cliente.codigo);
+    }
+    
+    useEffect(() => {
+        const params = new URLSearchParams(searchParams);
+        let tipo: string | null = params.get('tipo');
+        let num: string | null = params.get('num');
+        if ((tipo != '' && tipo != null) && (num != '' && num != null)) {
+            consultarComprobante(tipo, num);
+        }
+    }, [searchParams]);
+
+    const consultar = () => {
+        const params = new URLSearchParams(searchParams);
+        let numero: string | null = getValues('numero');
+        if (numero) {
+            params.set('num', numero);
+            replace(`${pathname}?${params.toString()}`);
+            clearErrors()
+        } else {
+            params.delete('num');
+            replace(`${pathname}?${params.toString()}`);
+            clearErrors();
+            return
+        }
+        let tipo: string | null = params.get('tipo')
+
+        if (tipo) {
+            let compFilter: any = comp.filter((comp: any) => comp.id == tipo)
+            if (compFilter[0].prox_num != numero)
+                consultarComprobante(tipo, numero);
+        }
+    }
     return (
         <>
             <div className="pt-2 grid gap-x-2 gap-y-0 grid-cols-10">
@@ -115,6 +184,7 @@ export default function Cabecera({ register, setValue, clearErrors, errors, setM
                             seleccionado={getValues('tipo')}
                             setearCodigo={seleccionarCompSelec}
                             error={errors.tipo?.message}
+                            desactivado={bloquear}
                         />
                     </div>
                 </div>
@@ -126,7 +196,9 @@ export default function Cabecera({ register, setValue, clearErrors, errors, setM
                             tipo={'number'}
                             error={errors.numero?.message}
                             placeholder={"Numero de la factura"}
-                            useForm={register("numero")} />
+                            useForm={register("numero", { onBlur: consultar })}
+                            desactivado={bloquear}
+                        />
                     </div>
                 </div>
                 <div className="col-span-6 sm:col-span-6 md:col-span-2 flex items-center">
@@ -136,7 +208,9 @@ export default function Cabecera({ register, setValue, clearErrors, errors, setM
                             tipo={'date'}
                             error={errors.fecha?.message}
                             placeholder={""}
-                            useForm={register("fecha")} />
+                            useForm={register("fecha")}
+                            desactivado={bloquear}
+                        />
                     </div>
                 </div>
                 <div className="col-span-6 sm:col-span-6 md:col-span-2 flex items-center">
@@ -144,9 +218,10 @@ export default function Cabecera({ register, setValue, clearErrors, errors, setM
                         <ComboBoxSelect
                             titulo={"Moneda"}
                             data={monedas}
-                            seleccionado={moneDefault}
+                            seleccionado={getValues('mone') ? getValues('mone') : moneDefault}
                             setearCodigo={seleccionarMoneSelec}
                             error={errors.mone?.message}
+                            desactivado={bloquear}
                         />
                     </div>
                 </div>
@@ -157,6 +232,7 @@ export default function Cabecera({ register, setValue, clearErrors, errors, setM
                             tipo={'number'}
                             useForm={register("mone_coti")}
                             error={errors.mone_coti?.message}
+                            desactivado={(getValues('mone') == 'PES' || bloquear)}
                         />
                     </div>
                 </div>
@@ -168,6 +244,7 @@ export default function Cabecera({ register, setValue, clearErrors, errors, setM
                             error={errors.num_cliente?.message}
                             placeholder={""}
                             useForm={register("num_cliente", { onBlur: consultarClientesPorCodigo })}
+                            desactivado={bloquear}
                         />
                     </div>
                 </div>
@@ -177,9 +254,10 @@ export default function Cabecera({ register, setValue, clearErrors, errors, setM
                         <ComboBoxSelect
                             titulo={"Cliente"}
                             data={clientes}
-                            seleccionado={num_cliente}
+                            seleccionado={cliente.id}
                             setearCodigo={seleccionarClienteSelec}
                             llenarData={consutlarClientes}
+                            desactivado={bloquear}
                         />
                     </div>
                     <div>
@@ -189,7 +267,8 @@ export default function Cabecera({ register, setValue, clearErrors, errors, setM
                             px={"px-1"}
                             py={"py-1"}
                             tooltip="Buscar Clientes"
-                            onClick={AbrirClientesConsul}
+                            onClick={toggleAbrirClientesConsul}
+                            desactivado={bloquear}
                         />
                     </div>
                 </div>
@@ -206,6 +285,12 @@ export default function Cabecera({ register, setValue, clearErrors, errors, setM
                     </div> */}
                 </div>
             </div>
+
+            <ClientesConsul
+                setCliente={seleccionarCliente}
+                open={abrirClientesConsul}
+                setOpen={setAbrirClientesConsul}
+            />
         </>
     )
 

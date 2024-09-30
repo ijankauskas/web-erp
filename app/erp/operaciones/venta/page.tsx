@@ -10,7 +10,7 @@ import Bottom from '@/app/ui/erp/operaciones/venta/Bottom';
 import TablaArticulos from '@/app/ui/erp/operaciones/venta/TablaArticulos';
 import { VentaSchema } from '@/app/validaciones/venta';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useEffect, useRef, useState } from 'react';
+import { Suspense, useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import Loading from '@/app/ui/Loading';
 
@@ -44,7 +44,8 @@ export default function Factura() {
     const [respuesta, setRespuesta] = useState(false);
     const [bloquear, setBloquear] = useState(false); //para bloquear los inputs cuando consultas el comprobante
     const [abrirArticulosConsul, setAbrirArticulosConsul] = useState(false);
-
+    const [iva, setIva] = useState(0)
+    const [cliente, setCliente] = useState({})
     const [mensaje, setMensaje] = useState({
         mostrar: false,
         mensaje: '',
@@ -70,7 +71,6 @@ export default function Factura() {
         },
         resolver: zodResolver(VentaSchema)
     })
-    const [num_cliente, setNum_cliente] = useState<any>();
     const [articulos, setArticulos] = useState<{
         error: boolean; codigo: string, descripcion: string, unidad: string, cantidad: number, precio_vta: number, costo_uni: number
     }[]>([]);
@@ -175,6 +175,18 @@ export default function Factura() {
         }
     }
 
+    const agregarArticulos = (articulo: any) => {
+        const nuevo = {
+            codigo: articulo.codigo,
+            descripcion: articulo.descripcion,
+            unidad: articulo.unidad,
+            cantidad: articulo.cant_default || 0,
+            precio_vta: articulo.precio_vta || 0,
+            costo_uni: articulo.costo || 0
+        };
+        setArticulos((prev: any) => [...prev, nuevo]);
+    }
+
     const consultarComprobante = async (tipo: string, num: number) => {
         setCargando(true)
         try {
@@ -188,9 +200,10 @@ export default function Factura() {
                 // setValue('fecha', data.fecha.toISOString().split('T')[0])
                 setValue('mone', data.mone)
                 setValue('mone_coti', data.mone_coti)
-                setNum_cliente(data.cliente)
+                setCliente({ id: data.cliente, cateIva: data.cate_iva })
                 setValue('num_cliente', data.cliente)
                 setValue('razon_cliente', data.clientes.razon)
+                setIva(data.porcen_iva)
                 setArticulos([])
                 data.articulos.map((articulo: any) => {
                     const articulos = [{
@@ -265,7 +278,7 @@ export default function Factura() {
         setValue('fecha', fecha_hoy)
         setValue('mone', '')
         setValue('mone_coti', 0)
-        setNum_cliente('')
+        setCliente({})
         setValue('num_cliente', '')
         setValue('razon_cliente', '')
         setArticulos([])
@@ -274,80 +287,90 @@ export default function Factura() {
 
 
     return (
-        <div className='mx-auto max-w-screen-2xl bg-white'>
-            <form ref={formRef} className="space-y-7" method="POST" onSubmit={handleSubmit(data => enviarForm(data))}>
-                <div className="w-full flex flex-col px-8 pt-2">
-                    <Cabecera
-                        register={register}
-                        setValue={setValue}
-                        errors={errors}
-                        clearErrors={clearErrors}
-                        getValues={getValues}
-                        consultarComprobante={consultarComprobante}
-                        setAlerta={setAlerta}
-                        num_cliente={num_cliente}
-                        setNum_cliente={setNum_cliente}
-                        bloquear={bloquear}
-                    />
-                    <div className="w-full flex justify-between my-2">
-                        <div>
-                            <h2 className='text-xl font-medium leading-7 text-gray-900 sm:truncate sm:text-xl sm:tracking-tight'>Articulos</h2>
-                        </div>
-                        <div className='flex'>
-                            <div className='w-[150px]'>
-                                <ButtonCommon type="button" texto={"Buscar Articulos"} onClick={toggleAbrirArticulosConsul} />
+        <Suspense fallback={<div>Loading...</div>}>
+            <div className='mx-auto max-w-screen-2xl bg-white'>
+                <form ref={formRef} className="space-y-7" method="POST" onSubmit={handleSubmit(data => enviarForm(data))}>
+                    <div className="w-full flex flex-col px-8 pt-2">
+                        <Cabecera
+                            register={register}
+                            setValue={setValue}
+                            errors={errors}
+                            clearErrors={clearErrors}
+                            getValues={getValues}
+                            consultarComprobante={consultarComprobante}
+                            setAlerta={setAlerta}
+                            bloquear={bloquear}
+                            setIva={setIva}
+                            setCliente={setCliente}
+                            cliente={cliente}
+                        />
+                        <div className="w-full flex justify-between my-2">
+                            <div>
+                                <h2 className='text-xl font-medium leading-7 text-gray-900 sm:truncate sm:text-xl sm:tracking-tight'>Articulos</h2>
+                            </div>
+                            <div className='flex'>
+                                <div className='w-[150px]'>
+                                    <ButtonCommon type="button" texto={"Buscar Articulos"} onClick={toggleAbrirArticulosConsul} />
+                                </div>
                             </div>
                         </div>
+                        <div className="overflow-x-auto sm:-mx-6 lg:-mx-8">
+                            <TablaArticulos
+                                register={register}
+                                articulos={articulos}
+                                setAlerta={setAlerta}
+                                setArticulos={setArticulos}
+                                bloquear={bloquear}
+                                iva={iva}
+                                cliente={cliente}
+                            />
+                        </div>
                     </div>
-                    <div className="overflow-x-auto sm:-mx-6 lg:-mx-8">
-                        <TablaArticulos
+                    <div className='!m-2'>
+                        <Bottom
                             register={register}
                             articulos={articulos}
                             setAlerta={setAlerta}
                             setArticulos={setArticulos}
+                            pagos={pagos}
+                            setPagos={setPagos}
+                            clickLimpiar={clickLimpiar}
                             bloquear={bloquear}
+                            iva={iva}
+                            errors={errors}
+                            setValue={setValue}
+                            clearErrors={clearErrors}
+                            cliente={cliente}
                         />
                     </div>
-                </div>
-                <div className='!m-2'>
-                    <Bottom
-                        register={register}
-                        articulos={articulos}
-                        setAlerta={setAlerta}
-                        setArticulos={setArticulos}
-                        pagos={pagos}
-                        setPagos={setPagos}
-                        clickLimpiar={clickLimpiar}
-                        bloquear={bloquear}
-                    />
-                </div>
-            </form>
+                </form>
 
-            {/*alerta */}
-            <Alerta
-                abrir={mensaje.mostrar}
-                cerrar={cerrarMensaje}
-                titulo={mensaje.titulo}
-                texto={mensaje.mensaje}
-                tipo_aletar={mensaje.tipo_aletar}
-            />
+                {/*alerta */}
+                <Alerta
+                    abrir={mensaje.mostrar}
+                    cerrar={cerrarMensaje}
+                    titulo={mensaje.titulo}
+                    texto={mensaje.mensaje}
+                    tipo_aletar={mensaje.tipo_aletar}
+                />
 
-            <ArticulosConsul
-                setArticulo={setArticulos}
-                open={abrirArticulosConsul}
-                setOpen={setAbrirArticulosConsul}
-            />
+                <ArticulosConsul
+                    setArticulo={agregarArticulos}
+                    open={abrirArticulosConsul}
+                    setOpen={setAbrirArticulosConsul}
+                />
 
-            <DismissibleAlert
-                message={alerta.message}
-                type={alerta.type}
-                onClose={closeAlertaDismiss}
-                showPanel={alerta.alertVisible}
-            />
+                <DismissibleAlert
+                    message={alerta.message}
+                    type={alerta.type}
+                    onClose={closeAlertaDismiss}
+                    showPanel={alerta.alertVisible}
+                />
 
-            <Loading cargando={cargando} respuesta={respuesta} />
+                <Loading cargando={cargando} respuesta={respuesta} />
 
-        </div>
+            </div>
+        </Suspense>
     );
 
 

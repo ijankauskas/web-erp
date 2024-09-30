@@ -102,15 +102,7 @@ export default function ArticulosConsul({ setArticulo, open, setOpen }: any) {
     };
 
     const agregarArticulo = ({ articulo }: any) => {
-        const nuevo = {
-            codigo: articulo.codigo,
-            descripcion: articulo.descripcion,
-            unidad: articulo.unidad,
-            cantidad: articulo.cant_default || 0,
-            precio_vta: articulo.precio_vta || 0,
-            costo_uni: articulo.costo || 0
-        };
-        setArticulo((prev: any) => [...prev, nuevo]);
+        setArticulo(articulo);
     }
 
     useEffect(() => {
