@@ -14,7 +14,7 @@ export default function NavBotones({ navigation, open }: any) {
         <>
             {navigation.map((item: any, index: number) => (
                 item.subMenu.length > 0 ? (
-                    <Accordion variant="splitted" className='text-white py-0.5'>
+                    <Accordion key={index} variant="splitted" className='text-white py-0.5'>
                         <AccordionItem
                             key="1"
                             aria-label="Accordion 1"

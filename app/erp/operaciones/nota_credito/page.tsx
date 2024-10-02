@@ -6,7 +6,7 @@ import ButtonCommon from '@/app/ui/erp/ButtonCommon';
 import Alerta from '@/app/ui/erp/alerta';
 import ArticulosConsul from '@/app/ui/erp/consultas/articulos_consul';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useEffect, useRef, useState } from 'react';
+import { Suspense, useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { PlusCircleIcon } from '@heroicons/react/24/outline';
 import ClientesConsul from '@/app/ui/erp/consultas/Clientes_consul';
@@ -290,95 +290,98 @@ export default function NotaCredito() {
     }
 
     return (
-        <div className='mx-auto max-w-screen-2xl bg-white'>
-            <form ref={formRef} className="space-y-7" method="POST" onSubmit={handleSubmit(data => enviarForm(data))}>
-                <div className="w-full flex flex-col px-8 pt-2">
-                    <Cabecera
-                        register={register}
-                        setValue={setValue}
-                        errors={errors}
-                        setMensaje={setMensaje}
-                        clearErrors={clearErrors}
-                        getValues={getValues}
-                        consultarComprobante={consultarComprobante}
-                        AbrirClientesConsul={toggleAbrirClientesConsul}
-                        bloquear={bloquear}
-                        setIva={setIva}
-                        setCliente={setCliente}
-                        cliente={cliente}
-                    />
-                    <div className="w-full flex justify-between my-2">
-                        <div>
-                            <h2 className='text-xl font-medium leading-7 text-gray-900 sm:truncate sm:text-xl sm:tracking-tight'>Articulos</h2>
+        <Suspense fallback={<div>Loading...</div>}>
+
+            <div className='mx-auto max-w-screen-2xl bg-white'>
+                <form ref={formRef} className="space-y-7" method="POST" onSubmit={handleSubmit(data => enviarForm(data))}>
+                    <div className="w-full flex flex-col px-8 pt-2">
+                        <Cabecera
+                            register={register}
+                            setValue={setValue}
+                            errors={errors}
+                            setMensaje={setMensaje}
+                            clearErrors={clearErrors}
+                            getValues={getValues}
+                            consultarComprobante={consultarComprobante}
+                            AbrirClientesConsul={toggleAbrirClientesConsul}
+                            bloquear={bloquear}
+                            setIva={setIva}
+                            setCliente={setCliente}
+                            cliente={cliente}
+                        />
+                        <div className="w-full flex justify-between my-2">
+                            <div>
+                                <h2 className='text-xl font-medium leading-7 text-gray-900 sm:truncate sm:text-xl sm:tracking-tight'>Articulos</h2>
+                            </div>
+                            <div className='flex'>
+                                <div className='w-[150px] sm:mr-4'>
+                                    <ButtonCommon type="button" texto={"Buscar Articulos"} onClick={toggleAbrirArticulosConsul} />
+                                </div>
+                                <div className='w-[40px]'>
+                                    <ButtonCommon type="button" tooltip="Facturas Pendientes" texto="FC" onClick={toggleAbrirCompPend} />
+                                </div>
+                            </div>
                         </div>
-                        <div className='flex'>
-                            <div className='w-[150px] sm:mr-4'>
-                                <ButtonCommon type="button" texto={"Buscar Articulos"} onClick={toggleAbrirArticulosConsul} />
-                            </div>
-                            <div className='w-[40px]'>
-                                <ButtonCommon type="button" tooltip="Facturas Pendientes" texto="FC" onClick={toggleAbrirCompPend} />
-                            </div>
+                        <div className="overflow-x-auto sm:-mx-6 lg:-mx-8">
+                            <TablaArticulos
+                                register={register}
+                                articulos={articulos}
+                                setAlerta={setAlerta}
+                                setArticulos={setArticulos}
+                                iva={iva}
+                                cliente={cliente}
+                                bloquear={bloquear}
+                            />
                         </div>
                     </div>
-                    <div className="overflow-x-auto sm:-mx-6 lg:-mx-8">
-                        <TablaArticulos
+                    <div className='!m-2'>
+                        <Bottom
                             register={register}
                             articulos={articulos}
                             setAlerta={setAlerta}
                             setArticulos={setArticulos}
-                            iva={iva}
-                            cliente={cliente}
+                            clickLimpiar={clickLimpiar}
                             bloquear={bloquear}
+                            iva={iva}
+                            errors={errors}
+                            setValue={setValue}
+                            clearErrors={clearErrors}
+                            cliente={cliente}
                         />
                     </div>
-                </div>
-                <div className='!m-2'>
-                    <Bottom
-                        register={register}
-                        articulos={articulos}
-                        setAlerta={setAlerta}
-                        setArticulos={setArticulos}
-                        clickLimpiar={clickLimpiar}
-                        bloquear={bloquear}
-                        iva={iva}
-                        errors={errors}
-                        setValue={setValue}
-                        clearErrors={clearErrors}
-                        cliente={cliente}
-                    />
-                </div>
-            </form>
+                </form>
 
-            {/*alerta */}
-            <Alerta
-                abrir={mensaje.mostrar}
-                cerrar={cerrarMensaje}
-                titulo={mensaje.titulo}
-                texto={mensaje.mensaje}
-                tipo_aletar={mensaje.tipo_aletar}
-            />
+                {/*alerta */}
+                <Alerta
+                    abrir={mensaje.mostrar}
+                    cerrar={cerrarMensaje}
+                    titulo={mensaje.titulo}
+                    texto={mensaje.mensaje}
+                    tipo_aletar={mensaje.tipo_aletar}
+                />
 
-            <ArticulosConsul
-                setArticulo={agregarArticulos}
-                open={abrirArticulosConsul}
-                setOpen={setAbrirArticulosConsul}
-            />
+                <ArticulosConsul
+                    setArticulo={agregarArticulos}
+                    open={abrirArticulosConsul}
+                    setOpen={setAbrirArticulosConsul}
+                />
 
-            <CompPendiente
-                open={abrirCompPend}
-                setOpen={setAbrirCompPend}
-            />
+                <CompPendiente
+                    open={abrirCompPend}
+                    setOpen={setAbrirCompPend}
+                />
 
-            <DismissibleAlert
-                message={alerta.message}
-                type={alerta.type}
-                onClose={closeAlertaDismiss}
-                showPanel={alerta.alertVisible}
-            />
+                <DismissibleAlert
+                    message={alerta.message}
+                    type={alerta.type}
+                    onClose={closeAlertaDismiss}
+                    showPanel={alerta.alertVisible}
+                />
 
-            <Loading cargando={cargando} respuesta={respuesta} />
+                <Loading cargando={cargando} respuesta={respuesta} />
 
-        </div>
+            </div>
+        </Suspense>
     );
 
 

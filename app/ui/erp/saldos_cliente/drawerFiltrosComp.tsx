@@ -12,7 +12,6 @@ export default function DrawerFiltrosComp({ abrir, toggleAbrir, }: any) {
                 transition
                 className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity duration-500 ease-in-out data-[closed]:opacity-0"
             />
-
             <div className="fixed inset-0 w-4/12 overflow-hidden">
                 <div className="absolute w-4/12 inset-0 overflow-hidden">
                     <div className="pointer-events-none w-4/12 fixed inset-y-0 right-0 flex max-w-full pl-10">
