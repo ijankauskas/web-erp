@@ -15,6 +15,8 @@ export default {
                 let respuesta: any = await DbSingIn(data);
                 let user = null
                 const rta = await respuesta.json();
+                console.log(rta);
+                
                 if (respuesta.ok) {
                     user = {
                         id: rta.id,
