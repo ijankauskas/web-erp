@@ -1,9 +1,9 @@
 let produccion = true;
 let url = '';
 if (produccion) {
-    url = 'api.ecomsolver.com.ar'
+    url = 'https://api.ecomsolver.com.ar'
 } else {
-    url = 'https://localhost:8080'
+    url = 'http://localhost:8080'
 }
 
 export async function DbConsultarArticulo(
