@@ -13,7 +13,6 @@ export default {
                     throw new Error("Credenciales invalidas.")
                 }
                 let respuesta: any = await DbSingIn(data);
-                console.log('ahora');
                 let user = null
                 const rta = await respuesta.json();
 
