@@ -11,13 +11,13 @@ export default middleware((req) => {
     const { nextUrl, auth } = req;
     const isLogged = !!auth?.user;
 
-    // if (!publicRoutes.includes(nextUrl.pathname) && !isLogged) {
-    //     return NextResponse.redirect(new URL("/login", nextUrl))
-    // }
+    if (!publicRoutes.includes(nextUrl.pathname) && !isLogged) {
+        return NextResponse.redirect(new URL("/login", nextUrl))
+    }
 
-    // if (nextUrl.pathname == "/login" && isLogged) {
-    //     return NextResponse.redirect(new URL("/erp", nextUrl))
-    // }
+    if (nextUrl.pathname == "/login" && isLogged) {
+        return NextResponse.redirect(new URL("/erp", nextUrl))
+    }
 
     return NextResponse.next();
 })
