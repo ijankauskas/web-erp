@@ -12,7 +12,7 @@ export default function Bottom({ register, articulos, pagos, setPagos, clickLimp
             <div className="px-8 grid grid-cols-12 gap-1 gap-y-0">
                 <div className="col-span-4 grid grid-cols-4 gap-2 ">
                     <div className="grid-span-1">
-                        <Dropdown>
+                        <Dropdown placement="right-start">
                             <DropdownTrigger>
                                 {/* <ButtonCommon
                                     texto={"Acciones"}

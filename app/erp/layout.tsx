@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import SideNav from '../ui/erp/sidenav';
-import { CurrencyDollarIcon, PlusCircleIcon, PlusIcon, ShoppingBagIcon, UserPlusIcon } from '@heroicons/react/24/outline'
+import { AdjustmentsVerticalIcon, ArchiveBoxIcon, BanknotesIcon, CurrencyDollarIcon, FolderIcon, PlusCircleIcon, PlusIcon, ShoppingBagIcon, SquaresPlusIcon, UserPlusIcon } from '@heroicons/react/24/outline'
 
 function classNames(...classes: any[]) {
     return classes.filter(Boolean).join(' ');
@@ -11,11 +11,11 @@ function classNames(...classes: any[]) {
 const menus = [
     {
         nombre: "Altas",
-        icon: PlusIcon,
+        icon: PlusCircleIcon,
         subMenu: [
-
             {
                 nombre: "Generales",
+                icon: AdjustmentsVerticalIcon,
                 pantallas: [
                     {
                         nombre: "Comprobantes",
@@ -29,6 +29,7 @@ const menus = [
             },
             {
                 nombre: "Stock",
+                icon: ArchiveBoxIcon,
                 pantallas: [
                     {
                         nombre: "Articulos",
@@ -53,6 +54,7 @@ const menus = [
             },
             {
                 nombre: "Ventas",
+                icon: BanknotesIcon,
                 pantallas: [
                     {
                         nombre: "Clientes",
@@ -77,6 +79,7 @@ const menus = [
             },
             {
                 nombre: "Proveedores",
+                icon: ShoppingBagIcon,
                 pantallas: [
                     {
                         nombre: 'Proveedores',
@@ -97,10 +100,11 @@ const menus = [
     },
     {
         nombre: "Operaciones",
-        icon: PlusIcon,
+        icon: SquaresPlusIcon,
         subMenu: [
             {
                 nombre: "Ventas",
+                icon: BanknotesIcon,
                 pantallas: [
                     {
                         nombre: "Facturas",
@@ -126,10 +130,11 @@ const menus = [
     },
     {
         nombre: "Consultas",
-        icon: PlusIcon,
+        icon: FolderIcon,
         subMenu: [
             {
                 nombre: "Ventas",
+                icon: UserPlusIcon,
                 pantallas: [
                     {
                         nombre: "Saldo de clientes",
@@ -140,6 +145,12 @@ const menus = [
                 ]
             }
         ]
+    },
+    {
+        nombre: "Afip",
+        icon: PlusIcon,
+        subMenu: [],
+        href: '/erp/afip',
     }
 ]
 
@@ -172,7 +183,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         <div className="h-screen flex overflow-hidden bg-gray-100">
             <div className="flex w-0 flex-1 overflow-hidden">
                 {/* <NavBar /> */}
-                <SideNav navigation={menus}/>
+                <SideNav navigation={menus} />
                 <main className="flex-1 w-full relative z-0 overflow-y-auto focus:outline-none">
                     {/* <NavBar toggleSideBar={toggleSideBar} /> */}
                     {children}

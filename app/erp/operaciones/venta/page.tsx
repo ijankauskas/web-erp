@@ -123,6 +123,7 @@ export default function Factura() {
     }
 
     const enviarForm = async (data?: any) => {
+        
         setCargando(true)
         if (articulos.length <= 0) {
             setMensaje({
@@ -146,6 +147,12 @@ export default function Factura() {
         data.total_costo = articulos?.reduce((acc: number, articulo: any) => {
             const calculo = (articulo.costo_uni * articulo.cantidad);
             return acc + parseFloat(calculo.toFixed(2));
+        }, 0)
+
+        //calculo el iva
+        data.impor_iva = articulos?.reduce((acc: number, articulo: any) => {
+            const calculo = (iva * articulo.precio_vta * articulo.cantidad) / 100;
+            return acc + parseFloat(calculo.toFixed(2))
         }, 0)
 
         const response = await DbGrabartarFactura(data)

@@ -82,8 +82,13 @@ export default function TablaArticulos({ register, articulos, setAlerta, setArti
     const modificarArticulo = (e: React.ChangeEvent<HTMLInputElement>, index: any, field: string) => {
         const { value } = e.target;
 
-        const valueWithoutSeparators = value.replace(/\./g, '').replace(',', '.');
+        // Reemplazar comas y puntos según el formato regional
+        const valueWithoutSeparators = value.replace(/\./g, '').replace(',', '.'); // Para convertir a número
+
+        // Convertir el valor a número
         const numericValue = isNaN(parseFloat(valueWithoutSeparators)) ? 0 : parseFloat(valueWithoutSeparators);
+
+        // Actualizar el estado
         setArticulos((prev: any) =>
             prev.map((item: any, idx: number) =>
                 idx === index ? { ...item, [field]: numericValue } : item

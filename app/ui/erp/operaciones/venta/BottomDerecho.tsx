@@ -143,7 +143,7 @@ export default function BottomDerecho({ register, articulos, setAlerta, pagos, s
                                             const calculo = (iva * articulo.precio_vta * articulo.cantidad) / 100;
                                             return acc + parseFloat(calculo.toFixed(2));
                                         }, 0).toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                                        id={'subtotal'}
+                                        id={'total_iva'}
                                         textAlign={'text-end'}
                                         desactivado={true}
                                     />
@@ -158,7 +158,7 @@ export default function BottomDerecho({ register, articulos, setAlerta, pagos, s
                                             const calculo = (articulo.precio_vta * articulo.cantidad) + (iva * articulo.precio_vta * articulo.cantidad) / 100;
                                             return acc + parseFloat(calculo.toFixed(2));
                                         }, 0).toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                                        id={'subtotal'}
+                                        id={'total'}
                                         textAlign={'text-end'}
                                         desactivado={true}
                                     />
