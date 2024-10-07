@@ -1,4 +1,4 @@
-let produccion = true;
+let produccion = false;
 let url = '';
 if (produccion) {
     url = 'https://api.ecomsolver.com.ar'
