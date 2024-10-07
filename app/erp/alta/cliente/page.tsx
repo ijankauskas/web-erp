@@ -7,7 +7,6 @@ import { clienteSchema } from '@/app/validaciones/cliente';
 import Principal from '@/app/ui/erp/alta_cliente/principal';
 import DatosContacto from '@/app/ui/erp/alta_cliente/datosContacto';
 import Tabla from '@/app/ui/erp/alta_cliente/Tabla';
-import HeaderCliente from '@/app/ui/erp/alta_cliente/HeaderCliente';
 import CheckCliente from '@/app/ui/erp/alta_cliente/CheckCliente';
 import { DbBorrarCliente, DbConsultarCliente, DbGrabartarCliente } from '@/app/lib/data';
 import DismissibleAlert from '@/app/ui/DismissAlerta';
