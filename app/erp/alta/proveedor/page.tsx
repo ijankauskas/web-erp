@@ -13,6 +13,7 @@ import CheckProve from '@/app/ui/erp/alta_proveedor/CheckProve';
 import { DbBorrarProveedor, DbConsultarProveedor, DbGrabartarProveedor } from '@/app/lib/data';
 import DismissibleAlert from '@/app/ui/DismissAlerta';
 import HeaderProveedor from '@/app/ui/erp/alta_proveedor/HeaderProveedor';
+import Loading from '@/app/ui/Loading';
 
 type Inputs = {
     codigo: number,
@@ -49,6 +50,7 @@ const tabs = [
 
 export default function Alta_proveedor() {
     const [cargando, setCargando] = useState(false)
+    const [respuesta, setRespuesta] = useState(false);
     const [tab, setTab] = useState(0)
 
     const [alerta, setAlerta] = useState({
@@ -97,6 +99,8 @@ export default function Alta_proveedor() {
         setTab(tab)
     }
 
+
+
     const consultarProve = async () => {
         let codigo: number | null = getValues('codigo');
 
@@ -104,9 +108,11 @@ export default function Alta_proveedor() {
             return
         }
         setCargando(true);
+        setRespuesta(true);
 
         const respuesta = await DbConsultarProveedor(codigo);
         const data = await respuesta.json();
+
 
         if (respuesta.ok) {
             setValue('codigo', data.codigo);
@@ -127,9 +133,15 @@ export default function Alta_proveedor() {
         } else {
             limpiar()
             setCargando(false);
-        }
-
-    }
+            setRespuesta(false);
+            setAlerta({
+                message: data.message,
+                type: "error",
+                alertVisible: true
+              });
+            }
+          }
+        
 
     const enviarForm = async (data: any) => {
         if (cargando) {
@@ -163,6 +175,7 @@ export default function Alta_proveedor() {
 
     const limpiar = () => {
 
+        setValue('codigo', 0);
         setValue('cuit', '');
         setValue('cate_iva', '');
         setValue('razon', '');
@@ -236,6 +249,7 @@ export default function Alta_proveedor() {
                     showPanel={alerta.alertVisible}
                 />
             </div>
+            <Loading cargando={cargando} respuesta={respuesta} />
         </Suspense>
     )
 }

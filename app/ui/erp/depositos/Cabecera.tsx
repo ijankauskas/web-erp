@@ -12,7 +12,7 @@ const Cabecera = ({ errors, register, setValue, clearErrors, getValues, watch }:
             <div className="py-5 bg-white sm:p-6">
                 <div className="h-20">
                     <InputCommon
-                        titulo={"Tipo"}
+                        titulo={"Codigo"}
                         tipo={"text"}
                         error={errors.depo_codi?.message}
                         id="depo_codi"
@@ -41,7 +41,7 @@ const Cabecera = ({ errors, register, setValue, clearErrors, getValues, watch }:
                     <InputCommon
                         titulo={"Telefono"}
                         tipo={"text"}
-                        error={errors.descrip?.message}
+                        error={errors.telefono?.message}
                         id="telefono"
                         useForm={register("telefono")}
                     />

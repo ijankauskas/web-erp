@@ -116,13 +116,7 @@ export default function TablaDepositos({ setDepositosSelect }: any) {
                                         onMouseDown={(e) => handleMouseDown(1, e)}
                                     />
                                 </th>
-                                <th style={{ width: columnWidths[2] }} scope="col" className="relative w-[50px] px-3 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider border-r border-gray-200 text-ellipsis overflow-hidden">
-                                    Activo
-                                    <div
-                                        className="absolute right-0 top-0 w-1 h-full cursor-col-resize hover:bg-gray-300"
-                                        onMouseDown={(e) => handleMouseDown(2, e)}
-                                    />
-                                </th>
+
                                 <th style={{ width: columnWidths[3] }} scope="col" className="relative w-[125px] px-3 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider border-r border-gray-200 text-ellipsis overflow-hidden">
                                     Domicilio
                                     <div
@@ -131,24 +125,31 @@ export default function TablaDepositos({ setDepositosSelect }: any) {
                                     />
                                 </th>
                                 <th style={{ width: columnWidths[4] }} scope="col" className="relative w-[125px] px-3 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider border-r border-gray-200 text-ellipsis overflow-hidden">
-                                Telefono
+                                    Telefono
                                     <div
                                         className="absolute right-0 top-0 w-1 h-full cursor-col-resize hover:bg-gray-300"
                                         onMouseDown={(e) => handleMouseDown(4, e)}
                                     />
                                 </th>
                                 <th style={{ width: columnWidths[5] }} scope="col" className="relative w-[125px] px-3 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider border-r border-gray-200 text-ellipsis overflow-hidden">
-                                Provincia
+                                    Provincia
                                     <div
                                         className="absolute right-0 top-0 w-1 h-full cursor-col-resize hover:bg-gray-300"
                                         onMouseDown={(e) => handleMouseDown(5, e)}
                                     />
                                 </th>
                                 <th style={{ width: columnWidths[6] }} scope="col" className="relative w-[125px] px-3 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider border-r border-gray-200 text-ellipsis overflow-hidden">
-                                Observaciones
+                                    Observaciones
                                     <div
                                         className="absolute right-0 top-0 w-1 h-full cursor-col-resize hover:bg-gray-300"
                                         onMouseDown={(e) => handleMouseDown(6, e)}
+                                    />
+                                </th>
+                                <th style={{ width: columnWidths[2] }} scope="col" className="relative w-[50px] px-3 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider border-r border-gray-200 text-ellipsis overflow-hidden">
+                                    Activo
+                                    <div
+                                        className="absolute right-0 top-0 w-1 h-full cursor-col-resize hover:bg-gray-300"
+                                        onMouseDown={(e) => handleMouseDown(2, e)}
                                     />
                                 </th>
 
@@ -164,9 +165,6 @@ export default function TablaDepositos({ setDepositosSelect }: any) {
                                         {depositos.descrip}
                                     </td>
                                     <td className="px-2 py-1 whitespace-nowrap text-sm  border border-gray-200 text-ellipsis overflow-hidden">
-                                        {depositos.activo}
-                                    </td>
-                                    <td className="px-2 py-1 whitespace-nowrap text-sm  border border-gray-200 text-ellipsis overflow-hidden">
                                         {depositos.domicilio}
                                     </td>
 
@@ -180,6 +178,9 @@ export default function TablaDepositos({ setDepositosSelect }: any) {
 
                                     <td className="text-end px-3 py-1 whitespace-nowrap text-sm  border border-gray-200 text-ellipsis overflow-hidden">
                                         {depositos.obser}
+                                    </td>
+                                    <td className="px-2 py-1 whitespace-nowrap text-sm  border border-gray-200 text-ellipsis overflow-hidden">
+                                        {depositos.activo}
                                     </td>
 
                                 </tr>

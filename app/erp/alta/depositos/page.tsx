@@ -10,6 +10,7 @@ import { Suspense, useState } from "react"
 export default function Depositos() {
     const [depositosSelect, setDepositosSelect] = useState({});
     const [abrirCabecera, setAbrirCabecera] = useState(false);
+    const [bloquearEliminar, setBloquearEliminar] = useState(false);
     const [alerta, setAlerta] = useState({
         message: "",
         type: "",
@@ -34,10 +35,12 @@ export default function Depositos() {
     const AbrirDrawlerDepo = (depo: any) => {
         setDepositosSelect(depo);
         setAbrirCabecera(true);
+        setBloquearEliminar(false)
     }
 
     const toggleCabecera = () => {
         setAbrirCabecera(!abrirCabecera)
+    
     }
 
     return (
@@ -59,6 +62,8 @@ export default function Depositos() {
                             toggleAbrir={toggleCabecera}
                             depositosSelect={depositosSelect}
                             setAlerta={setAlerta}
+                            setBloquearEliminar={setBloquearEliminar}
+                            bloquearEliminar={bloquearEliminar}
                         />
                     </div>
                 </div>

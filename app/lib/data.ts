@@ -1,4 +1,4 @@
-let produccion = true;
+let produccion = false;
 let url = '';
 if (produccion) {
     url = 'https://api.ecomsolver.com.ar'
@@ -67,9 +67,19 @@ export async function DbGrabartarProveedor(data: string | null) {
     }
 }
 
-export async function DbConsultarProveedor(codigo: number | null) {
+
+export async function DbConsultarProveedor(
+    codigo: number | null,
+    multiple?: string | null,
+    razon?: string | null,
+    columnaOrden?: string | null,
+    dir?: string | null,
+    page?: number | null,
+    limit?: string | null,
+    activos?: string | null,
+) {
     try {
-        const response = await fetch(url + 'proveedores?codigo=' + codigo, {
+        const response = await fetch(url + '/proveedores?codigo=' + codigo + '&multiple=' + multiple + '&razon=' + razon + '&orden=' + columnaOrden + '&dir=' + dir + '&page=' + page + '&limit=' + limit + '&activos=' + activos, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -82,6 +92,7 @@ export async function DbConsultarProveedor(codigo: number | null) {
         throw new Error('Failed to fetch card data.');
     }
 }
+
 
 export async function DbSingIn(data: any) {
     try {
@@ -483,7 +494,6 @@ export async function DbGrabarDepositos(data: string | null) {
 
         return response;
     } catch (error) {
-        console.error('Database Error:', error);
         throw new Error('Failed to fetch card data.');
     }
 }
@@ -514,7 +524,7 @@ export async function DbConsultarNotaCredito(tipo: string, num: number) {
 
         return response;
     } catch (error) {
-        console.error('Database Error:', error);
+        
         throw new Error('Failed to fetch card data.');
     }
 }

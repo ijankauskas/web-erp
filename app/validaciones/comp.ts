@@ -23,5 +23,16 @@ export const compSchema = z.object({
     prefijo:z.string().min(1, {
         message: "Debe completar el prefijo."
     }).transform(val => parseFloat(val)),
+
+    cod_afip:z.string().min(1, {
+        message: "Debe completar el codigo de afip."
+    }),
+
+    compro_elec:z.string().min(1, {
+        message: "Debe seleccionar el tipo de comprobante."
+    }),
+
+    
     activo: z.any().optional(),
+    cod_grupo: z.string().optional(),
 })

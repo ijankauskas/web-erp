@@ -13,6 +13,7 @@ import { DbBorrarCliente, DbConsultarCliente, DbGrabartarCliente } from '@/app/l
 import DismissibleAlert from '@/app/ui/DismissAlerta';
 import { Tabs, Tab, Chip } from "@nextui-org/react";
 import { CheckIcon, ClipboardIcon, CurrencyDollarIcon } from '@heroicons/react/24/outline';
+import HeaderPage from '@/app/ui/erp/HeaderPage';
 
 type Inputs = {
     codigo: number,
@@ -193,7 +194,7 @@ export default function Alta_cliente() {
     return (
         <Suspense fallback={<div>Loading...</div>}>
             <div className="max-w-screen-2xl mx-auto py-0 px-4 sm:px-6 lg:px-8 bg-white">
-                <HeaderCliente />
+            <HeaderPage titulo={"Alta de Clientes"} />
                 <div className='relative '>
                     <form action="#" method="POST" onSubmit={handleSubmit(data => enviarForm(data))}>
                         <div className="flex w-full flex-col">

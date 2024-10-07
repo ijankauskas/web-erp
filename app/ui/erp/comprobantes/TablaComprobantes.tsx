@@ -6,7 +6,7 @@ import InputCommon from "../../inputCommon";
 import Alerta from "../alerta";
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
-export default function TablaComprobantes({setCompSelect}:any) {
+export default function TablaComprobantes({ setComprobantesSelect }: any) {
 
     const [comps, setComps] = useState([]);
     const [columnWidths, setColumnWidths] = useState([150, 400, 100, 125, 125, 100, 100, 100]);
@@ -68,7 +68,7 @@ export default function TablaComprobantes({setCompSelect}:any) {
         const data = await respuesta.json();
         if (respuesta.ok) {
 
-            setCompSelect(data[0])
+            setComprobantesSelect(data[0])
         }
 
     }
@@ -144,6 +144,27 @@ export default function TablaComprobantes({setCompSelect}:any) {
                                         onMouseDown={(e) => handleMouseDown(5, e)}
                                     />
                                 </th>
+                                <th style={{ width: columnWidths[5] }} scope="col" className="relative w-[125px] px-3 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider border-r border-gray-200 text-ellipsis overflow-hidden">
+                                    Grupo Comp
+                                    <div
+                                        className="absolute right-0 top-0 w-1 h-full cursor-col-resize hover:bg-gray-300"
+                                        onMouseDown={(e) => handleMouseDown(5, e)}
+                                    />
+                                </th>
+                                <th style={{ width: columnWidths[5] }} scope="col" className="relative w-[125px] px-3 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider border-r border-gray-200 text-ellipsis overflow-hidden">
+                                    Cod_Afip
+                                    <div
+                                        className="absolute right-0 top-0 w-1 h-full cursor-col-resize hover:bg-gray-300"
+                                        onMouseDown={(e) => handleMouseDown(5, e)}
+                                    />
+                                </th>
+                                <th style={{ width: columnWidths[5] }} scope="col" className="relative w-[125px] px-3 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider border-r border-gray-200 text-ellipsis overflow-hidden">
+                                    Compro_elec
+                                    <div
+                                        className="absolute right-0 top-0 w-1 h-full cursor-col-resize hover:bg-gray-300"
+                                        onMouseDown={(e) => handleMouseDown(5, e)}
+                                    />
+                                </th>
                                 <th style={{ width: columnWidths[6] }} scope="col" className="relative w-[125px] px-3 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider border-r border-gray-200 text-ellipsis overflow-hidden">
                                     Activo
                                     <div
@@ -176,6 +197,15 @@ export default function TablaComprobantes({setCompSelect}:any) {
 
                                     <td className="text-end px-3 py-1 whitespace-nowrap text-sm  border border-gray-200 text-ellipsis overflow-hidden">
                                         {comp.prefijo}
+                                    </td>
+                                    <td className="text-end px-3 py-1 whitespace-nowrap text-sm  border border-gray-200 text-ellipsis overflow-hidden">
+                                        {comp.cod_grupo}
+                                    </td>
+                                    <td className="text-end px-3 py-1 whitespace-nowrap text-sm  border border-gray-200 text-ellipsis overflow-hidden">
+                                        {comp.cod_afip}
+                                    </td>
+                                    <td className="text-end px-3 py-1 whitespace-nowrap text-sm  border border-gray-200 text-ellipsis overflow-hidden">
+                                        {comp.compro_elec}
                                     </td>
 
                                     <td className="text-end px-3 py-1 whitespace-nowrap text-sm  border border-gray-200 text-ellipsis overflow-hidden">

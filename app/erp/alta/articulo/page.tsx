@@ -247,7 +247,7 @@ export default function Alta_articulo() {
 
   const consultarArticulo = async () => {
     let codigo: string | null = getValues('codigo');
-    
+
     if (cargando) {
       return
     }
@@ -295,13 +295,12 @@ export default function Alta_articulo() {
         alertVisible: true
       });
     }
-
   }
 
   const limpiar = () => {
     setBloquearEliminar(true);
     clearErrors();
-    
+
     setValue('descripcion', '');
     setValue('descripcion_adicional', '');
     setValue('agru_1', '');
