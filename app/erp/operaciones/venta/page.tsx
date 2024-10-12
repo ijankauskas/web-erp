@@ -1,6 +1,6 @@
 "use client"
 
-import { DbConsultarFactura, DbGrabartarFactura } from '@/app/lib/data';
+import { DbConsultarFactura, DbEliminarCompEmitidos, DbGrabartarFactura, imprimirPDF } from '@/app/lib/data';
 import DismissibleAlert from '@/app/ui/DismissAlerta';
 import ButtonCommon from '@/app/ui/erp/ButtonCommon';
 import Alerta from '@/app/ui/erp/alerta';
@@ -90,12 +90,18 @@ export default function Factura() {
     const formRef = useRef(null);
 
     const cerrarMensaje = () => {
-        setMensaje({
+        setMensaje((prev) => ({
+            ...prev,
             mostrar: false,
-            mensaje: '',
-            titulo: '',
-            tipo_aletar: '',
-        });
+        }));
+        setTimeout(() => {
+            setMensaje({
+                mostrar: false,
+                mensaje: '',
+                titulo: '',
+                tipo_aletar: '',
+            });
+        }, 300);
     }
     const [alerta, setAlerta] = useState({
         message: "",
@@ -123,7 +129,7 @@ export default function Factura() {
     }
 
     const enviarForm = async (data?: any) => {
-        
+
         setCargando(true)
         if (articulos.length <= 0) {
             setMensaje({
@@ -283,8 +289,8 @@ export default function Factura() {
     const limpiar = async () => {
         setBloquear(false)
         setValue('fecha', fecha_hoy)
-        setValue('mone', '')
-        setValue('mone_coti', 0)
+        setValue('mone', 'PES')
+        setValue('mone_coti', 1)
         setCliente({})
         setValue('num_cliente', '')
         setValue('razon_cliente', '')
@@ -292,6 +298,65 @@ export default function Factura() {
         setPagos([])
     }
 
+    const imprimirComp = async () => {
+
+        const response = await imprimirPDF('FAC', getValues('tipo'), parseInt(getValues('numero')));
+        const pdfBlob = await response.blob();
+        const pdfURL = URL.createObjectURL(pdfBlob);
+
+        const iframe = document.createElement('iframe');
+        iframe.style.display = 'none';
+        iframe.src = pdfURL;
+
+        iframe.onload = () => {
+            iframe.contentWindow?.print();
+        };
+        // Añadir el iframe al documento
+        document.body.appendChild(iframe);
+    }
+
+    const eliminarComp = async () => {
+        setCargando(false);
+        try {
+            let data = {
+                tipo: getValues('tipo'),
+                num: getValues('numero'),
+            }
+            const response = await DbEliminarCompEmitidos(data);
+            const message = await response.json();
+
+            if (response.ok) {
+                setCargando(false);
+                setRespuesta(true);
+                setMensaje({
+                    mostrar: true,
+                    mensaje: message.mensaje,
+                    titulo: 'Operacion Exitosa!',
+                    tipo_aletar: 'exitoso',
+                });
+                clickLimpiar();
+            } else {
+                setCargando(false);
+                setRespuesta(false);
+                setMensaje({
+                    mostrar: true,
+                    mensaje: message.message,
+                    titulo: 'Error al realizar la operacion.',
+                    tipo_aletar: 'error',
+                });
+            }
+        } catch (error: any) {
+            setCargando(false);
+            setRespuesta(false);
+            setAlerta({
+                message: error.Error,
+                type: "error",
+                alertVisible: true
+            });
+        }
+
+
+    }
 
     return (
         <Suspense fallback={<div>Loading...</div>}>
@@ -348,6 +413,8 @@ export default function Factura() {
                             setValue={setValue}
                             clearErrors={clearErrors}
                             cliente={cliente}
+                            imprimirComp={imprimirComp}
+                            eliminarComp={eliminarComp}
                         />
                     </div>
                 </form>
@@ -361,12 +428,14 @@ export default function Factura() {
                     tipo_aletar={mensaje.tipo_aletar}
                 />
 
-                <ArticulosConsul
-                    setArticulo={agregarArticulos}
-                    open={abrirArticulosConsul}
-                    setOpen={setAbrirArticulosConsul}
-                />
-
+                {abrirArticulosConsul && (
+                    <ArticulosConsul
+                        setArticulo={agregarArticulos}
+                        open={abrirArticulosConsul}
+                        setOpen={setAbrirArticulosConsul}
+                    />
+                )}
+                
                 <DismissibleAlert
                     message={alerta.message}
                     type={alerta.type}

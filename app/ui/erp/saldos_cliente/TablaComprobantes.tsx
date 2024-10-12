@@ -31,7 +31,7 @@ const TablaComprobantes = ({ cliente, pagina, setPagina }: any) => {
                 throw new Error('Error al cargar los clientes');
             }
 
-            setCompEmitidos(data);
+            setCompEmitidos(data.comp);
         } catch (error) {
             console.error('Error al cargar los clientes:', error);
         } finally {

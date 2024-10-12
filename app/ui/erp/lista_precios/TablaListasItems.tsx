@@ -1,6 +1,6 @@
 'use client'
 import React, { useState, useRef, useEffect } from 'react';
-import { DbCompEmitidosConsul, DbListasItems, imprimirPDF } from '@/app/lib/data';
+import { DbListasItems, imprimirPDF } from '@/app/lib/data';
 import Image from 'next/image';
 import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/24/outline';
 

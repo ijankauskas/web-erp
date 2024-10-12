@@ -27,10 +27,8 @@ export default function Tabla({ cliente }: any) {
 
         const response = await DbCompEmitidosConsul(cliente, pagina)
         const data = await response.json()
-        console.log(data);
-
         if (response.ok) {
-            setComprobantes(data)
+            setComprobantes(data.comp)
         }
     }
 

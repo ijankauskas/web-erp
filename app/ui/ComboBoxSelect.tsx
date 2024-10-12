@@ -12,7 +12,7 @@ export default function ComboBoxSelect({ titulo='', data, seleccionado, setearCo
   const [query, setQuery] = useState('');
 
   useEffect(() => {    
-    if (seleccionado == '' || seleccionado == null) {
+    if (seleccionado == '' || seleccionado == null || seleccionado == undefined) {
       setSelectedPerson({ id: '', name: '' });
       setearCodigo('');
       return

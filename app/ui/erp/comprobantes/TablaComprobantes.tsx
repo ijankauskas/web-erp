@@ -33,18 +33,11 @@ export default function TablaComprobantes({ setComprobantesSelect }: any) {
 
 
     const consultarComp = async () => {
-
         const respuesta = await DbCompConsul('', '');
         const data = await respuesta.json();
         if (respuesta.ok) {
-            const CompMapeados = data.map((comp: any) => ({
-
-            }));
             setComps(data);
-
         }
-
-
     }
 
 

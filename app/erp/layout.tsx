@@ -113,8 +113,8 @@ const menus = [
                         icon: ShoppingBagIcon,
                     },
                     {
-                        nombre: "Pedidos",
-                        href: '/erp/operaciones/venta',
+                        nombre: "Recibos",
+                        href: '/erp/operaciones/recibo',
                         current: false,
                         icon: ShoppingBagIcon,
                     },

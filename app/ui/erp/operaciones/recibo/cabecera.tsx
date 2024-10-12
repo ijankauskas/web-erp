@@ -8,7 +8,7 @@ import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import ClientesConsul from '@/app/ui/erp/consultas/Clientes_consul';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
-export default function Cabecera({ register, setValue, clearErrors, errors, mostrarErrorAlerta, getValues, consultarComprobante, setAlerta, bloquear, setIva, cliente, setCliente }: any) {
+export default function Cabecera({ register, setValue, clearErrors, errors, getValues, setAlerta, setCliente, cliente }: any) {
     const searchParams = useSearchParams();
     const pathname = usePathname();
     const { replace } = useRouter();
@@ -31,7 +31,8 @@ export default function Cabecera({ register, setValue, clearErrors, errors, most
 
     const seleccionarClienteSelec = (cliente: any) => {
         let clienteSelect = clientes.filter((item: any) => item.id == cliente)
-        setCliente(clienteSelect)
+        
+        setCliente(clienteSelect[0])
         setValue('num_cliente', cliente);
         clearErrors('num_cliente');
     }
@@ -66,7 +67,6 @@ export default function Cabecera({ register, setValue, clearErrors, errors, most
         if (prox_num.length > 0) {
             setValue('numero', prox_num[0].prox_num);
         }
-        setIva(prox_num[0].porcentaje)
         setValue('tipo', compSelect);
         setValue('cate_iva', prox_num[0].porcentaje);
         clearErrors('tipo');
@@ -119,7 +119,7 @@ export default function Cabecera({ register, setValue, clearErrors, errors, most
     }
 
     const consultarComp = async () => {
-        const respuesta = await DbCompConsul('S', 'F');
+        const respuesta = await DbCompConsul('S', 'I');
         const data = await respuesta.json();
         if (respuesta.ok) {
             const CompMapeados = data.map((comp: any) => ({
@@ -143,36 +143,36 @@ export default function Cabecera({ register, setValue, clearErrors, errors, most
         setValue('num_cliente', cliente.codigo);
     }
 
-    useEffect(() => {
-        const params = new URLSearchParams(searchParams);
-        let tipo: string | null = params.get('tipo');
-        let num: string | null = params.get('num');
-        if ((tipo != '' && tipo != null) && (num != '' && num != null)) {
-            consultarComprobante(tipo, num);
-        }
-    }, [searchParams]);
+    // useEffect(() => {
+    //     const params = new URLSearchParams(searchParams);
+    //     let tipo: string | null = params.get('tipo');
+    //     let num: string | null = params.get('num');
+    //     if ((tipo != '' && tipo != null) && (num != '' && num != null)) {
+    //         consultarComprobante(tipo, num);
+    //     }
+    // }, [searchParams]);
 
-    const consultar = () => {
-        const params = new URLSearchParams(searchParams);
-        let numero: string | null = getValues('numero');
-        if (numero) {
-            params.set('num', numero);
-            replace(`${pathname}?${params.toString()}`);
-            clearErrors()
-        } else {
-            params.delete('num');
-            replace(`${pathname}?${params.toString()}`);
-            clearErrors();
-            return
-        }
-        let tipo: string | null = params.get('tipo')
+    // const consultar = () => {
+    //     const params = new URLSearchParams(searchParams);
+    //     let numero: string | null = getValues('numero');
+    //     if (numero) {
+    //         params.set('num', numero);
+    //         replace(`${pathname}?${params.toString()}`);
+    //         clearErrors()
+    //     } else {
+    //         params.delete('num');
+    //         replace(`${pathname}?${params.toString()}`);
+    //         clearErrors();
+    //         return
+    //     }
+    //     let tipo: string | null = params.get('tipo')
 
-        if (tipo) {
-            let compFilter: any = comp.filter((comp: any) => comp.id == tipo)
-            if (compFilter[0].prox_num != numero)
-                consultarComprobante(tipo, numero);
-        }
-    }
+    //     if (tipo) {
+    //         let compFilter: any = comp.filter((comp: any) => comp.id == tipo)
+    //         if (compFilter[0].prox_num != numero)
+    //             consultarComprobante(tipo, numero);
+    //     }
+    // }
 
     return (
         <>
@@ -185,7 +185,7 @@ export default function Cabecera({ register, setValue, clearErrors, errors, most
                             seleccionado={getValues('tipo')}
                             setearCodigo={seleccionarCompSelec}
                             error={errors.tipo?.message}
-                            desactivado={bloquear}
+                        // desactivado={bloquear}
                         />
                     </div>
                 </div>
@@ -197,8 +197,9 @@ export default function Cabecera({ register, setValue, clearErrors, errors, most
                             tipo={'number'}
                             error={errors.numero?.message}
                             placeholder={"Numero de la factura"}
-                            useForm={register("numero", { onBlur: consultar })}
-                            desactivado={bloquear}
+                            // useForm={register("numero", { onBlur: consultar })}
+                            useForm={register("numero")}
+                        // desactivado={bloquear}
                         />
                     </div>
                 </div>
@@ -210,7 +211,7 @@ export default function Cabecera({ register, setValue, clearErrors, errors, most
                             error={errors.fecha?.message}
                             placeholder={""}
                             useForm={register("fecha")}
-                            desactivado={bloquear}
+                        // desactivado={bloquear}
                         />
                     </div>
                 </div>
@@ -222,8 +223,8 @@ export default function Cabecera({ register, setValue, clearErrors, errors, most
                             seleccionado={getValues('mone') ? getValues('mone') : moneDefault}
                             setearCodigo={seleccionarMoneSelec}
                             error={errors.mone?.message}
-                            mostrarError={mostrarErrorAlerta}
-                            desactivado={bloquear}
+                        // mostrarError={mostrarErrorAlerta}
+                        // desactivado={bloquear}
                         />
                     </div>
                 </div>
@@ -234,7 +235,7 @@ export default function Cabecera({ register, setValue, clearErrors, errors, most
                             tipo={'number'}
                             useForm={register("mone_coti")}
                             error={errors.mone_coti?.message}
-                            desactivado={(getValues('mone') == 'PES' || bloquear)}
+                        // desactivado={(getValues('mone') == 'PES' || bloquear)}
                         />
                     </div>
                 </div>
@@ -246,7 +247,7 @@ export default function Cabecera({ register, setValue, clearErrors, errors, most
                             error={errors.num_cliente?.message}
                             placeholder={""}
                             useForm={register("num_cliente", { onBlur: consultarClientesPorCodigo })}
-                            desactivado={bloquear}
+                        // desactivado={bloquear}
                         />
                     </div>
                 </div>
@@ -256,11 +257,11 @@ export default function Cabecera({ register, setValue, clearErrors, errors, most
                         <ComboBoxSelect
                             titulo={"Cliente"}
                             data={clientes}
-                            seleccionado={cliente.id}
+                            seleccionado={cliente?.id}
                             setearCodigo={seleccionarClienteSelec}
-                            mostrarError={mostrarErrorAlerta}
+                            // mostrarError={mostrarErrorAlerta}
                             llenarData={consutlarClientes}
-                            desactivado={bloquear}
+                            // desactivado={bloquear}
                         />
                     </div>
                     <div>
@@ -271,7 +272,7 @@ export default function Cabecera({ register, setValue, clearErrors, errors, most
                             py={"py-1"}
                             tooltip="Buscar Clientes"
                             onClick={toggleAbrirClientesConsul}
-                            desactivado={bloquear}
+                            // desactivado={bloquear}
                         />
                     </div>
                 </div>

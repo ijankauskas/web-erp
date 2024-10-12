@@ -26,9 +26,6 @@ export default function NavBotones({ navigation, open }: any) {
                                 {item.subMenu.map((subMenu: any, index: any) => (
                                     <Dropdown placement="right-start" key={index}>
                                         <DropdownTrigger>
-                                            {/* <ButtonCommon
-                                            texto={"Acciones"}
-                                        /> */}
                                             <button
                                                 type={"button"}
                                                 className={`flex text-white w-full text-start hover:bg-gray-700 p-2 rounded-md`}
@@ -39,17 +36,14 @@ export default function NavBotones({ navigation, open }: any) {
                                         </DropdownTrigger>
                                         <DropdownMenu aria-label="Static Actions">
                                             {subMenu.pantallas.map((pantalla: any, index: any) => (
-
-                                                <DropdownItem key={index}>
-                                                    <Link href={pantalla.href}>
+                                                <DropdownItem key={index} className='p-0'>
+                                                    <Link
+                                                        href={pantalla.href}
+                                                        className="block w-full h-full p-2 "
+                                                    >
                                                         {pantalla.nombre}
                                                     </Link>
                                                 </DropdownItem>
-                                                // <DropdownItem key="copy">Copy link</DropdownItem>
-                                                // <DropdownItem key="edit">Edit file</DropdownItem>
-                                                // <DropdownItem key="delete" className="text-danger" color="danger">
-                                                //     Delete file
-                                                // </DropdownItem>
                                             ))}
                                         </DropdownMenu>
                                     </Dropdown>
@@ -110,7 +104,7 @@ export default function NavBotones({ navigation, open }: any) {
                 )
             ))
             }
-            <SignOut />
+            <SignOut isOpen={open}/>
         </>
     );
 }

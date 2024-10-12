@@ -3,16 +3,18 @@
 import BottomDerecho from "./BottomDerecho";
 import ButtonCommon from "../../ButtonCommon";
 import { PlusCircleIcon } from "@heroicons/react/24/outline";
-import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from "@nextui-org/react";
+import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from "@nextui-org/react";
 
 
-export default function Bottom({ register, articulos, pagos, setPagos, clickLimpiar, bloquear, iva, errors, setValue, clearErrors, cliente }: any) {
+export default function Bottom({ register, articulos, pagos, setPagos, clickLimpiar, bloquear, iva, errors, setValue, clearErrors, cliente, imprimirComp,eliminarComp }: any) {
+
+
     return (
         <>
             <div className="px-8 grid grid-cols-12 gap-1 gap-y-0">
                 <div className="col-span-4 grid grid-cols-4 gap-2 ">
                     <div className="grid-span-1">
-                        <Dropdown placement="right-start">
+                        <Dropdown>
                             <DropdownTrigger>
                                 {/* <ButtonCommon
                                     texto={"Acciones"}
@@ -21,15 +23,14 @@ export default function Bottom({ register, articulos, pagos, setPagos, clickLimp
                                     type={"button"}
                                     className={`w-full text-end items-center justify-center inline-flex px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white focus:outline-none focus:ring-2 focus:ring-offset-2 bg-gray-600 hover:bg-gray-800 focus:ring-gray-600`}
                                 >
-                                    ACA
+                                    Acciones
                                 </button>
                             </DropdownTrigger>
                             <DropdownMenu aria-label="Static Actions">
-                                <DropdownItem key="new">New file</DropdownItem>
-                                <DropdownItem key="copy">Copy link</DropdownItem>
-                                <DropdownItem key="edit">Edit file</DropdownItem>
-                                <DropdownItem key="delete" className="text-danger" color="danger">
-                                    Delete file
+                                <DropdownItem key="copy">Cargar Recibo</DropdownItem>
+                                <DropdownItem key="edit" onClick={imprimirComp}>Imprimir</DropdownItem>
+                                <DropdownItem key="delete" className="text-danger" color="danger" onClick={eliminarComp}>
+                                    Eliminar
                                 </DropdownItem>
                             </DropdownMenu>
                         </Dropdown>

@@ -175,9 +175,12 @@ export async function DbCompEmitidosConsul(
     pagina?: any | null,
     columnaOrden?: string | null,
     dir?: string | null,
+    fechaDesde?: string | null,
+    fechaHasta?: string | null,
+    total?: string | null,
 ) {
     try {
-        const response = await fetch(url + '/comp_emitidos?cliente=' + cliente + '&pagina=' + pagina + '&orden=' + columnaOrden + '&dir=' + dir, {
+        const response = await fetch(`${url}/comp_emitidos?cliente=${cliente}&pagina=${pagina}&orden=${columnaOrden}&dir=${dir}&total=${total}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -524,7 +527,22 @@ export async function DbConsultarNotaCredito(tipo: string, num: number) {
 
         return response;
     } catch (error) {
-        
+
+        throw new Error('Failed to fetch card data.');
+    }
+}
+export async function DbEliminarCompEmitidos(data: any) {
+    try {
+        const response = await fetch(`${url}/facturas`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        });
+
+        return response;
+    } catch (error) {
         throw new Error('Failed to fetch card data.');
     }
 }
