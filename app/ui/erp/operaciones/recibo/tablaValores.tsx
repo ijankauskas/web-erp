@@ -2,10 +2,41 @@
 
 import { PlusCircleIcon } from "@heroicons/react/24/outline";
 import ButtonCommon from "../../ButtonCommon";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import InputCommon from "@/app/ui/inputCommon";
+import ComboBoxSelect from "@/app/ui/ComboBoxSelect";
+import { DbValoresConsul } from "@/app/lib/data";
 
-export default function TablaValores({ register }: any) {
+export default function TablaValores({ register, pagos, setPagos }: any) {
     const [columnWidths, setColumnWidths] = useState([100, 200, 100, 100, 100]);
+    const [valores, setValores] = useState([]);
+
+    useEffect(() => {
+        cargarComponente()
+    }, [])
+    function cargarComponente() {
+        consultarValores();
+    }
+
+    async function consultarValores() {
+        let response = await DbValoresConsul('S')
+        const data = await response.json();
+        if (response.ok) {
+            const transformedArray = data.map((item: any) => ({
+                id: item.codi,
+                name: item.descrip_valor,
+                afecta_caja: item.afecta_caja,
+                valo_sistema: item.valo_sistema,
+                activo: item.activo,
+                cuenta: item.cuenta,
+                tipo_de_valor: item.tipo_de_valor
+            }));
+
+            setValores(transformedArray)
+        } else {
+
+        }
+    }
 
     const handleMouseDown = (index: any, event: any) => {
         const startX = event.clientX;
@@ -25,6 +56,36 @@ export default function TablaValores({ register }: any) {
         document.addEventListener('mousemove', onMouseMove);
         document.addEventListener('mouseup', onMouseUp);
     };
+
+    const modificarPago = (e: React.ChangeEvent<HTMLInputElement>, index: any, field: string) => {
+        const { value } = e.target;
+
+        const valueWithoutSeparators = value.replace(/\./g, '').replace(',', '.');
+        const numericValue = isNaN(parseFloat(valueWithoutSeparators)) ? 0 : parseFloat(valueWithoutSeparators);
+        setPagos((prev: any) =>
+            prev.map((item: any, idx: number) =>
+                idx === index ? { ...item, [field]: numericValue } : item
+            )
+        );
+    };
+
+    const seleccionarValor = (e: any, index: any) => {
+        setPagos((prev: any) =>
+            prev.map((item: any, idx: number) =>
+                idx === index ? { ...item, ['id']: e } : item
+            )
+        );
+    }
+
+    const agregarFilaPago = () => {
+        setPagos((prevPagos: any[]) => [...prevPagos, { id: 'EF', importe: 0 }]);
+    };
+
+    const eliminar = (index: any) => {
+        const pagosEliminar = pagos.filter((_: any, idx: any) => idx !== index);
+
+        setPagos(pagosEliminar);
+    }
 
     return (
         <>
@@ -67,7 +128,7 @@ export default function TablaValores({ register }: any) {
                                 </th>
                             </tr>
                         </thead>
-                        {/* <tbody className="bg-white divide-y divide-gray-200">
+                        <tbody className="bg-white divide-y divide-gray-200">
                             {pagos?.map((pago: any, index: number) => (
                                 <tr key={index} className={`${pago.error ? 'bg-red-300' : ''}`}>
                                     <td className="px-2 py-1 whitespace-nowrap text-sm font-medium text-gray-900 border border-gray-200 text-ellipsis overflow-hidden">
@@ -97,7 +158,7 @@ export default function TablaValores({ register }: any) {
                                     </td>
                                 </tr>
                             ))}
-                        </tbody> */}
+                        </tbody>
                     </table>
                 </div>
                 <div className="w-[4%]">
@@ -107,9 +168,8 @@ export default function TablaValores({ register }: any) {
                             texto={<PlusCircleIcon aria-hidden="true" className="h-7 w-7" />}
                             px={"px-1"}
                             py={"py-1"}
-                            tooltip="Consulta Comprobantes Pendientes"
-                        // onClick={toggleAbrirClientesConsul}
-                        // desactivado={bloquear}
+                            tooltip="Agregar Fila"
+                            onClick={agregarFilaPago}
                         />
                     </div>
                 </div>

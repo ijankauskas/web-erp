@@ -4,7 +4,7 @@ import ButtonCommon from "../../ButtonCommon";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import CompPendiente from "../../consultas/CompPendientes";
 
-export default function TablaComprobante({ register, cliente, abrirCompPend, abrirCompPendConsul, setAbrirCompPendConsul }: any) {
+export default function TablaComprobante({ register, setAlerta, cliente, abrirCompPend, abrirCompPendConsul, setAbrirCompPendConsul, settearComprobantes, compEmitidos }: any) {
     const [columnWidths, setColumnWidths] = useState([200, 100, 100, 125, 100, 100, 100]);
 
     const handleMouseDown = (index: any, event: any) => {
@@ -25,6 +25,19 @@ export default function TablaComprobante({ register, cliente, abrirCompPend, abr
         document.addEventListener('mousemove', onMouseMove);
         document.addEventListener('mouseup', onMouseUp);
     };
+
+    const borrarCompEmitidos = (index: any) => {
+        const nuevosCompEmitodos = compEmitidos.filter((_: any, idx: any) => idx !== index);
+        const compEmitidoEliminado = compEmitidos.filter((_: any, idx: any) => idx == index);
+
+        setAlerta({
+            message: `Se eliminó el comprobante: ${compEmitidoEliminado[0].descrip} ${compEmitidoEliminado[0].num}`,
+            type: "warning",
+            alertVisible: true
+        });
+
+        settearComprobantes(nuevosCompEmitodos);
+    }
 
 
     return (
@@ -82,6 +95,41 @@ export default function TablaComprobante({ register, cliente, abrirCompPend, abr
                                 </th>
                             </tr>
                         </thead>
+                        <tbody className="bg-white divide-y divide-gray-200">
+                            {compEmitidos?.map((comp: any, index: number) => (
+                                <tr key={index} className={``}>
+                                    <td className="px-2 py-1 whitespace-nowrap text-sm font-medium border-b border-gray-200 text-ellipsis overflow-hidden">
+                                        {comp.descrip}
+                                    </td>
+                                    <td className="px-2 py-1 whitespace-nowrap text-sm font-medium border border-gray-200 text-ellipsis overflow-hidden">
+                                        {comp.num}
+                                    </td>
+                                    <td className="px-2 py-1 whitespace-nowrap text-sm font-medium border border-gray-200 text-ellipsis overflow-hidden">
+                                        {comp.fecha}
+                                    </td>
+                                    <td className="px-2 py-1 whitespace-nowrap text-sm font-medium border border-gray-200 text-ellipsis overflow-hidden">
+                                        {comp.saldo}
+                                    </td>
+                                    <td className="px-2 py-1 whitespace-nowrap text-sm font-medium border border-gray-200 text-ellipsis overflow-hidden">
+                                        {comp.mone}
+                                    </td>
+                                    <td className="px-2 py-1 whitespace-nowrap text-sm font-medium border border-gray-200 text-ellipsis overflow-hidden">
+                                        {comp.mone_coti}
+                                    </td>
+                                    <td className="w-12 px-6 py-2 whitespace-nowrap text-right text-sm font-medium border-b border-gray-200">
+                                        <a href="#" className="text-indigo-600 hover:text-indigo-900"
+                                            onClick={(e) => {
+                                                e.preventDefault();
+                                                borrarCompEmitidos(index);
+                                            }}
+                                        >
+                                            Eliminar
+                                        </a>
+                                    </td>
+                                </tr>
+                            ))
+                            }
+                        </tbody>
                     </table>
                 </div>
                 <div className="w-[4%]">
@@ -101,6 +149,7 @@ export default function TablaComprobante({ register, cliente, abrirCompPend, abr
             {abrirCompPendConsul && (
                 <CompPendiente
                     cliente={cliente.id}
+                    setComprobante={settearComprobantes}
                     open={abrirCompPendConsul}
                     setOpen={setAbrirCompPendConsul}
                 />

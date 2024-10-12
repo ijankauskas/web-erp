@@ -177,10 +177,10 @@ export async function DbCompEmitidosConsul(
     dir?: string | null,
     fechaDesde?: string | null,
     fechaHasta?: string | null,
-    total?: string | null,
+    tipos?: string | null,
 ) {
     try {
-        const response = await fetch(`${url}/comp_emitidos?cliente=${cliente}&pagina=${pagina}&orden=${columnaOrden}&dir=${dir}&total=${total}`, {
+        const response = await fetch(`${url}/comp_emitidos?cliente=${cliente}&pagina=${pagina}&orden=${columnaOrden}&dir=${dir}&fechaDesde=${fechaDesde}&fechaHasta=${fechaHasta}&tipos=${tipos}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',

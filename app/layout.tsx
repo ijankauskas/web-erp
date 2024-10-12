@@ -18,7 +18,7 @@ export default function RootLayout({
   // session: any;
 }>) {
   return (
-    <html lang="en" className="text-black">
+    <html lang="es" className="text-black">
       <body className={inter.className}>
         {/* <SessionProvider session={session}> */}
             {children}

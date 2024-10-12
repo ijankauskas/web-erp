@@ -36,6 +36,9 @@ export default function Recibo() {
         },
         resolver: zodResolver(ReciboSchema)
     })
+    const [compEmitidos, setCompEmitidos] = useState<{}[]>([]);
+    const [pagos, setPagos] = useState<{}[]>([]);
+
     const [mensaje, setMensaje] = useState({
         mostrar: false,
         mensaje: '',
@@ -110,7 +113,6 @@ export default function Recibo() {
         // }
     }
 
-
     const abrirCompPend = () => {
         if (!cliente) {
             setMensaje({
@@ -122,6 +124,11 @@ export default function Recibo() {
             return;
         }
         setAbrirCompPendConsul(true)
+    }
+
+    const settearComprobantes = (compEmitidos:any)=>{
+        setCompEmitidos(compEmitidos);
+        setAbrirCompPendConsul(false);
     }
 
     return (
@@ -142,10 +149,15 @@ export default function Recibo() {
                         <div className="overflow-x-auto sm:-mx-6 lg:-mx-8">
                             <Tablas
                                 register={register}
+                                setAlerta={setAlerta}
                                 cliente={cliente}
                                 abrirCompPend={abrirCompPend}
                                 abrirCompPendConsul={abrirCompPendConsul}
                                 setAbrirCompPendConsul={setAbrirCompPendConsul}
+                                settearComprobantes={settearComprobantes}
+                                compEmitidos={compEmitidos}
+                                pagos={pagos}
+                                setPagos={setPagos}
                             />
                         </div>
                     </div>

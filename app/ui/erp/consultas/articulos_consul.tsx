@@ -15,7 +15,7 @@ export default function ArticulosConsul({ setArticulo, open, setOpen }: any) {
     const [sCodarticulos, setSCodarticulos] = useState('');
     const [sDescrip, setSDescrip] = useState('');
     const [pagina, setPagina] = useState(1);
-    const [totalPages, setTotalPages] = useState(0);
+    const [totalPages, setTotalPages] = useState(1);
     const [totalxPagina, setTotalxPagina] = useState(50);
     const [ordenarConfig, setOrdenarConfig] = useState({ key: 'razon', direction: 'asc' });
 

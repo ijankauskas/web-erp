@@ -2,7 +2,7 @@ import { Tabs, Tab } from "@nextui-org/react";
 import TablaComprobante from "./tablaComprobantes";
 import TablaValores from "./tablaValores";
 
-export default function Tablas({ register, cliente, abrirCompPend, abrirCompPendConsul, setAbrirCompPendConsul }: any) {
+export default function Tablas({ register, setAlerta, cliente, abrirCompPend, abrirCompPendConsul, setAbrirCompPendConsul, settearComprobantes, compEmitidos, pagos, setPagos }: any) {
 
     return (
         <>
@@ -11,13 +11,20 @@ export default function Tablas({ register, cliente, abrirCompPend, abrirCompPend
                     <Tab key="comprobantes" title="Comprobantes">
                         <TablaComprobante
                             cliente={cliente}
+                            setAlerta={setAlerta}
                             abrirCompPend={abrirCompPend}
                             abrirCompPendConsul={abrirCompPendConsul}
                             setAbrirCompPendConsul={setAbrirCompPendConsul}
+                            settearComprobantes={settearComprobantes}
+                            compEmitidos={compEmitidos}
                         />
                     </Tab>
                     <Tab key="valores" title="Valores">
-                        <TablaValores />
+                        <TablaValores
+                            register={register}
+                            pagos={pagos}
+                            setPagos={setPagos}
+                        />
                     </Tab>
                 </Tabs>
             </div>

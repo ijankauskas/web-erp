@@ -12,7 +12,7 @@ import { Pagination } from "@nextui-org/react";
 export default function ClientesConsul({ setCliente, open, setOpen }: any) {
     const [columnWidths, setColumnWidths] = useState([100, 500, 500]);
     const [pagina, setPagina] = useState(1);
-    const [totalPages, setTotalPages] = useState(0);
+    const [totalPages, setTotalPages] = useState(1);
     const [totalxPagina, setTotalxPagina] = useState(50);
 
     const [ordenarConfig, setOrdenarConfig] = useState({ key: 'razon', direction: 'asc' });
