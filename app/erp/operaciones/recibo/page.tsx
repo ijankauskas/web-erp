@@ -1,9 +1,12 @@
 "use client"
 
+import { DbGrabarRecibo } from '@/app/lib/data';
 import DismissibleAlert from '@/app/ui/DismissAlerta';
 import Alerta from '@/app/ui/erp/alerta';
+import Bottom from '@/app/ui/erp/operaciones/recibo/Bottom';
 import Cabecera from '@/app/ui/erp/operaciones/recibo/cabecera';
 import Tablas from '@/app/ui/erp/operaciones/recibo/tablas';
+import Loading from '@/app/ui/Loading';
 import { ReciboSchema } from '@/app/validaciones/recibo';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Suspense, useEffect, useRef, useState } from 'react';
@@ -17,6 +20,8 @@ type Inputs = {
     mone_coti: number,
     num_cliente: string,
     razon_cliente: string,
+    compEmitidos: {}[]
+    pagos: {}[]
 }
 const fecha_hoy = new Date().toISOString().split('T')[0];
 
@@ -36,8 +41,16 @@ export default function Recibo() {
         },
         resolver: zodResolver(ReciboSchema)
     })
+
     const [compEmitidos, setCompEmitidos] = useState<{}[]>([]);
+    useEffect(() => {
+        setValue('compEmitidos', compEmitidos);
+    }, [compEmitidos]);
+
     const [pagos, setPagos] = useState<{}[]>([]);
+    useEffect(() => {
+        setValue('pagos', pagos);
+    }, [pagos]);
 
     const [mensaje, setMensaje] = useState({
         mostrar: false,
@@ -84,33 +97,39 @@ export default function Recibo() {
     const [abrirCompPendConsul, setAbrirCompPendConsul] = useState(false)
 
     const enviarForm = async (data?: any) => {
-        setCargando(true)
+        setCargando(false)
 
-        // const response = await DbGrabartarFactura(data)
-        // const mensaje = await response.json();
+        //calculo el total 
+        data.total = pagos?.reduce((acc: number, pago: any) => {
+            const calculo = pago.importe;
+            return acc + parseFloat(calculo.toFixed(2));
+        }, 0)
 
-        // if (response.ok) {
-        //     setCargando(false);
-        //     setRespuesta(true);
-        //     setMensaje({
-        //         mostrar: true,
-        //         mensaje: mensaje.message,
-        //         titulo: 'Operacion Exitosa!',
-        //         tipo_aletar: 'exitoso',
-        //     });
+        const response = await DbGrabarRecibo(data)
+        const mensaje = await response.json();
 
-        //     return
-        // } else {
-        //     setCargando(false);
-        //     setRespuesta(false);
-        //     setMensaje({
-        //         mostrar: true,
-        //         mensaje: mensaje.message,
-        //         titulo: 'Oops...',
-        //         tipo_aletar: 'error',
-        //     });
-        //     return
-        // }
+        if (response.ok) {
+            setCargando(false);
+            setRespuesta(true);
+            setMensaje({
+                mostrar: true,
+                mensaje: mensaje.message,
+                titulo: 'Operacion Exitosa!',
+                tipo_aletar: 'exitoso',
+            });
+
+            return
+        } else {
+            setCargando(false);
+            setRespuesta(false);
+            setMensaje({
+                mostrar: true,
+                mensaje: mensaje.message,
+                titulo: 'Oops...',
+                tipo_aletar: 'error',
+            });
+            return
+        }
     }
 
     const abrirCompPend = () => {
@@ -126,8 +145,10 @@ export default function Recibo() {
         setAbrirCompPendConsul(true)
     }
 
-    const settearComprobantes = (compEmitidos:any)=>{
+    const settearComprobantes = (compEmitidos: any) => {
         setCompEmitidos(compEmitidos);
+        console.log(compEmitidos);
+
         setAbrirCompPendConsul(false);
     }
 
@@ -161,6 +182,18 @@ export default function Recibo() {
                             />
                         </div>
                     </div>
+                    <div className='!m-2'>
+                        <Bottom
+                            register={register}
+                            setAlerta={setAlerta}
+                            compEmitidos={compEmitidos}
+                            pagos={pagos}
+                            errors={errors}
+                            setValue={setValue}
+                            clearErrors={clearErrors}
+                            cliente={cliente}
+                        />
+                    </div>
                 </form>
             </div>
 
@@ -179,6 +212,7 @@ export default function Recibo() {
                 showPanel={alerta.alertVisible}
             />
 
+            <Loading cargando={cargando} respuesta={respuesta} />
         </Suspense>
     )
 }

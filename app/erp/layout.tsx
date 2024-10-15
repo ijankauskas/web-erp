@@ -119,6 +119,12 @@ const menus = [
                         icon: ShoppingBagIcon,
                     },
                     {
+                        nombre: "Remitos",
+                        href: '/erp/operaciones/remito',
+                        current: false,
+                        icon: ShoppingBagIcon,
+                    },
+                    {
                         nombre: "Nota de Credito",
                         href: '/erp/operaciones/nota_credito',
                         current: false,

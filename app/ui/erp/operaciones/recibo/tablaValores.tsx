@@ -5,17 +5,20 @@ import ButtonCommon from "../../ButtonCommon";
 import { useEffect, useState } from "react";
 import InputCommon from "@/app/ui/inputCommon";
 import ComboBoxSelect from "@/app/ui/ComboBoxSelect";
-import { DbValoresConsul } from "@/app/lib/data";
+import { DbMonedasConsul, DbValoresConsul } from "@/app/lib/data";
 
 export default function TablaValores({ register, pagos, setPagos }: any) {
     const [columnWidths, setColumnWidths] = useState([100, 200, 100, 100, 100]);
     const [valores, setValores] = useState([]);
+    const [monedas, setMonedas] = useState([]);
+    const [moneDefault, setMoneDefault] = useState('PES');
 
     useEffect(() => {
         cargarComponente()
     }, [])
     function cargarComponente() {
         consultarValores();
+        consultarMonedas();
     }
 
     async function consultarValores() {
@@ -35,6 +38,19 @@ export default function TablaValores({ register, pagos, setPagos }: any) {
             setValores(transformedArray)
         } else {
 
+        }
+    }
+
+    const consultarMonedas = async () => {
+        const respuesta = await DbMonedasConsul();
+        const data = await respuesta.json();
+        if (respuesta.ok) {
+            const MonedasMapeados = data.map((mone: any) => ({
+                id: mone.mone || '',
+                name: mone.mone || '',
+                mone_coti: mone.mone_coti || 0,
+            }));
+            setMonedas(MonedasMapeados);
         }
     }
 
@@ -77,8 +93,20 @@ export default function TablaValores({ register, pagos, setPagos }: any) {
         );
     }
 
+    const seleccionarMoneda = (e: any, index: any) => {
+        const mone_coti: any = monedas.filter((mone: any) => mone.id == e);
+
+        setPagos((prev: any) =>
+            prev.map((item: any, idx: number) =>
+                idx === index ? { ...item, ['mone']: e, ['mone_coti']: mone_coti[0].mone_coti } : item
+            )
+        );
+    }
+
     const agregarFilaPago = () => {
-        setPagos((prevPagos: any[]) => [...prevPagos, { id: 'EF', importe: 0 }]);
+        const mone_coti: any = monedas.filter((mone: any) => mone.id == moneDefault);
+
+        setPagos((prevPagos: any[]) => [...prevPagos, { id: 'EF', importe: 0, mone: moneDefault, ['mone_coti']: mone_coti[0].mone_coti }]);
     };
 
     const eliminar = (index: any) => {
@@ -153,8 +181,27 @@ export default function TablaValores({ register, pagos, setPagos }: any) {
                                             index={index}
                                         />
                                     </td>
+                                    <td className="relateive px-2 py-1 z-50 whitespace-nowrap text-sm text-gray-500 border border-gray-200">
+                                        <ComboBoxSelect
+                                            data={monedas}
+                                            setearCodigo={seleccionarMoneda}
+                                            paddingY={'py-0.5'}
+                                            // useForm={register(`id-${index}`)}
+                                            seleccionado={pago.mone}
+                                            index={index}
+                                        />
+                                    </td>
+                                    <td className="relateive px-2 py-1 z-50 whitespace-nowrap text-sm text-gray-500 border border-gray-200">
+                                        {pago.mone_coti}
+                                    </td>
                                     <td className="w-12 px-6 py-1 whitespace-nowrap text-right text-sm font-medium border-b border-gray-200">
-
+                                        <a href="#" className="text-indigo-600 hover:text-indigo-900"
+                                            onClick={(e) => {
+                                                e.preventDefault();
+                                                eliminar(index);
+                                            }}>
+                                            Eliminar
+                                        </a>
                                     </td>
                                 </tr>
                             ))}

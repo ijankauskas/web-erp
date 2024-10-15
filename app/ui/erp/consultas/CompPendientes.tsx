@@ -22,13 +22,11 @@ const fechaArgentina = new Date().toLocaleDateString('es-AR', {
 const fechaFormateada = `${fechaArgentina[2]}-${fechaArgentina[1]}-${fechaArgentina[0]}`;
 
 // Crear una fecha actual ajustada a la zona horaria de Argentina
-const fechaHoy = new Date().toLocaleString('es-AR', {
-    timeZone: 'America/Argentina/Buenos_Aires',
-});
+const fechaHoy = new Date()
 
 // Convertir la fecha a un objeto Date y restar un mes
 const fechaActual = new Date(fechaHoy);
-fechaActual.setMonth(fechaActual.getMonth() - 3); // Restar un mes
+fechaActual.setMonth(fechaActual.getMonth() - 1); // Restar un mes
 
 // Formatear la fecha como dd/MM/yyyy
 const fechaFormateadatest = fechaActual.toLocaleDateString('es-AR', {

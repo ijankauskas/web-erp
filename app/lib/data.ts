@@ -1,4 +1,4 @@
-let produccion = true;
+let produccion = false;
 let url = '';
 if (produccion) {
     url = 'https://api.ecomsolver.com.ar'
@@ -535,6 +535,22 @@ export async function DbEliminarCompEmitidos(data: any) {
     try {
         const response = await fetch(`${url}/facturas`, {
             method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        });
+
+        return response;
+    } catch (error) {
+        throw new Error('Failed to fetch card data.');
+    }
+}
+
+export async function DbGrabarRecibo(data: string | null) {
+    try {
+        const response = await fetch(`${url}/recibo`, {
+            method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
