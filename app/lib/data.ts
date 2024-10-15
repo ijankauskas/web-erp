@@ -343,7 +343,7 @@ export async function DbBorrarArticulo(data: any | null) {
 
 export async function DbBorrarCliente(data: any | null) {
     try {
-        const response = await fetch('http://localhost:8080/clientes', {
+        const response =  fetch(url + '/clientes', {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',

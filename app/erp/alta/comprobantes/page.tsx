@@ -34,11 +34,11 @@ export default function Comprobantes() {
     };
 
     const AbrirDrawlerComp = (tipo: any) => {
-       
+
         setComprobantesSelect(tipo);
         setAbrirCabecera(true);
         setBloquearEliminar(false)
-  
+
     }
 
     const toggleCabecera = () => {
@@ -74,7 +74,7 @@ export default function Comprobantes() {
                     <div className="overflow-x-auto sm:-mx-6 lg:-mx-8">
                         <TablaComprobantes
                             setComprobantesSelect={AbrirDrawlerComp}
-                          
+
                         />
                     </div>
                 </div>

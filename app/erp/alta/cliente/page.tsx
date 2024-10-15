@@ -4,15 +4,18 @@ import { Suspense, useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { clienteSchema } from '@/app/validaciones/cliente';
-import Principal from '@/app/ui/erp/alta_cliente/principal';
+// import Principal from '@/app/ui/erp/alta_cliente/principal';
 import DatosContacto from '@/app/ui/erp/alta_cliente/datosContacto';
 import Tabla from '@/app/ui/erp/alta_cliente/Tabla';
 import CheckCliente from '@/app/ui/erp/alta_cliente/CheckCliente';
 import { DbBorrarCliente, DbConsultarCliente, DbGrabartarCliente } from '@/app/lib/data';
 import DismissibleAlert from '@/app/ui/DismissAlerta';
 import { Tabs, Tab, Chip } from "@nextui-org/react";
-import { CheckIcon, ClipboardIcon, CurrencyDollarIcon } from '@heroicons/react/24/outline';
+import { CheckIcon, ClipboardDocumentIcon, ClipboardIcon, CloudArrowUpIcon, CurrencyDollarIcon, TrashIcon } from '@heroicons/react/24/outline';
 import HeaderPage from '@/app/ui/erp/HeaderPage';
+import Principal from '@/app/ui/erp/alta_cliente/principal';
+import ButtonCommon from '@/app/ui/erp/ButtonCommon';
+import Loading from '@/app/ui/Loading';
 
 type Inputs = {
     codigo: number,
@@ -34,29 +37,56 @@ type Inputs = {
 
 export default function Alta_cliente() {
     const [cargando, setCargando] = useState(false)
+    const [cliente, setCliente] = useState<any>({})
+    const [respuesta, setRespuesta] = useState(false);
+    const [bloquearEliminar, setBloquearEliminar] = useState(true);
 
+    const [error, setError] = useState({
+        mostrar: false,
+        mensaje: '',
+        titulo: '',
+        icono: '',
+        botonExtra: false,
+        textoExtra: '',
+        funcionExtra: () => { }
+    });
 
-    
+    const cerrarAlerta = () => {
+        setError((prev) => ({
+            ...prev,
+            mostrar: false,
+        }));
+
+    };
+
     const eliminarCliente = async () => {
+        setCargando(true);
+        setRespuesta(true);
         let cliente = { codigo: getValues("codigo") }
         const response = await DbBorrarCliente(cliente);
         const mensaje = await response.json();
         if (response.ok) {
+            setCargando(false);
+            setRespuesta(true);
             setAlerta({
                 message: mensaje.message,
-                type: "success",
+                type: "warning",
                 alertVisible: true
             });
         } else {
+            setCargando(false);
+            setRespuesta(false);
             setAlerta({
                 message: mensaje.message,
                 type: "error",
                 alertVisible: true
             });
         }
-    };
+        limpiar()
+        cerrarAlerta();
+    }
 
-      
+
 
     const [alerta, setAlerta] = useState({
         message: "",
@@ -127,9 +157,12 @@ export default function Alta_cliente() {
             setValue('observaciones', data.observaciones);
             data.activo == 'S' ? setValue('activo', true) : setValue('activo', false);
             setCargando(false);
+            setRespuesta(true)
+            setBloquearEliminar(false);
         } else {
             limpiar()
             setCargando(false);
+            setRespuesta(false)
         }
 
     }
@@ -138,6 +171,8 @@ export default function Alta_cliente() {
         if (cargando) {
             return
         }
+        setCargando(true);
+        setRespuesta(true);
         data.activo = data.activo || data.activo == 'S' ? 'S' : 'N';
 
         setCargando(true);
@@ -145,27 +180,28 @@ export default function Alta_cliente() {
         const respuesta = await DbGrabartarCliente(data)
 
         if (respuesta.ok) {
-            const data = await respuesta.json();
-            setValue('codigo', data.codigo);
             setCargando(false);
+            setRespuesta(true);
+            setBloquearEliminar(false)
             setAlerta({
-                message: 'Se guardo correctamente el cliente',
-                type: "success",
-                alertVisible: true
+              message: 'Se guardo correctamente el cliente',
+              type: "success",
+              alertVisible: true
             });
-        } else {
+          } else {
             const errorMessage = await respuesta.json();
             setCargando(false);
+            setRespuesta(false);
             setAlerta({
-                message: errorMessage.message,
-                type: "error",
-                alertVisible: true
+              message: errorMessage.message,
+              type: "error",
+              alertVisible: true
             });
-        }
-    };
+          }
+        };
 
     const limpiar = () => {
-
+        setBloquearEliminar(true);
 
         setValue('cuit', '');
         setValue('cate_iva', '');
@@ -193,7 +229,7 @@ export default function Alta_cliente() {
     return (
         <Suspense fallback={<div>Loading...</div>}>
             <div className="max-w-screen-2xl mx-auto py-0 px-4 sm:px-6 lg:px-8 bg-white">
-            <HeaderPage titulo={"Alta de Clientes"} />
+                <HeaderPage titulo={"Alta de Clientes"} />
                 <div className='relative '>
                     <form action="#" method="POST" onSubmit={handleSubmit(data => enviarForm(data))}>
                         <div className="flex w-full flex-col">
@@ -223,7 +259,9 @@ export default function Alta_cliente() {
                                         errors={errors}
                                         clearErrors={clearErrors}
                                         consultarCliente={consultarCliente}
-                                        getValues={getValues} />
+                                        getValues={getValues}
+                                        setCliente={setCliente}
+                                        cliente={cliente} />
                                     <DatosContacto
                                         register={register}
                                         setValue={setValue}
@@ -254,27 +292,29 @@ export default function Alta_cliente() {
                         </div>
 
                         <div className="flex items-center justify-end px-4 py-3 bg-gray-50 text-right sm:px-6 space-x-4">
-                            <button
-                                type="button"
-                                onClick={btnLimpiar}
-                                className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-gray-600 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
-                                Limpiar
-                            </button>
-
-                            <button
-                                type="submit"
-                                className="inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                            >
-                                <CheckIcon aria-hidden="true" className="-ml-0.5 mr-1.5 h-5 w-5" />
-                                Guardar
-                            </button>
-
-                            <button
-                                type="button"
-                                onClick={eliminarCliente}
-                                className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
-                                Eliminar
-                            </button>
+                            <div className='w-[125px]'>
+                                <ButtonCommon
+                                    type={"button"}
+                                    texto={<><ClipboardDocumentIcon aria-hidden="true" className="mr-1.5 h-5 w-5" />Limpiar</>}
+                                    onClick={btnLimpiar}
+                                    color={"other"}
+                                />
+                            </div>
+                            <div className='w-[125px]'>
+                                <ButtonCommon
+                                    type={"submit"}
+                                    texto={<><CloudArrowUpIcon aria-hidden="true" className="mr-1.5 h-5 w-5" />Guardar</>}
+                                />
+                            </div>
+                            <div className='w-[125px]'>
+                                <ButtonCommon
+                                    type={"button"}
+                                    texto={<><TrashIcon aria-hidden="true" className="mr-1.5 h-5 w-5" />Eliminar</>}
+                                    onClick={eliminarCliente}
+                                    color={"danger"}
+                                    desactivado={bloquearEliminar}
+                                />
+                            </div>
                         </div>
 
 
@@ -288,6 +328,7 @@ export default function Alta_cliente() {
                     showPanel={alerta.alertVisible}
                 />
             </div>
+            <Loading cargando={cargando} respuesta={respuesta} />
         </Suspense>
     )
 }
