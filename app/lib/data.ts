@@ -562,3 +562,50 @@ export async function DbGrabarRecibo(data: string | null) {
         throw new Error('Failed to fetch card data.');
     }
 }
+
+export async function DbGrabartarRemito(data: string | null) {
+    try {
+        const response = await fetch(`${url}/remitos`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        });
+
+        return response;
+    } catch (error) {
+        throw new Error('Failed to fetch card data.');
+    }
+}
+
+export async function DbConsultarRemito(tipo: string, num: number) {
+    try {
+        const response = await fetch(`${url}/remitos?tipo=${tipo}&num=${num}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
+
+        return response;
+    } catch (error) {
+        console.error('Database Error:', error);
+        throw new Error('Failed to fetch card data.');
+    }
+}
+export async function DbEliminarRemito(data: any) {
+    try {
+        const response = await fetch(`${url}/remitos`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        });
+
+        return response;
+    } catch (error) {
+        throw new Error('Failed to fetch card data.');
+    }
+}

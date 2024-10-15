@@ -354,8 +354,6 @@ export default function Factura() {
                 alertVisible: true
             });
         }
-
-
     }
 
     return (
