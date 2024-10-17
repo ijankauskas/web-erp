@@ -6,8 +6,23 @@ import { PlusCircleIcon } from "@heroicons/react/24/outline";
 import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from "@nextui-org/react";
 
 
-export default function Bottom({ register, articulos, pagos, setPagos, clickLimpiar, bloquear, iva, errors, setValue, clearErrors, cliente, imprimirComp,eliminarComp }: any) {
-
+export default function Bottom({
+    register,
+    articulos,
+    pagos,
+    setPagos,
+    clickLimpiar,
+    bloquear,
+    iva,
+    errors,
+    setValue,
+    clearErrors,
+    cliente,
+    imprimirComp,
+    eliminarComp,
+    compro_elec,
+    clickObtenerCae 
+}: any) {
 
     return (
         <>
@@ -26,7 +41,11 @@ export default function Bottom({ register, articulos, pagos, setPagos, clickLimp
                                     Acciones
                                 </button>
                             </DropdownTrigger>
-                            <DropdownMenu aria-label="Static Actions">
+                            <DropdownMenu
+                                aria-label="Static Actions"
+                                disabledKeys={compro_elec !== 'W' ? ["cae"] : []}
+                            >
+                                <DropdownItem key="cae" onClick={clickObtenerCae}>Obtener Cae</DropdownItem>
                                 <DropdownItem key="copy">Cargar Recibo</DropdownItem>
                                 <DropdownItem key="edit" onClick={imprimirComp}>Imprimir</DropdownItem>
                                 <DropdownItem key="delete" className="text-danger" color="danger" onClick={eliminarComp}>

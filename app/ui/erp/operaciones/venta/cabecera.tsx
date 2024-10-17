@@ -8,7 +8,21 @@ import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import ClientesConsul from '@/app/ui/erp/consultas/Clientes_consul';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
-export default function Cabecera({ register, setValue, clearErrors, errors, mostrarErrorAlerta, getValues, consultarComprobante, setAlerta, bloquear, setIva, cliente, setCliente }: any) {
+export default function Cabecera({
+    register,
+    setValue,
+    clearErrors,
+    errors,
+    mostrarErrorAlerta,
+    getValues,
+    consultarComprobante,
+    setAlerta,
+    bloquear,
+    setIva,
+    cliente,
+    setCliente,
+    setCompro_elec
+}: any) {
     const searchParams = useSearchParams();
     const pathname = usePathname();
     const { replace } = useRouter();
@@ -67,6 +81,7 @@ export default function Cabecera({ register, setValue, clearErrors, errors, most
             setValue('numero', prox_num[0].prox_num);
         }
         setIva(prox_num[0].porcentaje)
+        setCompro_elec(prox_num[0].compro_elec)
         setValue('tipo', compSelect);
         setValue('cate_iva', prox_num[0].porcentaje);
         clearErrors('tipo');
@@ -127,6 +142,7 @@ export default function Cabecera({ register, setValue, clearErrors, errors, most
                 name: comp.descrip || '',
                 prox_num: comp.prox_num.toString() || 1,
                 porcentaje: comp.porcentaje || 0,
+                compro_elec: comp.compro_elec || 'N',
             }));
             setComp(CompMapeados);
         }

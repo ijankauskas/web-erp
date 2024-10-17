@@ -43,7 +43,6 @@ export default function Comprobantes() {
 
     const toggleCabecera = () => {
         setAbrirCabecera(!abrirCabecera)
-
     }
 
     return (
@@ -54,7 +53,7 @@ export default function Comprobantes() {
                         <h3 className="w-1/3 items font-semibold leading-7 text-gray-900 text-lg">
                             Alta de Comprobantes
                         </h3>
-                        <div className="w-[150px]">
+                        <div className="w-[200px]">
                             <ButtonCommon
                                 texto={"Nuevo Comprobante"}
                                 onClick={toggleCabecera}

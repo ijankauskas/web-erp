@@ -1,7 +1,7 @@
 'use client'
 
 import { Dialog, DialogBackdrop, DialogPanel, DialogTitle, Transition, TransitionChild } from '@headlessui/react'
-import { PlusCircleIcon, TrashIcon, XMarkIcon } from '@heroicons/react/24/outline'
+import { CloudArrowUpIcon, PlusCircleIcon, TrashIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import { zodResolver } from "@hookform/resolvers/zod";
 import ButtonCommon from '../ButtonCommon'
 import Cabecera from '@/app/ui/erp/comprobantes/Cabecera'
@@ -88,6 +88,7 @@ export default function Drawer({ abrir, toggleAbrir, comprobantesSelect, setAler
             const data = await respuesta.json();
             setValue('tipo', data.tipo);
             setCargando(false);
+            setRespuesta(true);
             setAlerta({
                 message: 'Se guardo correctamente el comprobante',
                 type: "success",
@@ -97,6 +98,7 @@ export default function Drawer({ abrir, toggleAbrir, comprobantesSelect, setAler
         } else {
             const errorMessage = await respuesta.json();
             setCargando(false);
+            setRespuesta(false);
             setAlerta({
                 message: errorMessage.message,
                 type: "error",
@@ -141,7 +143,7 @@ export default function Drawer({ abrir, toggleAbrir, comprobantesSelect, setAler
                                 <div className="absolute left-0 top-0 -ml-8 flex pr-2 pt-4 duration-500 ease-in-out data-[closed]:opacity-0 sm:-ml-10 sm:pr-4">
                                     <button
                                         type="button"
-                                        onClick={() => toggleAbrir}
+                                        onClick={toggleAbrir}
                                         className="relative rounded-md text-gray-300 hover:text-white focus:outline-none focus:ring-2 focus:ring-white"
                                     >
                                         <span className="absolute -inset-2.5" />
@@ -169,7 +171,7 @@ export default function Drawer({ abrir, toggleAbrir, comprobantesSelect, setAler
                                     <div className="border-t border-gray-200 px-4 py-6 sm:px-6">
                                         <div className="flex space-x-4">
                                             <ButtonCommon
-                                                texto="Grabar"
+                                                texto={<><CloudArrowUpIcon aria-hidden="true" className="mr-1.5 h-5 w-5" />Guardar</>}
                                                 type="submit"
                                                 className="w-full px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
                                             />

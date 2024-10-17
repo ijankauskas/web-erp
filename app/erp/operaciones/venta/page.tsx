@@ -1,6 +1,6 @@
 "use client"
 
-import { DbConsultarFactura, DbEliminarCompEmitidos, DbGrabartarFactura, imprimirPDF } from '@/app/lib/data';
+import { DbConsultarFactura, DbEliminarCompEmitidos, DbGrabartarFactura, DbObtenerCae, imprimirPDF } from '@/app/lib/data';
 import DismissibleAlert from '@/app/ui/DismissAlerta';
 import ButtonCommon from '@/app/ui/erp/ButtonCommon';
 import Alerta from '@/app/ui/erp/alerta';
@@ -45,12 +45,16 @@ export default function Factura() {
     const [bloquear, setBloquear] = useState(false); //para bloquear los inputs cuando consultas el comprobante
     const [abrirArticulosConsul, setAbrirArticulosConsul] = useState(false);
     const [iva, setIva] = useState(0)
+    const [compro_elec, setCompro_elec] = useState('')
     const [cliente, setCliente] = useState({})
     const [mensaje, setMensaje] = useState({
         mostrar: false,
         mensaje: '',
         titulo: '',
         tipo_aletar: '',
+        botonExtra: true,
+        textoExtra: '',
+        funcionExtra: () => { }
     });
     const { register, handleSubmit, formState: { errors }, setValue, clearErrors, getValues } = useForm<Inputs>({
         defaultValues: {
@@ -89,7 +93,7 @@ export default function Factura() {
 
     const formRef = useRef(null);
 
-    const cerrarMensaje = () => {
+    const cerrarMensaje = async () => {
         setMensaje((prev) => ({
             ...prev,
             mostrar: false,
@@ -100,6 +104,9 @@ export default function Factura() {
                 mensaje: '',
                 titulo: '',
                 tipo_aletar: '',
+                botonExtra: true,
+                textoExtra: '',
+                funcionExtra: () => { }
             });
         }, 300);
     }
@@ -129,7 +136,6 @@ export default function Factura() {
     }
 
     const enviarForm = async (data?: any) => {
-
         setCargando(true)
         if (articulos.length <= 0) {
             setMensaje({
@@ -137,6 +143,9 @@ export default function Factura() {
                 mensaje: 'No se puede grabar una factura sin articulos.',
                 titulo: 'Oops...',
                 tipo_aletar: 'error',
+                botonExtra: false,
+                textoExtra: '',
+                funcionExtra: () => { }
             });
             return;
         }
@@ -172,6 +181,9 @@ export default function Factura() {
                 mensaje: mensaje.message,
                 titulo: 'Operacion Exitosa!',
                 tipo_aletar: 'exitoso',
+                botonExtra: false,
+                textoExtra: '',
+                funcionExtra: () => { }
             });
             setBloquear(true);
             return
@@ -183,6 +195,9 @@ export default function Factura() {
                 mensaje: mensaje.message,
                 titulo: 'Oops...',
                 tipo_aletar: 'error',
+                botonExtra: false,
+                textoExtra: '',
+                funcionExtra: () => { }
             });
             return
         }
@@ -207,6 +222,7 @@ export default function Factura() {
             const data = await response.json();
 
             if (response.ok) {
+                setArticulos([])
                 setBloquear(true)
                 setValue('tipo', data.tipo)
                 setValue('numero', data.num)
@@ -217,7 +233,8 @@ export default function Factura() {
                 setValue('num_cliente', data.cliente)
                 setValue('razon_cliente', data.clientes.razon)
                 setIva(data.porcen_iva)
-                setArticulos([])
+                // setCompro_elec(data.comp.compro_elec)
+                console.log(data.articulos);
                 data.articulos.map((articulo: any) => {
                     const articulos = [{
                         codigo: articulo.articulo,
@@ -228,7 +245,10 @@ export default function Factura() {
                         costo_uni: articulo.costo || 0
                     }];
                     setArticulos((prev: any) => [...prev, ...articulos]);
+
                 })
+
+
                 setCargando(false);
                 setRespuesta(true);
             } else {
@@ -276,6 +296,9 @@ export default function Factura() {
             mensaje: mensaje,
             titulo: 'Oops...',
             tipo_aletar: 'error',
+            botonExtra: false,
+            textoExtra: '',
+            funcionExtra: () => { }
         });
         clearErrors();
     }, [errors]);
@@ -333,6 +356,9 @@ export default function Factura() {
                     mensaje: message.mensaje,
                     titulo: 'Operacion Exitosa!',
                     tipo_aletar: 'exitoso',
+                    botonExtra: false,
+                    textoExtra: '',
+                    funcionExtra: () => { }
                 });
                 clickLimpiar();
             } else {
@@ -343,6 +369,9 @@ export default function Factura() {
                     mensaje: message.message,
                     titulo: 'Error al realizar la operacion.',
                     tipo_aletar: 'error',
+                    botonExtra: false,
+                    textoExtra: '',
+                    funcionExtra: () => { }
                 });
             }
         } catch (error: any) {
@@ -353,6 +382,42 @@ export default function Factura() {
                 type: "error",
                 alertVisible: true
             });
+        }
+    }
+
+    const clickObtenerCae = async () => {
+        setMensaje({
+            mostrar: true,
+            mensaje: 'Si obtiene el cae se registrara la factura en afip.',
+            titulo: '¿Estás seguro de obtener el CAE al comprobante?',
+            tipo_aletar: 'pregunta',
+            botonExtra: true,
+            textoExtra: 'Obtener Cae',
+            funcionExtra: () => obtenerCae()
+        });
+    }
+
+    const obtenerCae = async () => {
+        setCargando(true);
+        // await cerrarMensaje();
+
+        const response = await DbObtenerCae();
+        const mensaje = await response.json();
+        if (response.ok) {
+            setCargando(false);
+        } else {
+            setMensaje({
+                mostrar: true,
+                mensaje: mensaje.message,
+                titulo: 'Error al realizar la operacion.',
+                tipo_aletar: 'error',
+                botonExtra: false,
+                textoExtra: '',
+                funcionExtra: () => { }
+            });
+
+            setCargando(false);
+            setRespuesta(false);
         }
     }
 
@@ -373,6 +438,7 @@ export default function Factura() {
                             setIva={setIva}
                             setCliente={setCliente}
                             cliente={cliente}
+                            setCompro_elec={setCompro_elec}
                         />
                         <div className="w-full flex justify-between my-2">
                             <div>
@@ -413,6 +479,8 @@ export default function Factura() {
                             cliente={cliente}
                             imprimirComp={imprimirComp}
                             eliminarComp={eliminarComp}
+                            compro_elec={compro_elec}
+                            clickObtenerCae={clickObtenerCae}
                         />
                     </div>
                 </form>
@@ -424,6 +492,9 @@ export default function Factura() {
                     titulo={mensaje.titulo}
                     texto={mensaje.mensaje}
                     tipo_aletar={mensaje.tipo_aletar}
+                    botonExtra={mensaje.botonExtra}
+                    textoExtra={mensaje.textoExtra}
+                    funcionExtra={mensaje.funcionExtra}
                 />
 
                 {abrirArticulosConsul && (
@@ -433,7 +504,7 @@ export default function Factura() {
                         setOpen={setAbrirArticulosConsul}
                     />
                 )}
-                
+
                 <DismissibleAlert
                     message={alerta.message}
                     type={alerta.type}
