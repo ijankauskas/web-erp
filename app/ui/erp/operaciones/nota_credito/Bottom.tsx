@@ -5,7 +5,7 @@ import ButtonCommon from "../../ButtonCommon";
 import { PlusCircleIcon } from "@heroicons/react/24/outline";
 import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from "@nextui-org/react";
 
-export default function Bottom({ register, articulos, clickLimpiar, bloquear, iva, errors, setValue, clearErrors, cliente }: any) {
+export default function Bottom({ register, articulos, clickLimpiar, bloquear, iva, errors, setValue, clearErrors, cliente, compro_elec, clickObtenerCae }: any) {
 
     return (
         <>
@@ -21,16 +21,19 @@ export default function Bottom({ register, articulos, clickLimpiar, bloquear, iv
                                     type={"button"}
                                     className={`w-full text-end items-center justify-center inline-flex px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white focus:outline-none focus:ring-2 focus:ring-offset-2 bg-gray-600 hover:bg-gray-800 focus:ring-gray-600`}
                                 >
-                                    ACA
+                                    Acciones
                                 </button>
                             </DropdownTrigger>
-                            <DropdownMenu aria-label="Static Actions">
-                                <DropdownItem key="new">New file</DropdownItem>
-                                <DropdownItem key="copy">Copy link</DropdownItem>
-                                <DropdownItem key="edit">Edit file</DropdownItem>
-                                <DropdownItem key="delete" className="text-danger" color="danger">
-                                    Delete file
-                                </DropdownItem>
+                            <DropdownMenu
+                                aria-label="Static Actions"
+                                disabledKeys={compro_elec !== 'W' ? ["cae"] : []}
+                            >
+                                <DropdownItem key="cae" onClick={clickObtenerCae}>Obtener Cae</DropdownItem>
+                                <DropdownItem key="copy">Cargar Recibo</DropdownItem>
+                                {/* <DropdownItem key="edit" onClick={imprimirComp}>Imprimir</DropdownItem> */}
+                                {/* <DropdownItem key="delete" className="text-danger" color="danger" onClick={eliminarComp}>
+                                    Eliminar
+                                </DropdownItem> */}
                             </DropdownMenu>
                         </Dropdown>
                     </div>

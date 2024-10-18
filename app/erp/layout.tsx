@@ -42,13 +42,7 @@ const menus = [
                         href: '/erp/alta/depositos',
                         current: false,
                         icon: PlusCircleIcon,
-                    },
-                    {
-                        nombre: "Depositos2222",
-                        href: '/erp/alta/articulo',
-                        current: false,
-                        icon: PlusCircleIcon,
-                    },
+                    }
 
                 ]
             },
@@ -68,34 +62,34 @@ const menus = [
                         current: false,
                         icon: UserPlusIcon,
                     },
-                    {
-                        nombre: "Vendedores",
-                        href: '/erp/alta/vendedores',
-                        current: false,
-                        icon: UserPlusIcon,
-                    },
+                    // {
+                    //     nombre: "Vendedores",
+                    //     href: '/erp/alta/vendedores',
+                    //     current: false,
+                    //     icon: UserPlusIcon,
+                    // },
 
                 ]
             },
-            {
-                nombre: "Proveedores",
-                icon: ShoppingBagIcon,
-                pantallas: [
-                    {
-                        nombre: 'Proveedores',
-                        href: '/erp/alta/proveedor',
-                        current: false,
-                        icon: UserPlusIcon,
-                    },
-                    {
-                        nombre: "Lista de Precios",
-                        href: '/erp/alta/proveedor',
-                        current: false,
-                        icon: UserPlusIcon,
-                    },
+            // {
+            //     nombre: "Proveedores",
+            //     icon: ShoppingBagIcon,
+            //     pantallas: [
+            //         {
+            //             nombre: 'Proveedores',
+            //             href: '/erp/alta/proveedor',
+            //             current: false,
+            //             icon: UserPlusIcon,
+            //         },
+            //         {
+            //             nombre: "Lista de Precios",
+            //             href: '/erp/alta/proveedor',
+            //             current: false,
+            //             icon: UserPlusIcon,
+            //         },
 
-                ]
-            }
+            //     ]
+            // }
         ]
     },
     {
@@ -152,12 +146,12 @@ const menus = [
             }
         ]
     },
-    {
-        nombre: "Afip",
-        icon: PlusIcon,
-        subMenu: [],
-        href: '/erp/afip',
-    }
+    // {
+    //     nombre: "Afip",
+    //     icon: PlusIcon,
+    //     subMenu: [],
+    //     href: '/erp/afip',
+    // }
 ]
 
 export default function Layout({ children }: { children: React.ReactNode }) {

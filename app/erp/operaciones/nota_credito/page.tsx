@@ -1,6 +1,6 @@
 "use client"
 
-import { DbConsultarNotaCredito, DbGrabarNotaCredito } from '@/app/lib/data';
+import { DbConsultarNotaCredito, DbGrabarNotaCredito, DbObtenerCae } from '@/app/lib/data';
 import DismissibleAlert from '@/app/ui/DismissAlerta';
 import ButtonCommon from '@/app/ui/erp/ButtonCommon';
 import Alerta from '@/app/ui/erp/alerta';
@@ -8,8 +8,6 @@ import ArticulosConsul from '@/app/ui/erp/consultas/articulos_consul';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Suspense, useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { PlusCircleIcon } from '@heroicons/react/24/outline';
-import ClientesConsul from '@/app/ui/erp/consultas/Clientes_consul';
 import Cabecera from '@/app/ui/erp/operaciones/nota_credito/Cabecera';
 import TablaArticulos from '@/app/ui/erp/operaciones/nota_credito/TablaArticulos';
 import Bottom from '@/app/ui/erp/operaciones/nota_credito/Bottom';
@@ -46,13 +44,17 @@ export default function NotaCredito() {
     const [abrirClientesConsul, setAbrirClientesConsul] = useState(false);
     const [abrirCompPend, setAbrirCompPend] = useState(false);
     const [iva, setIva] = useState(0)
-    const [cliente, setCliente] = useState({})
+    const [cliente, setCliente] = useState<any>({})
+    const [compro_elec, setCompro_elec] = useState('')
 
     const [mensaje, setMensaje] = useState({
         mostrar: false,
         mensaje: '',
         titulo: '',
         tipo_aletar: '',
+        botonExtra: true,
+        textoExtra: '',
+        funcionExtra: () => { }
     });
     const { register, handleSubmit, formState: { errors }, setValue, clearErrors, getValues } = useForm<Inputs>({
         defaultValues: {
@@ -82,13 +84,22 @@ export default function NotaCredito() {
 
     const formRef = useRef(null);
 
-    const cerrarMensaje = () => {
-        setMensaje({
+    const cerrarMensaje = async () => {
+        setMensaje((prev) => ({
+            ...prev,
             mostrar: false,
-            mensaje: '',
-            titulo: '',
-            tipo_aletar: '',
-        });
+        }));
+        setTimeout(() => {
+            setMensaje({
+                mostrar: false,
+                mensaje: '',
+                titulo: '',
+                tipo_aletar: '',
+                botonExtra: true,
+                textoExtra: '',
+                funcionExtra: () => { }
+            });
+        }, 300);
     }
     const [alerta, setAlerta] = useState({
         message: "",
@@ -118,6 +129,19 @@ export default function NotaCredito() {
         setAbrirClientesConsul(!abrirClientesConsul)
     }
     const toggleAbrirCompPend = () => {
+        if (!cliente) {
+            setMensaje({
+                mostrar: true,
+                mensaje: 'Debe seleccionar un cliente.',
+                titulo: 'Oops...',
+                tipo_aletar: 'error',
+                botonExtra: false,
+                textoExtra: '',
+                funcionExtra: () => { }
+            });
+            return;
+        }
+
         setAbrirCompPend(!abrirCompPend)
     }
 
@@ -129,6 +153,9 @@ export default function NotaCredito() {
                 mensaje: 'No se puede grabar una nota de credito sin articulos.',
                 titulo: 'Oops...',
                 tipo_aletar: 'error',
+                botonExtra: false,
+                textoExtra: '',
+                funcionExtra: () => { }
             });
             return;
         }
@@ -147,6 +174,11 @@ export default function NotaCredito() {
             return acc + parseFloat(calculo.toFixed(2));
         }, 0)
 
+        data.impor_iva = articulos?.reduce((acc: number, articulo: any) => {
+            const calculo = (iva * articulo.precio_vta * articulo.cantidad) / 100;
+            return acc + parseFloat(calculo.toFixed(2))
+        }, 0)
+
         const response = await DbGrabarNotaCredito(data)
         const mensaje = await response.json();
 
@@ -158,6 +190,9 @@ export default function NotaCredito() {
                 mensaje: mensaje.message,
                 titulo: 'Operacion Exitosa!',
                 tipo_aletar: 'exitoso',
+                botonExtra: false,
+                textoExtra: '',
+                funcionExtra: () => { }
             });
             setBloquear(true);
             return
@@ -169,6 +204,9 @@ export default function NotaCredito() {
                 mensaje: mensaje.message,
                 titulo: 'Oops...',
                 tipo_aletar: 'error',
+                botonExtra: false,
+                textoExtra: '',
+                funcionExtra: () => { }
             });
             return
         }
@@ -252,6 +290,9 @@ export default function NotaCredito() {
             mensaje: mensaje,
             titulo: 'O  ops...',
             tipo_aletar: 'error',
+            botonExtra: false,
+            textoExtra: '',
+            funcionExtra: () => { }
         });
 
         clearErrors();
@@ -289,6 +330,95 @@ export default function NotaCredito() {
 
     }
 
+    const settearComprobanteFc = async (comp: any) => {
+        setCargando(true)
+        cerrarMensaje();
+        setAbrirCompPend(false);
+        const response = await DbConsultarNotaCredito(comp.tipo, comp.num)
+        const data = await response.json();
+
+        if (response.ok) {
+            setArticulos([])
+            data.articulos.map((articulo: any) => {
+                const articulos = [{
+                    codigo: articulo.articulo,
+                    descripcion: articulo.articuloDatos.descripcion,
+                    unidad: articulo.unidad,
+                    cantidad: parseFloat(articulo.cant) * -1 || 0,
+                    precio_vta: parseFloat(articulo.precio) || 0,
+                    costo_uni: articulo.costo || 0,
+                    fc_tipo: comp.tipo,
+                    fc_num: comp.num
+                }];
+                setArticulos((prev: any) => [...prev, ...articulos]);
+            })
+            setCargando(false);
+            setRespuesta(true);
+        } else {
+            setCargando(false);
+            setRespuesta(false);
+            setBloquear(false)
+            limpiar();
+            setAlerta({
+                message: data.message,
+                type: "error",
+                alertVisible: true
+            });
+        }
+
+    }
+
+    const clickObtenerCae = async () => {
+        setMensaje({
+            mostrar: true,
+            mensaje: 'Si obtiene el cae se registrara la factura en afip.',
+            titulo: '¿Estás seguro de obtener el CAE al comprobante?',
+            tipo_aletar: 'pregunta',
+            botonExtra: true,
+            textoExtra: 'Obtener Cae',
+            funcionExtra: () => obtenerCae()
+        });
+    }
+
+    const obtenerCae = async () => {
+        setCargando(true);
+        // await cerrarMensaje();
+        let data = {
+            tipo: getValues('tipo'),
+            num: getValues('numero')
+        }
+
+        const response = await DbObtenerCae(data);
+        const mensaje = await response.json();
+        if (response.ok) {
+            setMensaje({
+                mostrar: true,
+                mensaje: mensaje.message,
+                titulo: 'Exitoso! Cae obtenido correctamente.',
+                tipo_aletar: 'success',
+                botonExtra: false,
+                textoExtra: '',
+                funcionExtra: () => { }
+            });
+
+            setCargando(false);
+            setRespuesta(true);
+        } else {
+            setMensaje({
+                mostrar: true,
+                mensaje: mensaje.message,
+                titulo: 'Error al realizar la operacion.',
+                tipo_aletar: 'error',
+                botonExtra: false,
+                textoExtra: '',
+                funcionExtra: () => { }
+            });
+
+            setCargando(false);
+            setRespuesta(false);
+        }
+    }
+
     return (
         <Suspense fallback={<div>Loading...</div>}>
 
@@ -308,6 +438,7 @@ export default function NotaCredito() {
                             setIva={setIva}
                             setCliente={setCliente}
                             cliente={cliente}
+                            setCompro_elec={setCompro_elec}
                         />
                         <div className="w-full flex justify-between my-2">
                             <div>
@@ -347,6 +478,8 @@ export default function NotaCredito() {
                             setValue={setValue}
                             clearErrors={clearErrors}
                             cliente={cliente}
+                            compro_elec={compro_elec}
+                            clickObtenerCae={clickObtenerCae}
                         />
                     </div>
                 </form>
@@ -358,6 +491,9 @@ export default function NotaCredito() {
                     titulo={mensaje.titulo}
                     texto={mensaje.mensaje}
                     tipo_aletar={mensaje.tipo_aletar}
+                    botonExtra={mensaje.botonExtra}
+                    textoExtra={mensaje.textoExtra}
+                    funcionExtra={mensaje.funcionExtra}
                 />
 
                 <ArticulosConsul
@@ -366,10 +502,15 @@ export default function NotaCredito() {
                     setOpen={setAbrirArticulosConsul}
                 />
 
-                <CompPendiente
-                    open={abrirCompPend}
-                    setOpen={setAbrirCompPend}
-                />
+                {abrirCompPend && (
+                    <CompPendiente
+                        cliente={cliente.id}
+                        open={abrirCompPend}
+                        setOpen={setAbrirCompPend}
+                        solo={'S'}
+                        setComprobante={settearComprobanteFc}
+                    />
+                )}
 
                 <DismissibleAlert
                     message={alerta.message}

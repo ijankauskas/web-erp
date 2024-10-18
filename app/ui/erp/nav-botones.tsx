@@ -1,16 +1,71 @@
+'use client'
+
 import Link from 'next/link';
 import { SignOut } from './SingOut';
 import { Accordion, AccordionItem, Tooltip } from '@nextui-org/react';
 import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from "@nextui-org/react";
+import { KeyIcon } from '@heroicons/react/24/outline';
+import { DbAutorizacionWSAA } from '@/app/lib/data';
+import DismissibleAlert from '../DismissAlerta';
+import Loading from '../Loading';
+import { useState } from 'react';
 
 function classNames(...classes: any[]) {
     return classes.filter(Boolean).join(' ');
 }
 
 export default function NavBotones({ navigation, open }: any) {
+    const [cargando, setCargando] = useState(false);
+    const [respuesta, setRespuesta] = useState(false);
+
+    const [alerta, setAlerta] = useState({
+        message: "",
+        type: "",
+        alertVisible: false
+    });
+
+    const closeAlertaDismiss = () => {
+        setAlerta((prev) => ({
+            ...prev,
+            alertVisible: false,
+        }));
+
+        setTimeout(() => {
+            setAlerta({
+                message: '',
+                type: "",
+                alertVisible: false
+            });
+        }, 300);
+    };
+
+
     const defaultContent =
         "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.";
 
+    const wsaa = async (e: any) => {
+        e.preventDefault();
+        setCargando(true);
+        const response = await DbAutorizacionWSAA()
+        const mensaje = await response.json();
+
+        if (response.ok) {
+            setCargando(false);
+            setRespuesta(true);
+            setAlerta({
+                message: mensaje.mensaje,
+                type: "success",
+                alertVisible: true
+            })
+        } else {
+            setCargando(false);
+            setAlerta({
+                message: "error",
+                type: "warning",
+                alertVisible: true
+            })
+        }
+    }
     return (
         <>
             {navigation.map((item: any, index: number) => (
@@ -47,43 +102,6 @@ export default function NavBotones({ navigation, open }: any) {
                                             ))}
                                         </DropdownMenu>
                                     </Dropdown>
-                                    // <Tooltip
-                                    //     key={index}
-                                    //     placement="right-start"
-                                    //     content={(
-                                    //         <div className="p-0 w-[200px]">
-                                    //             {subMenu.pantallas.map((pantalla: any, index: any) => (
-                                    //                 <Link
-                                    //                     key={index}
-                                    //                     href={pantalla.href}
-                                    //                     className={classNames(
-                                    //                         pantalla.current ? 'bg-gray-700 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white',
-                                    //                         'group flex items-center px-2 py-2 text-sm font-medium rounded-md '
-                                    //                     )}
-                                    //                 >
-                                    //                     <p className='mr-6'><pantalla.icon className="h-6 w-6 text-white" aria-hidden="true" /></p>
-                                    //                     <p className='text-right'>{pantalla.nombre}</p>
-                                    //                 </Link>
-                                    //             ))}
-                                    //         </div>
-                                    //     )}
-                                    //     radius="sm"
-                                    //     delay={0}
-                                    //     offset={0}
-                                    //     closeDelay={0}
-                                    //     classNames={{
-                                    //         base: [
-                                    //             "before:bg-neutral-400 dark:before:bg-white",
-                                    //         ],
-                                    //         content: [
-                                    //             "text-white py-2 px-4 shadow-xl bg-gray-400",
-                                    //         ],
-                                    //     }}
-                                    // >
-                                    //     <button className="text-white w-full text-start hover:bg-gray-700 p-2 rounded-md">
-                                    //         {subMenu.nombre}
-                                    //     </button>
-                                    // </Tooltip>
                                 ))}
                             </div>
                         </AccordionItem>
@@ -104,7 +122,25 @@ export default function NavBotones({ navigation, open }: any) {
                 )
             ))
             }
-            <SignOut isOpen={open}/>
+            <div className="p-2">
+                <a
+                    onClick={(e) => wsaa(e)}
+                    className="group flex items-center px-2 py-2 text-sm font-medium rounded-md text-white hover:bg-gray-700 p-2 "
+                >
+                    <KeyIcon className="h-6 w-6 mr-2 text-white" aria-hidden="true" />
+                    {open ? 'Autorizacion WSAA' : ''}
+                </a>
+            </div>
+            <SignOut isOpen={open} />
+
+            <DismissibleAlert
+                message={alerta.message}
+                type={alerta.type}
+                onClose={closeAlertaDismiss}
+                showPanel={alerta.alertVisible}
+            />
+
+            <Loading cargando={cargando} respuesta={respuesta} />
         </>
     );
 }

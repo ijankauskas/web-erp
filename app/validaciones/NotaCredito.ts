@@ -12,6 +12,8 @@ const articulos = z.object({
         }),
     precio_vta: z.any().optional(),
     costo_uni: z.any().optional(),
+    fc_tipo: z.any().optional(),
+    fc_num: z.any().optional(),
 });
 
 export const NotaCreditoSchema = z.object({

@@ -8,7 +8,7 @@ import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import ClientesConsul from "../../consultas/Clientes_consul";
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
-export default function Cabecera({ register, setValue, clearErrors, errors, setMensaje, getValues, consultarComprobante, bloquear, setIva, cliente, setCliente }: any) {
+export default function Cabecera({ register, setValue, clearErrors, errors, setMensaje, getValues, consultarComprobante, bloquear, setIva, cliente, setCliente, setCompro_elec }: any) {
     const searchParams = useSearchParams();
     const pathname = usePathname();
     const { replace } = useRouter();
@@ -68,6 +68,7 @@ export default function Cabecera({ register, setValue, clearErrors, errors, setM
             setValue('numero', prox_num[0].prox_num);
         }
         setIva(prox_num[0].porcentaje)
+        setCompro_elec(prox_num[0].compro_elec)
         setValue('tipo', compSelect);
         setValue('cate_iva', prox_num[0].porcentaje);
         clearErrors('tipo');
@@ -127,6 +128,7 @@ export default function Cabecera({ register, setValue, clearErrors, errors, setM
                 name: comp.descrip || '',
                 prox_num: comp.prox_num.toString() || 1,
                 porcentaje: comp.porcentaje || 0,
+                compro_elec: comp.compro_elec || 'N',
             }));
             setComp(CompMapeados);
         }
@@ -142,7 +144,7 @@ export default function Cabecera({ register, setValue, clearErrors, errors, setM
 
         setValue('num_cliente', cliente.codigo);
     }
-    
+
     useEffect(() => {
         const params = new URLSearchParams(searchParams);
         let tipo: string | null = params.get('tipo');

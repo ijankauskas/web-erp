@@ -9,6 +9,7 @@ import { DbCompEmitidosConsul } from "@/app/lib/data";
 import Image from "next/image";
 import { Pagination } from "@nextui-org/react";
 import TablaSkeleton from "../skeleton/tablaSkeleton";
+import { set } from "zod";
 
 
 const fechaArgentina = new Date().toLocaleDateString('es-AR', {
@@ -38,7 +39,7 @@ const fechaFormateadatest = fechaActual.toLocaleDateString('es-AR', {
 
 const fechaFormateadaHasta = `${fechaFormateadatest[2]}-${fechaFormateadatest[1]}-${fechaFormateadatest[0]}`;
 
-export default function CompPendiente({ cliente, setComprobante, open, setOpen }: any) {
+export default function CompPendiente({ cliente, setComprobante, open, setOpen, solo = 'N' }: any) {
     const [loading, setLoading] = useState(false);
     const [fechaDesde, setFechaDesde] = useState(fechaFormateadaHasta);
     const [fechaHasta, setFechaHasta] = useState(fechaFormateada);
@@ -130,11 +131,18 @@ export default function CompPendiente({ cliente, setComprobante, open, setOpen }
     }
 
     const selccionarComp = (index: any) => {
-        setCompEmitidos((prev: any) =>
-            prev.map((item: any, idx: number) =>
-                idx === index ? { ...item, seleccionado: !item.seleccionado } : item
-            )
-        );
+        if (solo = 'S') {
+
+            let comp = compEmitidos.find((comp: any, idx: number) => idx === index);
+            
+            setComprobante(comp)
+        } else {
+            setCompEmitidos((prev: any) =>
+                prev.map((item: any, idx: number) =>
+                    idx === index ? { ...item, seleccionado: !item.seleccionado } : item
+                )
+            );
+        }
     }
 
     const setComprobantes = () => {
@@ -343,13 +351,15 @@ export default function CompPendiente({ cliente, setComprobante, open, setOpen }
                                     onChange={setPagina}
                                     initialPage={1}
                                 />
-                                <div className="w-[150px]">
-                                    <ButtonCommon
-                                        texto={"Confirmar"}
-                                        onClick={setComprobantes}
-                                        type={"button"}
-                                    />
-                                </div>
+                                {solo != 'S' && (
+                                    <div className="w-[150px]">
+                                        <ButtonCommon
+                                            texto={"Confirmar"}
+                                            onClick={setComprobantes}
+                                            type={"button"}
+                                        />
+                                    </div>
+                                )}
                             </div>
                         </DialogPanel>
                     </div>

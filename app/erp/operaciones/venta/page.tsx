@@ -400,11 +400,26 @@ export default function Factura() {
     const obtenerCae = async () => {
         setCargando(true);
         // await cerrarMensaje();
+        let data={
+            tipo: getValues('tipo'),
+            num: getValues('numero')
+        }
 
-        const response = await DbObtenerCae();
+        const response = await DbObtenerCae(data);
         const mensaje = await response.json();
         if (response.ok) {
+            setMensaje({
+                mostrar: true,
+                mensaje: mensaje.message,
+                titulo: 'Exitoso! Cae obtenido correctamente.',
+                tipo_aletar: 'exitoso',
+                botonExtra: false,
+                textoExtra: '',
+                funcionExtra: () => { }
+            });
+
             setCargando(false);
+            setRespuesta(true);
         } else {
             setMensaje({
                 mostrar: true,

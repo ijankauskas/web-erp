@@ -147,8 +147,6 @@ export default function Recibo() {
 
     const settearComprobantes = (compEmitidos: any) => {
         setCompEmitidos(compEmitidos);
-        console.log(compEmitidos);
-
         setAbrirCompPendConsul(false);
     }
 

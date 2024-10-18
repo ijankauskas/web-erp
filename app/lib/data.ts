@@ -275,7 +275,7 @@ export async function DbCompConsul(activo?: string, tipo?: string) {
 }
 export async function imprimirPDF(tipoReporte: string, tipo?: string, num?: number) {
     try {
-        const response = await fetch(url + '/imprimirPDF?tipoReporte' + tipoReporte + 'tipo=' + tipo + '&num=' + num, {
+        const response = await fetch(`${url}/imprimirPDF?tipoReporte=${tipoReporte}&tipo=${tipo}&num=${num}`, {
             method: 'GET',
             credentials: 'include',
             headers: {
@@ -640,10 +640,26 @@ export async function DbEliminarRemito(data: any) {
         throw new Error('Failed to fetch card data.');
     }
 }
-export async function DbObtenerCae() {
+export async function DbObtenerCae(data:any) {
     try {
         const response = await fetch(`${url}/afip/cae`, {
             method: 'POST',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        });
+
+        return response;
+    } catch (error) {
+        throw new Error('Failed to fetch card data.');
+    }
+}
+export async function DbAutorizacionWSAA() {
+    try {
+        const response = await fetch(`${url}/afip/autorizacion`, {
+            method: 'GET',
             credentials: 'include',
             headers: {
                 'Content-Type': 'application/json',
