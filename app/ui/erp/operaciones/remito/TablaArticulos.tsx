@@ -6,7 +6,7 @@ import { DbConsultarArticulo } from "@/app/lib/data";
 import Alerta from "../../alerta";
 
 export default function TablaArticulos({ register, articulos, setAlerta, setArticulos, bloquear, iva, cliente }: any) {
-    const [columnWidths, setColumnWidths] = useState([150, 400, 100, 125, 125, 50, 100]);
+    const [columnWidths, setColumnWidths] = useState([150, 400, 100, 125, 125, 50, 50, 100]);
     const [error, setError] = useState({
         mostrar: false,
         mensaje: '',
@@ -59,7 +59,9 @@ export default function TablaArticulos({ register, articulos, setAlerta, setArti
                 cantidad: parseFloat(data.cant_default) || 0,
                 precio_vta: parseFloat(data.precio_vta) || 0,
                 costo_uni: data.costo || 0,
-                porcen_iva: data.iva == 0 || data.iva ? 21 : parseFloat(data.iva) || 21
+                porcen_iva: data.iva == 0 || data.iva ? 21 : parseFloat(data.iva) || 21,
+                um: data.um,
+                kilos: 0
             }];
 
             setAlerta({
@@ -77,7 +79,7 @@ export default function TablaArticulos({ register, articulos, setAlerta, setArti
                 alertVisible: true
             });
         }
-        setNuevoArticulo({ codigo: '', descripcion: '', unidad: '', cantidad: 0, porcen_iva: 0 });
+        setNuevoArticulo({ codigo: '', descripcion: '', unidad: '', cantidad: 0, porcen_iva: 0, kilos: 0 });
     }
 
     const modificarArticulo = (e: React.ChangeEvent<HTMLInputElement>, index: any, field: string) => {
@@ -99,10 +101,10 @@ export default function TablaArticulos({ register, articulos, setAlerta, setArti
 
     const formatearNumero = (e: React.ChangeEvent<HTMLInputElement>, index: any, field: string) => {
         const { value } = e.target;
-        
+
         // Reemplazar comas y puntos según el formato regional
         const valueWithoutSeparators = value;
-        
+
         // Convertir el valor a número
         const numericValue = isNaN(parseFloat(valueWithoutSeparators)) ? 0 : parseFloat(valueWithoutSeparators);
 
@@ -208,7 +210,14 @@ export default function TablaArticulos({ register, articulos, setAlerta, setArti
                                         onMouseDown={(e) => handleMouseDown(5, e)}
                                     />
                                 </th>
-                                <th style={{ width: columnWidths[6] }} scope="col" className="relative px-6 py-3">
+                                <th style={{ width: columnWidths[6] }} scope="col" className="relative w-[125px] px-3 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider border-r border-gray-200 text-ellipsis overflow-hidden">
+                                    KILOS
+                                    <div
+                                        className="absolute right-0 top-0 w-1 h-full cursor-col-resize hover:bg-gray-300"
+                                        onMouseDown={(e) => handleMouseDown(6, e)}
+                                    />
+                                </th>
+                                <th style={{ width: columnWidths[7] }} scope="col" className="relative px-6 py-3">
                                     <span className="sr-only">Edit</span>
                                 </th>
                             </tr>
@@ -277,6 +286,20 @@ export default function TablaArticulos({ register, articulos, setAlerta, setArti
                                             desactivado={bloquear}
                                         />
                                     </td>
+                                    <td className="px-2 py-1 whitespace-nowrap text-sm text-gray-900 border border-gray-200 text-ellipsis overflow-hidden">
+                                        <InputCommon
+                                            tipo={'text'}
+                                            texto={articulo.kilos}
+                                            id={`kilos-${index}`}
+                                            useForm={register(`kilos-${index}`, {
+                                                onChange: (e: React.ChangeEvent<HTMLInputElement>) => modificarArticulo(e, index, 'kilos'),
+                                                onBlur: (e: React.ChangeEvent<HTMLInputElement>) => formatearNumero(e, index, 'kilos'),
+                                            })}
+                                            textAlign={'text-end'}
+                                            paddingY={'py-0.5'}
+                                            desactivado={bloquear}
+                                        />
+                                    </td>
 
                                     <td className="w-12 px-6 py-1 whitespace-nowrap text-right text-sm font-medium border-b border-gray-200">
                                         <a href="#" className="text-indigo-600 hover:text-indigo-900"
@@ -323,6 +346,9 @@ export default function TablaArticulos({ register, articulos, setAlerta, setArti
                                         // texto={nuevoArticuloCompo.cantidad}
                                         // onChange={(e: React.ChangeEvent<HTMLInputElement>) => manejarCambioNuevoArticulo(e)}
                                         />
+                                    </td>
+                                    <td className="px-2 py-1 whitespace-nowrap text-sm text-gray-500 border border-gray-200">
+
                                     </td>
                                     <td className="px-2 py-1 whitespace-nowrap text-sm text-gray-500 border border-gray-200">
 

@@ -113,7 +113,9 @@ export default function Factura() {
                         unidad: articulo.unidad,
                         cantidad: parseFloat(articulo.cant) * -1 || 0,
                         precio_vta: parseFloat(articulo.precio) || 0,
-                        costo_uni: articulo.costo || 0
+                        costo_uni: articulo.costo || 0,
+                        porcen_iva: articulo.porcen_iva,
+                        kilos: articulo.cant_kilos,
                     }];
                     setArticulos((prev: any) => [...prev, ...articulos]);
                 })
@@ -242,6 +244,7 @@ export default function Factura() {
             precio_vta: articulo.precio_vta || 0,
             costo_uni: articulo.costo || 0,
             porcen_iva: articulo.iva == 0 ? 21 : articulo.iva,
+            um: articulo.um
         };
         setArticulos((prev: any) => [...prev, nuevo]);
     }

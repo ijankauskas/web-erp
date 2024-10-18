@@ -13,6 +13,8 @@ const articulos = z.object({
     precio_vta: z.any().optional(),
     costo_uni: z.any().optional(),
     porcen_iva: z.any().optional(),
+    kilos: z.any().optional(),
+    um: z.any().optional(),
 });
 
 
