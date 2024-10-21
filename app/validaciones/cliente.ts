@@ -1,29 +1,31 @@
 import { z } from 'zod'
 
 export const clienteSchema = z.object({
-    codigo: z.union([z.string(), z.null()]).optional().refine(val => !isNaN(Number(val)), {
+    codigo: z.any()
+    .optional()
+    .refine(val => !isNaN(Number(val)), {
         message: "El codigo de cliente debe ser numerico.",
     }),
-    cuit: z.union([z.string(), z.null()]).min(1, {
+    cuit: z.string().min(1, {
         message: "El cuit no puede estar vacio."
     }),
-    cate_iva: z.union([z.string(), z.null()]).min(1, {
+    cate_iva: z.string().min(1, {
         message: "Debe seleccionar la categoria de IVA."
     }),
-    razon: z.union([z.string(), z.null()]).min(1, {
+    razon: z.string().min(1, {
         message: "La razon social no puede estar vacia."
     }),
-    nombre_fantasia: z.union([z.string(), z.null()]).min(1, {
+    nombre_fantasia: z.string().min(1, {
         message: "El nombre de fantasia no puede estar vacia."
     }),
-    mail: z.union([z.string(), z.null()]).optional(),
-    agru_1: z.union([z.string(), z.null()]).optional(),
-    agru_2: z.union([z.string(), z.null()]).optional(),
-    agru_3: z.union([z.string(), z.null()]).optional(),
-    telefono: z.union([z.string(), z.null()]).optional(),
-    celular: z.union([z.string(), z.null()]).optional(),
-    domicilio: z.union([z.string(), z.null()]).optional(),
-    localidad: z.union([z.string(), z.null()]).optional(),
-    observaciones: z.union([z.string(), z.null()]).optional(),
-    activo: z.union([z.boolean(), z.null()]).optional(),
-});
+    mail: z.any().optional(),
+    agru_1: z.any().optional(),
+    agru_2: z.any().optional(),
+    agru_3: z.any().optional(),
+    telefono: z.any().optional(),
+    celular: z.any().optional(),
+    domicilio:z.any().optional(),
+    localidad:z.any().optional(),
+    observaciones: z.any().optional(),
+    activo: z.any().optional(),
+})
