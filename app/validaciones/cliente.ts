@@ -15,9 +15,7 @@ export const clienteSchema = z.object({
     razon: z.string().min(1, {
         message: "La razon social no puede estar vacia."
     }),
-    nombre_fantasia: z.string().min(1, {
-        message: "El nombre de fantasia no puede estar vacia."
-    }),
+    nombre_fantasia: z.any().optional(),
     mail: z.any().optional(),
     agru_1: z.any().optional(),
     agru_2: z.any().optional(),
