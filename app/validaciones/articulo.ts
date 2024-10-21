@@ -2,8 +2,8 @@ import { z } from 'zod'
 
 
 const componenteSchema = z.object({
-    cod_articulo: z.string().optional(),
-    cod_articulo_compo: z.string().optional(),
+    cod_articulo: z.any().optional(),
+    cod_articulo_compo: z.any().optional(),
     cantidad: z.any()
         .refine(val => !isNaN(Number(val)), {
             message: "El precio de oferta debe ser un número.",
@@ -12,13 +12,13 @@ const componenteSchema = z.object({
 });
 
 export const articuloSchema = z.object({
-    codigo: z.string().min(3, {
+    codigo: z.any().min(3, {
         message: "El codigo debe tener al menos 3 caracteres."
     }),
-    descripcion: z.string().min(5, {
+    descripcion: z.any().min(5, {
         message: "La descripcion debe tener al menos 5 caracteres."
     }),
-    descripcion_adicional: z.string().optional(),
+    descripcion_adicional: z.any().optional(),
     costo: z.any()
         .refine(val => !isNaN(Number(val)), {
             message: "El costo debe ser un número.",
@@ -55,11 +55,11 @@ export const articuloSchema = z.object({
     usa_compo: z.any().optional(),
     sin_stock: z.any().optional(),
     iva: z.any().optional().transform(val => parseFloat(val)),
-    um: z.string().optional(),
+    um: z.any().optional(),
     cant_default: z.any()
         .transform(val => parseFloat(val))
         .optional(),
-    cod_barras: z.string().optional(),
+    cod_barras: z.any().optional(),
 
     costo_iva: z.any().optional().transform(val => parseFloat(val)),
 
