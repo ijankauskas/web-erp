@@ -1,24 +1,24 @@
 import { z } from 'zod'
 
-
 const componenteSchema = z.object({
-    cod_articulo: z.any().optional(),
-    cod_articulo_compo: z.any().optional(),
+    cod_articulo: z.union([z.string(), z.null()]).optional(),
+    cod_articulo_compo: z.union([z.string(), z.null()]).optional(),
     cantidad: z.any()
         .refine(val => !isNaN(Number(val)), {
-            message: "El precio de oferta debe ser un número.",
-        }),
-    costo_uni: z.any().optional()
+            message: "La cantidad debe ser un número.",
+        })
+        .transform(val => parseFloat(val)),
+    costo_uni: z.union([z.any(), z.null()]).optional().transform(val => val !== null && val !== '' ? parseFloat(val) : null),
 });
 
 export const articuloSchema = z.object({
-    codigo: z.any().min(3, {
+    codigo: z.string().min(3, {
         message: "El codigo debe tener al menos 3 caracteres."
     }),
-    descripcion: z.any().min(5, {
+    descripcion: z.string().min(5, {
         message: "La descripcion debe tener al menos 5 caracteres."
     }),
-    descripcion_adicional: z.any().optional(),
+    descripcion_adicional: z.union([z.string(), z.null()]).optional(),
     costo: z.any()
         .refine(val => !isNaN(Number(val)), {
             message: "El costo debe ser un número.",
@@ -29,11 +29,10 @@ export const articuloSchema = z.object({
         }),
     stock: z.any()
         .optional()
-        .refine(val => !isNaN(Number(val)), {
+        .refine(val => val === null || !isNaN(Number(val)), {
             message: "El stock debe ser un número.",
         })
-        .nullable().transform(val => (val == '' ? null : val))
-        .transform(val => parseFloat(val)),
+        .transform(val => val === '' || val === null ? null : parseFloat(val)),
     precio_vta: z.any()
         .refine(val => !isNaN(Number(val)), {
             message: "El precio de venta debe ser un número.",
@@ -47,22 +46,16 @@ export const articuloSchema = z.object({
             message: "El precio de oferta debe ser un número.",
         })
         .transform(val => parseFloat(val)),
-    agru_1: z.any().optional(),
-    agru_2: z.any().optional(),
-    agru_3: z.any().optional(),
-    activo: z.any().optional(),
+    agru_1: z.union([z.any(), z.null()]).optional(),
+    agru_2: z.union([z.any(), z.null()]).optional(),
+    agru_3: z.union([z.any(), z.null()]).optional(),
+    activo: z.union([z.any(), z.null()]).optional(),
     componentes: z.array(componenteSchema).optional(),
-    usa_compo: z.any().optional(),
-    sin_stock: z.any().optional(),
-    iva: z.any().optional().transform(val => parseFloat(val)),
-    um: z.any().optional(),
-    cant_default: z.any()
-        .transform(val => parseFloat(val))
-        .optional(),
-    cod_barras: z.any().optional(),
-
-    costo_iva: z.any().optional().transform(val => parseFloat(val)),
-
-
-
-})
+    usa_compo: z.union([z.any(), z.null()]).optional(),
+    sin_stock: z.union([z.any(), z.null()]).optional(),
+    iva: z.union([z.any(), z.null()]).optional().transform(val => val !== null && val !== '' ? parseFloat(val) : null),
+    um: z.union([z.string(), z.null()]).optional(),
+    cant_default: z.union([z.any(), z.null()]).optional().transform(val => val !== null && val !== '' ? parseFloat(val) : null),
+    cod_barras: z.union([z.string(), z.null()]).optional(),
+    costo_iva: z.union([z.any(), z.null()]).optional().transform(val => val !== null && val !== '' ? parseFloat(val) : null),
+});
