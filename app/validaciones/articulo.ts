@@ -47,15 +47,9 @@ export const articuloSchema = z.object({
             message: "El precio de oferta debe ser un número.",
         })
         .transform(val => parseFloat(val)),
-    agru_1: z.string().min(1, {
-        message: "Debe seleccionar la agrupacion 1."
-    }),
-    agru_2: z.string().min(1, {
-        message: "Debe seleccionar la agrupacion 2."
-    }),
-    agru_3: z.string().min(1, {
-        message: "Debe seleccionar la agrupacion 3."
-    }),
+    agru_1: z.any().optional(),
+    agru_2: z.any().optional(),
+    agru_3: z.any().optional(),
     activo: z.any().optional(),
     componentes: z.array(componenteSchema).optional(),
     usa_compo: z.any().optional(),
@@ -66,7 +60,7 @@ export const articuloSchema = z.object({
         .transform(val => parseFloat(val))
         .optional(),
     cod_barras: z.string().optional(),
-    
+
     costo_iva: z.any().optional().transform(val => parseFloat(val)),
 
 

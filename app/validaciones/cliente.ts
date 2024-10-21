@@ -19,15 +19,9 @@ export const clienteSchema = z.object({
         message: "El nombre de fantasia no puede estar vacia."
     }),
     mail: z.string().optional(),
-    agru_1: z.string().min(1, {
-        message: "Debe seleccionar la agrupacion 1."
-    }),
-    agru_2: z.string().min(1, {
-        message: "Debe seleccionar la agrupacion 2."
-    }),
-    agru_3: z.string().min(1, {
-        message: "Debe seleccionar la agrupacion 3."
-    }),
+    agru_1: z.string().optional(),
+    agru_2: z.string().optional(),
+    agru_3: z.string().optional(),
     telefono: z.string().optional(),
     celular: z.string().optional(),
     domicilio:z.string().optional(),

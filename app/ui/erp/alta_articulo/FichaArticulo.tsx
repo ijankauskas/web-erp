@@ -133,7 +133,7 @@ const FichaArticulo = ({ register, setValue, clearErrors, errors, consultarArtic
                             </div>
 
 
-                            <div className="col-span-6 sm:col-span-2">
+                            {/*<div className="col-span-6 sm:col-span-2">
                                 <ComboBoxSelect
                                     titulo={"Agrupacion 1"}
                                     data={people}
@@ -161,7 +161,7 @@ const FichaArticulo = ({ register, setValue, clearErrors, errors, consultarArtic
                                     error={errors.agru_3?.message}
                                     seleccionado={getValues('agru_3')}
                                 />
-                            </div>
+                            </div>*/}
 
                             <div className="col-span-6">
                                 <InputCommon

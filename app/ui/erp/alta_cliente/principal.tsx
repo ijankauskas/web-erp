@@ -201,7 +201,7 @@ const Principal = ({ register, setValue, clearErrors, errors, consultarCliente, 
                                     />
                                 </div>
     
-                                <div className="col-span-6 sm:col-span-2">
+                                {/*<div className="col-span-6 sm:col-span-2">
                                     <ComboBoxSelect
                                         titulo={"Agrupacion 1"}
                                         data={people}
@@ -229,7 +229,7 @@ const Principal = ({ register, setValue, clearErrors, errors, consultarCliente, 
                                         error={errors.agru_3?.message}
                                         seleccionado={getValues('agru_3')}
                                     />
-                                </div>
+                                </div>*/}
     
                             </div>
                         </div>
